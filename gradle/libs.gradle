@@ -1,0 +1,10 @@
+ext.libs = [
+        jupiter: [
+                api   : 'org.junit.jupiter:junit-jupiter-api:5.7.0',
+                engine: 'org.junit.jupiter:junit-jupiter-engine:5.7.0',
+                params: 'org.junit.jupiter:junit-jupiter-params:5.7.0'
+        ],
+        assertj: [
+                core: "org.assertj:assertj-core:3.11.1"
+        ]
+]

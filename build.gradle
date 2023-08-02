@@ -1,0 +1,23 @@
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply from: "${rootDir}/gradle/java.gradle"
+apply from: "${rootDir}/gradle/libs.gradle"
+
+description("Tiny DB")
+apply from: "${rootDir}/gradle/publish.gradle"
+
+dependencies {
+    testImplementation(libs.jupiter.api)
+    testImplementation(libs.jupiter.params)
+    testRuntimeOnly(libs.jupiter.engine)
+
+    testImplementation(libs.assertj.core)
+}
+
+test {
+    useJUnitPlatform()
+}

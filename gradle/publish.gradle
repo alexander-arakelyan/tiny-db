@@ -1,0 +1,90 @@
+apply plugin: "java"
+apply plugin: "maven-publish"
+apply plugin: "signing"
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+    sign publishing.publications
+}
+
+publishing {
+    publications {
+        myLibrary(MavenPublication) {
+            from components.java
+
+            customizePom(pom, rootProject)
+
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+}
+
+model {
+    tasks.publishMyLibraryPublicationToMavenLocal {
+        dependsOn(project.tasks.signArchives)
+    }
+    tasks.publishMyLibraryPublicationToMavenRepository {
+        dependsOn(project.tasks.signArchives)
+    }
+    tasks.publish {
+        dependsOn(project.tasks.build)
+    }
+}
+
+
+def customizePom(pom, gradleProject) {
+    pom.withXml {
+        def root = asNode()
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
+
+            name "Tiny Utils - ${project.name}"
+            description gradleProject.description
+            url 'https://github.com/bambrikii/tiny-utils'
+
+            licenses {
+                license {
+                    name 'GNU General Public License version 3'
+                    url 'https://opensource.org/licenses/GPL-3.0'
+                }
+            }
+            scm {
+                connection 'scm:git:https://github.com/bambrikii/tiny-utils.git'
+                developerConnection 'scm:git:https://github.com/bambrikii/tiny-utils.git'
+                url 'https://github.com/bambrikii/tiny-utils.git'
+            }
+            developers {
+                developer {
+                    id 'alexander.arakelyan'
+                    name 'Alexander Arakelyan'
+                    email 'alexander.arakelyan@gmail.com'
+                }
+            }
+        }
+    }
+}
