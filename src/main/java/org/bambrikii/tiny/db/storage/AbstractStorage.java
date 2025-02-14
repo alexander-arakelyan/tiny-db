@@ -8,7 +8,7 @@ public interface AbstractStorage {
 
     void insert(Table table, Row row);
 
-    void update(Table table, Row row);
+    void update(Table table, Row row, String filter);
 
-    void delete(Table table, String rowId);
+    void delete(Table table, String filter);
 }
