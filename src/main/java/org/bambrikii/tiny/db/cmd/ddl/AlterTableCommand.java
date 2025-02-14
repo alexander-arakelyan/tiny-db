@@ -1,6 +1,6 @@
 package org.bambrikii.tiny.db.cmd.ddl;
 
-import org.bambrikii.tiny.db.exec.AbstractDbCommand;
+import org.bambrikii.tiny.db.query.AbstractDbCommand;
 
 public class AlterTableCommand implements AbstractDbCommand {
 }

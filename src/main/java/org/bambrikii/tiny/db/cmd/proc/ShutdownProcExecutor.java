@@ -1,6 +1,6 @@
 package org.bambrikii.tiny.db.cmd.proc;
 
-import org.bambrikii.tiny.db.exec.*;
+import org.bambrikii.tiny.db.query.*;
 
 public class ShutdownProcExecutor implements AbstractDbExecutor<ShutdownProcCommand, QueryExecutorContext> {
     @Override

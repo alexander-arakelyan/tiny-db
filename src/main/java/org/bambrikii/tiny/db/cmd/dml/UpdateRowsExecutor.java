@@ -1,6 +1,6 @@
 package org.bambrikii.tiny.db.cmd.dml;
 
-import org.bambrikii.tiny.db.exec.*;
+import org.bambrikii.tiny.db.query.*;
 
 public class UpdateRowsExecutor implements AbstractDbExecutor<UpdateRowsCommand, QueryExecutorContext> {
     @Override

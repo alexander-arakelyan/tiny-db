@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.exec;
+package org.bambrikii.tiny.db.query;
 
 public interface AbstractDbCommand {
 }

@@ -1,6 +1,6 @@
 package org.bambrikii.tiny.db.cmd.ddl;
 
-import org.bambrikii.tiny.db.exec.*;
+import org.bambrikii.tiny.db.query.*;
 
 public class CreateTableExecutor implements AbstractDbExecutor<CreateTableCommand, QueryExecutorContext> {
     @Override

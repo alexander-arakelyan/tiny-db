@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.exec;
+package org.bambrikii.tiny.db.query;
 
 public interface AbstractDbExecutor<C extends AbstractDbCommand, T extends AbstractExecutorContext> {
     ExecutionResult tryExec(AbstractDbCommand cmd, AbstractExecutorContext ctx);
