@@ -1,44 +1,43 @@
 package org.bambrikii.tiny.db.query;
 
-import org.bambrikii.tiny.db.cmd.ddl.AlterTableExecutor;
-import org.bambrikii.tiny.db.cmd.ddl.CreateTableExecutor;
-import org.bambrikii.tiny.db.cmd.ddl.DropTableExecutor;
-import org.bambrikii.tiny.db.cmd.dml.DeleteRowsExecutor;
-import org.bambrikii.tiny.db.cmd.dml.InsertRowsExecutor;
-import org.bambrikii.tiny.db.cmd.dml.SelectRowsExecutor;
-import org.bambrikii.tiny.db.cmd.dml.UpdateRowsExecutor;
+import lombok.SneakyThrows;
+import org.bambrikii.tiny.db.cmd.*;
+import org.bambrikii.tiny.db.cmd.altertable.AlterTableParser;
+import org.bambrikii.tiny.db.cmd.createtable.CreateTableParser;
+import org.bambrikii.tiny.db.cmd.createtable.NavigableStreamReader;
+import org.bambrikii.tiny.db.cmd.deleterows.DeleteRowsParser;
+import org.bambrikii.tiny.db.cmd.droptable.DropTableParser;
+import org.bambrikii.tiny.db.cmd.insertrows.InsertRowsParser;
+import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsParser;
+import org.bambrikii.tiny.db.cmd.updaterows.UpdateRowsParser;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class QueryExecutor {
-    private final List<AbstractDbExecutor> executors;
+import static org.bambrikii.tiny.db.cmd.none.NoCommand.NO_COMMAND;
 
-    public QueryExecutor(AbstractDbExecutor... moreExecutors) {
-        executors = Stream
-                .concat(Arrays.stream(new AbstractDbExecutor[]{
-                                new CreateTableExecutor(),
-                                new AlterTableExecutor(),
-                                new DropTableExecutor(),
-                                new SelectRowsExecutor(),
-                                new InsertRowsExecutor(),
-                                new UpdateRowsExecutor(),
-                                new DeleteRowsExecutor()
-                        }),
-                        Arrays.stream(moreExecutors)
-                )
+public class QueryExecutor {
+    private final List<AbstractCommandParser> parsers;
+
+    public QueryExecutor(AbstractCommandParser... parsers) {
+        this.parsers = Arrays
+                .stream(parsers)
                 .collect(Collectors.toList());
     }
 
-    public ExecutionResult exec(AbstractDbCommand cmd, AbstractExecutorContext ctx) {
-        for (var executor : executors) {
-            var result = executor.tryExec(cmd, ctx);
-            if (result != null) {
-                return result;
+    @SneakyThrows
+    public AbstractCommand parse(NavigableStreamReader nsr) {
+        for (var parser : parsers) {
+            long mark = nsr.mark();
+            var cmd = parser.parse(nsr);
+            if (cmd == NO_COMMAND) {
+                nsr.rollback(mark);
+                continue;
             }
+            return cmd;
         }
-        return null;
+        return NO_COMMAND;
     }
 }

@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.query;
+package org.bambrikii.tiny.db.cmd;
 
 public interface AbstractExecutorContext {
 }

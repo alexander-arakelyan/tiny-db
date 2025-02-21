@@ -2,6 +2,7 @@ package org.bambrikii.tiny.db.query;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bambrikii.tiny.db.cmd.AbstractExecutorContext;
 
 @Getter
 @Setter
