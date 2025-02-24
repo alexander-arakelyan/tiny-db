@@ -26,6 +26,11 @@ public class ParserFunctions {
         return new SpacePredicate(new AnyWordPredicate(next));
     }
 
+    public static <C> ParserPredicate<String> word(Consumer<String> next) {
+        return new SpacePredicate(new AnyWordPredicate(assignString(next)));
+    }
+
+
     public static ParserPredicate<String> assignString(Consumer<String> next) {
         return (input, output) -> {
             next.accept(output);
@@ -63,5 +68,21 @@ public class ParserFunctions {
 
     public static ParserPredicate<String> order(ParserPredicate... next) {
         return new SpacePredicate(new AndPredicate(next));
+    }
+
+    public static ParserPredicate<String> any(ParserPredicate next) {
+        return new SpacePredicate((input, output) -> {
+            var mark = input.pos();
+            int count = 0;
+            while (next.test(input, output)) {
+                count++;
+            }
+            if (count > 0) {
+                return true;
+            }
+
+            input.rollback(mark);
+            return false;
+        });
     }
 }
