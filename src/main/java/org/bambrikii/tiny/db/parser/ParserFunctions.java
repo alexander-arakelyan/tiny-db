@@ -34,11 +34,23 @@ public class ParserFunctions {
     }
 
     public static ParserPredicate<String> or(ParserPredicate<String>... next) {
-
+        return (input, output) -> {
+            var mark = input.pos();
+            for (var next1 : next) {
+                if (next1.test(input, output)) {
+                    return true;
+                }
+            }
+            input.rollback(mark);
+            return false;
+        };
     }
 
-    public static ParserPredicate<String> number(Consumer<Integer> predicate) {
-
+    public static ParserPredicate<String> number(Consumer<Integer> onSuccess) {
+        return new NumberPredicate((input, output) -> {
+            onSuccess.accept(output);
+            return true;
+        });
     }
 
     public static ParserPredicate<String> unordered(ParserPredicate<String>... next) {
@@ -49,7 +61,7 @@ public class ParserFunctions {
         return new OptionalPredicate(next);
     }
 
-    public static ParserPredicate<String> comma(ParserPredicate<String> next) {
+    public static ParserPredicate<String> comma(ParserPredicate next) {
         return new SequencePredicate(",", next);
     }
 
@@ -58,12 +70,7 @@ public class ParserFunctions {
         return TRUE_PREDICATE;
     }
 
-    public static ParserPredicate<String> order(ParserPredicate<String>... next) {
+    public static ParserPredicate<String> order(ParserPredicate... next) {
         return new AndPredicate(next);
     }
-
-    //    public static ParserPredicate<String> assignString(Consumer<String> consumer) {
-//        consumer.accept("");
-//        return TRUE_PREDICATE;
-//    }
 }

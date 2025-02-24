@@ -4,9 +4,9 @@ import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 public class SequencePredicate implements ParserPredicate<String> {
     private final String s;
-    private final ParserPredicate<String> next;
+    private final ParserPredicate next;
 
-    public SequencePredicate(String s, ParserPredicate<String> next) {
+    public SequencePredicate(String s, ParserPredicate next) {
         this.s = s;
         this.next = next;
     }
@@ -26,7 +26,7 @@ public class SequencePredicate implements ParserPredicate<String> {
             return false;
         }
 
-        next.test(input, output);
+        next.test(input, true);
         return true;
     }
 }

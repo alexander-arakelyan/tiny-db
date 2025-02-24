@@ -24,18 +24,17 @@ public class AlterTableParser extends AbstractCommandParser {
                             var typeMark = typeInput.pos();
                             var precision = new AtomicInteger(0);
                             var scale = new AtomicInteger(0);
-                            var nullable = new AtomicBoolean();
-                            var unique = new AtomicBoolean();
+                            var nullable = new AtomicBoolean(false);
+                            var unique = new AtomicBoolean(false);
                             var typeRes = order(
                                     brackets(order(
                                             number(precision::set),
                                             optional(comma(number(scale::set)))
                                     )),
                                     unordered(
-                                            optional(nullable(assignTrue(nullable::set))),
-                                            optional(unique(assignTrue(unique::set)))
-                                    )
-                            ).test(typeInput, null);
+                                            optional(nullable(nullable::set)),
+                                            optional(unique(unique::set))
+                                    )).test(typeInput, null);
                             if (typeRes) {
                                 cmd.addColumn(col, type, precision.get(), scale.get(), nullable.get(), unique.get());
                             } else {
@@ -46,12 +45,10 @@ public class AlterTableParser extends AbstractCommandParser {
                         if (!res) {
                             colInput.rollback(colMark);
                         }
+                        return res;
                     }))),
                     drop(word(assignString(cmd::dropColumn)))
             ).test(input2, null);
-        })))
-                .test(input, null)
-                ? cmd
-                : NO_COMMAND;
+        }))).test(input, null) ? cmd : NO_COMMAND;
     }
 }

@@ -3,6 +3,8 @@ package org.bambrikii.tiny.db.parser;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
 import org.bambrikii.tiny.db.parser.predicates.SequencePredicate;
 
+import java.util.function.Consumer;
+
 import static org.bambrikii.tiny.db.parser.ParserFunctions.order;
 
 public class CommandParserFunctions {
@@ -25,18 +27,24 @@ public class CommandParserFunctions {
         return new SequencePredicate("drop", next);
     }
 
-    public static ParserPredicate<String> brackets(ParserPredicate<String> next) {
+    public static ParserPredicate<String> brackets(ParserPredicate next) {
         return order(
                 new SequencePredicate("(", next::test),
                 new SequencePredicate(")", ((input, output) -> true))
         );
     }
 
-    public static ParserPredicate<String> nullable(ParserPredicate<String> next) {
-        return new SequencePredicate("nullable", next);
+    public static ParserPredicate<String> nullable(Consumer<Boolean> onSuccess) {
+        return new SequencePredicate("nullable", (ParserPredicate<Boolean>) (input, output) -> {
+            onSuccess.accept(output);
+            return true;
+        });
     }
 
-    public static ParserPredicate<String> unique(ParserPredicate<String> next) {
-        return new SequencePredicate("unique", next);
+    public static ParserPredicate<String> unique(Consumer<Boolean> onSuccess) {
+        return new SequencePredicate("unique", (ParserPredicate<Boolean>) (input, output) -> {
+            onSuccess.accept(output);
+            return true;
+        });
     }
 }
