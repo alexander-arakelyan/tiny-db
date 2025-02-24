@@ -18,26 +18,35 @@ public class AlterTableParser extends AbstractCommandParser {
         return alter(table(word((input2, output) -> {
             cmd.setName(output);
             return unordered(
-                    add(brackets(word((colInput, col) -> word((typeInput, type) -> {
-                        var precision = new AtomicInteger(0);
-                        var scale = new AtomicInteger(0);
-                        var nullable = new AtomicBoolean();
-                        var unique = new AtomicBoolean();
-                        var res = order(
-                                brackets(order(
-                                        number(precision::set),
-                                        optional(comma(number(scale::set)))
-                                )),
-                                unordered(
-                                        optional(nullable(assignTrue(nullable::set))),
-                                        optional(unique(assignTrue(unique::set)))
-                                )
-                        ).test(typeInput, null);
-                        if (res) {
-                            cmd.addColumn(col, type, precision.get(), scale.get(), nullable.get(), unique.get());
+                    add(brackets(word((colInput, col) -> {
+                        var colMark = colInput.pos();
+                        var res = word((typeInput, type) -> {
+                            var typeMark = typeInput.pos();
+                            var precision = new AtomicInteger(0);
+                            var scale = new AtomicInteger(0);
+                            var nullable = new AtomicBoolean();
+                            var unique = new AtomicBoolean();
+                            var typeRes = order(
+                                    brackets(order(
+                                            number(precision::set),
+                                            optional(comma(number(scale::set)))
+                                    )),
+                                    unordered(
+                                            optional(nullable(assignTrue(nullable::set))),
+                                            optional(unique(assignTrue(unique::set)))
+                                    )
+                            ).test(typeInput, null);
+                            if (typeRes) {
+                                cmd.addColumn(col, type, precision.get(), scale.get(), nullable.get(), unique.get());
+                            } else {
+                                typeInput.rollback(typeMark);
+                            }
+                            return typeRes;
+                        }).test(colInput, col);
+                        if (!res) {
+                            colInput.rollback(colMark);
                         }
-                        return res;
-                    }).test(colInput, col)))),
+                    }))),
                     drop(word(assignString(cmd::dropColumn)))
             ).test(input2, null);
         })))
