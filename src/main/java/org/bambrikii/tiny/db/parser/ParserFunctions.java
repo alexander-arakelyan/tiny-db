@@ -23,7 +23,7 @@ public class ParserFunctions {
     };
 
     public static <C> ParserPredicate<String> word(ParserPredicate<String> next) {
-        return new AnyWordPredicate(next);
+        return new SpacePredicate(new AnyWordPredicate(next));
     }
 
     public static ParserPredicate<String> assignString(Consumer<String> next) {
@@ -34,7 +34,7 @@ public class ParserFunctions {
     }
 
     public static ParserPredicate<String> or(ParserPredicate<String>... next) {
-        return (input, output) -> {
+        return new SpacePredicate((input, output) -> {
             var mark = input.pos();
             for (var next1 : next) {
                 if (next1.test(input, output)) {
@@ -43,34 +43,25 @@ public class ParserFunctions {
             }
             input.rollback(mark);
             return false;
-        };
-    }
-
-    public static ParserPredicate<String> number(Consumer<Integer> onSuccess) {
-        return new NumberPredicate((input, output) -> {
-            onSuccess.accept(output);
-            return true;
         });
     }
 
+    public static ParserPredicate<String> number(Consumer<Integer> onSuccess) {
+        return new SpacePredicate(new NumberPredicate((input, output) -> {
+            onSuccess.accept(output);
+            return true;
+        }));
+    }
+
     public static ParserPredicate<String> unordered(ParserPredicate<String>... next) {
-        return new AnyOrderPredicate(next);
+        return new SpacePredicate(new AnyOrderPredicate(next));
     }
 
     public static ParserPredicate<String> optional(ParserPredicate<String> next) {
-        return new OptionalPredicate(next);
-    }
-
-    public static ParserPredicate<String> comma(ParserPredicate next) {
-        return new SequencePredicate(",", next);
-    }
-
-    public static ParserPredicate<String> assignTrue(Consumer<Boolean> consumer) {
-        consumer.accept(true);
-        return TRUE_PREDICATE;
+        return new SpacePredicate(new OptionalPredicate(next));
     }
 
     public static ParserPredicate<String> order(ParserPredicate... next) {
-        return new AndPredicate(next);
+        return new SpacePredicate(new AndPredicate(next));
     }
 }

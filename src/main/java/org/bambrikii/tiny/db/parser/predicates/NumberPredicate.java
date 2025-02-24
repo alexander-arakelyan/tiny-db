@@ -1,7 +1,6 @@
-package org.bambrikii.tiny.db.parser;
+package org.bambrikii.tiny.db.parser.predicates;
 
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
-import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
 
 public class NumberPredicate implements ParserPredicate<String> {
     private final ParserPredicate<Integer> next;

@@ -11,11 +11,17 @@ public class SpacePredicate implements ParserPredicate<String> {
 
     @Override
     public boolean test(ParserInputStream input, String output) {
+        var mark = input.pos();
         var ch = input.advance();
         while ((ch == ' ')) {
             ch = input.advance();
         }
-        next.test(input, output);
-        return true;
+        var res = next.test(input, output);
+        if (res) {
+            return true;
+        }
+
+        input.rollback(mark);
+        return false;
     }
 }
