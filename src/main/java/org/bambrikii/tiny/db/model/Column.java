@@ -8,6 +8,9 @@ import lombok.Setter;
 public class Column {
     private String name;
     private String type;
+    private int precision;
+    private int scale;
+    private int size;
     private boolean unique;
     private boolean nullable;
     private Reference reference;

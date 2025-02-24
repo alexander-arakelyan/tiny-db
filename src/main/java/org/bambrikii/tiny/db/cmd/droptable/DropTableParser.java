@@ -2,11 +2,11 @@ package org.bambrikii.tiny.db.cmd.droptable;
 
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.AbstractCommandParser;
-import org.bambrikii.tiny.db.cmd.createtable.NavigableStreamReader;
+import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 public class DropTableParser extends AbstractCommandParser {
     @Override
-    public AbstractCommand parse(NavigableStreamReader bis) {
+    public AbstractCommand parse(ParserInputStream bis) {
         return null;
     }
 }

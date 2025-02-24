@@ -3,7 +3,7 @@ package org.bambrikii.tiny.db.proc;
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.cmd.altertable.AlterTableParser;
 import org.bambrikii.tiny.db.cmd.createtable.CreateTableParser;
-import org.bambrikii.tiny.db.cmd.createtable.NavigableStreamReader;
+import org.bambrikii.tiny.db.cmd.NavigableStreamReader;
 import org.bambrikii.tiny.db.cmd.deleterows.DeleteRowsParser;
 import org.bambrikii.tiny.db.cmd.droptable.DropTableParser;
 import org.bambrikii.tiny.db.cmd.insertrows.InsertRowsParser;
