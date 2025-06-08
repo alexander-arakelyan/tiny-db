@@ -9,7 +9,6 @@ import org.bambrikii.tiny.db.parser.predicates.OptionalPredicate;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
 import org.bambrikii.tiny.db.parser.predicates.SpacesPredicate;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import static org.bambrikii.tiny.db.parser.CommandParserFunctions.comma;
@@ -83,38 +82,5 @@ public class ParserFunctions {
                 return count > 0;
             }
         });
-    }
-
-    public static ParserPredicate<String> oneOf(
-            List<String> options,
-            ParserPredicate<String> next,
-            Consumer<String> consumer
-    ) {
-        return new SpacePredicate((input, output) -> {
-            var mark = input.pos();
-            for (var str : options) {
-                if (w(str, (inp, out) -> {
-                    var res = next.test(input, str);
-                    if (res) {
-                        consumer.accept(str);
-                        return true;
-                    }
-                    inp.rollback(mark);
-                    return false;
-                }).test(input, output)) {
-                    return true;
-                }
-                input.rollback(mark);
-            }
-            return false;
-        })
-    }
-
-    public static SpacePredicate s(SequencePredicate w) {
-        return new SpacePredicate(w);
-    }
-
-    public static SequencePredicate w(String val, ParserPredicate<String> next) {
-        return new SequencePredicate(val, next);
     }
 }
