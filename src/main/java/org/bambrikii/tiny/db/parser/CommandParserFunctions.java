@@ -2,7 +2,10 @@ package org.bambrikii.tiny.db.parser;
 
 import org.bambrikii.tiny.db.cmd.AddColumnCommandable;
 import org.bambrikii.tiny.db.cmd.DropColumnCommandable;
+import org.bambrikii.tiny.db.cmd.FilterCommandable;
 import org.bambrikii.tiny.db.log.DbLogger;
+import org.bambrikii.tiny.db.model.Filter;
+import org.bambrikii.tiny.db.model.ComparisonOpEnum;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,6 +18,7 @@ import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.chars;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.comma;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.number;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.oneOfStrings;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.optional;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.spaces;
@@ -91,5 +95,21 @@ public class CommandParserFunctions {
 
     public static ParserPredicate dropCol(DropColumnCommandable cmd) {
         return drop(chars("column", word(TRUE_PREDICATE, cmd::dropCol)));
+    }
+
+    public static ParserPredicate cond(Consumer<Filter> consumer) {
+        var left = new AtomicReference<String>();
+        var op = new AtomicReference<ComparisonOpEnum>();
+        return word(oneOfStrings(
+                        ComparisonOpEnum.sqlRepresentations(),
+                        word(TRUE_PREDICATE, left::set),
+                        s -> op.set(ComparisonOpEnum.parse(s))
+                ),
+                s -> consumer.accept(new Filter(left.get(), op.get(), s))
+        );
+    }
+
+    public static ParserPredicate where(FilterCommandable cmd) {
+        return chars("where", cond(cmd::filter));
     }
 }

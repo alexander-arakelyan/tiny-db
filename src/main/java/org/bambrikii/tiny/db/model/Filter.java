@@ -11,6 +11,6 @@ import lombok.Setter;
 @Setter
 public class Filter {
     private String left;
-    private OperatorEnum op;
+    private ComparisonOpEnum op;
     private String right;
 }

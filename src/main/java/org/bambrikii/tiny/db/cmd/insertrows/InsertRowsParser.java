@@ -6,7 +6,7 @@ import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 import static org.bambrikii.tiny.db.cmd.none.NoCommand.NO_COMMAND;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.atLeastOnce;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.atLeastOnceCommaSeparated;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.chars;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.number;
@@ -21,9 +21,9 @@ public class InsertRowsParser extends AbstractCommandParser {
         var cmd = new InsertRowsCommand();
         return chars("insert", chars("into", word(
                         ordered(
-                                brackets(atLeastOnce(word(TRUE_PREDICATE, cmd::columnName))),
+                                brackets(atLeastOnceCommaSeparated(word(TRUE_PREDICATE, cmd::columnName))),
                                 chars("values",
-                                        brackets(atLeastOnce(or(
+                                        brackets(atLeastOnceCommaSeparated(or(
                                                 word(TRUE_PREDICATE, cmd::columnValue),
                                                 singleQuoted(word(TRUE_PREDICATE, cmd::columnValue)),
                                                 number(cmd::columnValue)

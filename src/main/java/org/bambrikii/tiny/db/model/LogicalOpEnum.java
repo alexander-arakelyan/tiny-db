@@ -7,22 +7,18 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
-public enum OperatorEnum {
-    EQ("="),
-    GT(">"),
-    GE(">="),
-    LT("<"),
-    LE("<="),
-    NE("<>");
+public enum LogicalOpEnum {
+    AND("and"),
+    OR("or");
 
     private final String sqlRepr;
 
-    OperatorEnum(String sqlRepr) {
+    LogicalOpEnum(String sqlRepr) {
         this.sqlRepr = sqlRepr;
     }
 
-    public static OperatorEnum parse(String repr) {
-        for (OperatorEnum op : values()) {
+    public static LogicalOpEnum parse(String repr) {
+        for (LogicalOpEnum op : values()) {
             if (Objects.equals(op.getSqlRepr(), repr)) {
                 return op;
             }

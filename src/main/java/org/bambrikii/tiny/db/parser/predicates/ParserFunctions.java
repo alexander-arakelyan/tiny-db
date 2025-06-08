@@ -60,7 +60,7 @@ public class ParserFunctions {
         return spaces(new AndPredicate(next));
     }
 
-    public static ParserPredicate atLeastOnce(ParserPredicate next) {
+    public static ParserPredicate atLeastOnceCommaSeparated(ParserPredicate next) {
         return spaces(new ParserPredicate() {
             @Override
             protected boolean doTest(ParserInputStream is) {
