@@ -1,0 +1,41 @@
+package org.bambrikii.tiny.db.model;
+
+import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@Getter
+public enum OperatorEnum {
+    EQ("="),
+    GT(">"),
+    GE(">="),
+    LT("<"),
+    LE("<="),
+    NE("<>");
+
+    private final String sqlRepr;
+
+    OperatorEnum(String sqlRepr) {
+        this.sqlRepr = sqlRepr;
+    }
+
+    public static OperatorEnum parse(String repr) {
+        for (OperatorEnum op : values()) {
+            if (Objects.equals(op.getSqlRepr(), repr)) {
+                return op;
+            }
+        }
+        return null;
+    }
+
+    public static List<String> sqlRepresentations() {
+        int len = values().length;
+        var res = new ArrayList<String>(len);
+        for (int i = 0; i < len; i++) {
+            res.add(values()[i].getSqlRepr());
+        }
+        return res;
+    }
+}

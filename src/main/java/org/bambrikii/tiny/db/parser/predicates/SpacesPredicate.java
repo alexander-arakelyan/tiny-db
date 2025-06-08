@@ -10,16 +10,12 @@ public class SpacesPredicate extends ParserPredicate {
     }
 
     @Override
-    protected boolean doTest(ParserInputStream input) {
-        byte ch = input.val();
+    protected boolean doTest(ParserInputStream is) {
+        byte ch = is.val();
         while ((ch == ' ')) {
-            input.next();
-            ch = input.val();
+            is.next();
+            ch = is.val();
         }
-        return next.test(input);
-    }
-
-    public static SpacesPredicate spaces(ParserPredicate next) {
-        return new SpacesPredicate(next);
+        return next.test(is);
     }
 }

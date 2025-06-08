@@ -10,10 +10,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import static org.bambrikii.tiny.db.parser.ParserFunctions.*;
-import static org.bambrikii.tiny.db.parser.ParserFunctions.optional;
-import static org.bambrikii.tiny.db.parser.predicates.SequencePredicate.chars;
-import static org.bambrikii.tiny.db.parser.predicates.SpacesPredicate.spaces;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.brackets;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.chars;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.comma;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.number;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.optional;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.spaces;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.unordered;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
 
 public class CommandParserFunctions {
     private CommandParserFunctions() {
@@ -40,13 +46,6 @@ public class CommandParserFunctions {
         return spaces(chars("drop", next));
     }
 
-    public static ParserPredicate brackets(ParserPredicate next) {
-        return ordered(
-                spaces(chars("(", next)),
-                spaces(chars(")", DEFAULT_BOOLEAN_CONSUMER))
-        );
-    }
-
     public static ParserPredicate nullable(Consumer<Boolean> onSuccess) {
         return spaces(chars("nullable", onSuccess));
     }
@@ -55,15 +54,7 @@ public class CommandParserFunctions {
         return spaces(chars("unique", onSuccess));
     }
 
-    public static ParserPredicate comma(ParserPredicate next) {
-        return spaces(chars(",", next));
-    }
-
-    public static ParserPredicate repeat(ParserPredicate next) {
-        return brackets(atLeastOnce(next));
-    }
-
-    public static ParserPredicate col(AddColumnCommandable cmd) {
+    public static ParserPredicate colDef(AddColumnCommandable cmd) {
         var precision = new AtomicInteger(0);
         var scale = new AtomicInteger(0);
         var nullable = new AtomicBoolean(false);
@@ -90,7 +81,15 @@ public class CommandParserFunctions {
         );
     }
 
+    public static ParserPredicate alterCol(AddColumnCommandable cmd) {
+        return spaces(chars("alter", chars("column", colDef(cmd))));
+    }
+
+    public static ParserPredicate addCol(AddColumnCommandable cmd) {
+        return spaces(chars("alter", chars("column", colDef(cmd))));
+    }
+
     public static ParserPredicate dropCol(DropColumnCommandable cmd) {
-        return drop(brackets(atLeastOnce(chars("column", word(TRUE_PREDICATE, cmd::dropCol)))));
+        return drop(chars("column", word(TRUE_PREDICATE, cmd::dropCol)));
     }
 }

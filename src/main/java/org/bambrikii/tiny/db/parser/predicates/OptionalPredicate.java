@@ -10,8 +10,8 @@ public class OptionalPredicate extends ParserPredicate {
     }
 
     @Override
-    public boolean doTest(ParserInputStream input) {
-        next.test(input);
+    public boolean doTest(ParserInputStream is) {
+        next.test(is);
         return true;
     }
 }

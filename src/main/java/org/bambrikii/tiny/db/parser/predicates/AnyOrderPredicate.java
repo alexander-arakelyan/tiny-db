@@ -14,7 +14,7 @@ public class AnyOrderPredicate extends ParserPredicate {
     }
 
     @Override
-    public boolean doTest(ParserInputStream input) {
+    public boolean doTest(ParserInputStream is) {
         var left = new LinkedList<>(next);
         var right = new LinkedList<ParserPredicate>();
         int count;
@@ -22,7 +22,7 @@ public class AnyOrderPredicate extends ParserPredicate {
             count = 0;
             while (!left.isEmpty()) {
                 var popped = left.pop();
-                if (popped.test(input)) {
+                if (popped.test(is)) {
                     count++;
                 } else {
                     right.push(popped);

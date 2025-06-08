@@ -7,30 +7,30 @@ import java.util.function.Consumer;
 
 public class NumberPredicate extends ParserPredicate {
     private final ParserPredicate next;
-    private final Consumer<Integer> onMatch;
+    private final Consumer<Integer> consumer;
 
-    public NumberPredicate(ParserPredicate next, Consumer<Integer> onMatch) {
+    public NumberPredicate(ParserPredicate next, Consumer<Integer> consumer) {
         this.next = next;
-        this.onMatch = onMatch;
+        this.consumer = consumer;
     }
 
     @Override
-    public boolean doTest(ParserInputStream input) {
-        DbLogger.log(this, input, next.toString());
-        var mark = input.pos();
-        var ch = input.val();
+    public boolean doTest(ParserInputStream is) {
+        DbLogger.log(this, is, next.toString());
+        var mark = is.pos();
+        var ch = is.val();
         int pos = 0;
         var val = 0;
         while (ch >= '0' && ch <= '9') {
             val = val * 10 + (ch - '0');
             pos++;
-            input.next();
-            ch = input.val();
+            is.next();
+            ch = is.val();
         }
-        if (pos == 0 || !next.test(input)) {
+        if (pos == 0 || !next.test(is)) {
             return false;
         }
-        onMatch.accept(val);
+        consumer.accept(val);
         return true;
     }
 }

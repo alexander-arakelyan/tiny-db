@@ -13,10 +13,10 @@ public class AndPredicate extends ParserPredicate {
     }
 
     @Override
-    public boolean doTest(ParserInputStream input) {
-        DbLogger.log(this, input, "" + next.length);
+    public boolean doTest(ParserInputStream is) {
+        DbLogger.log(this, is, "" + next.length);
         return Arrays
                 .stream(next)
-                .allMatch(next1 -> next1.test(input));
+                .allMatch(next2 -> next2.test(is));
     }
 }

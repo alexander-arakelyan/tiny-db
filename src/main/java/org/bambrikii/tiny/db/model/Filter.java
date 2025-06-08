@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.cmd;
+package org.bambrikii.tiny.db.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Filter1 {
+public class Filter {
     private String left;
-    private String operator;
+    private OperatorEnum op;
     private String right;
 }

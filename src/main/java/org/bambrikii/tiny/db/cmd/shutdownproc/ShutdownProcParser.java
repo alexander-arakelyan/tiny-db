@@ -5,8 +5,8 @@ import org.bambrikii.tiny.db.cmd.AbstractCommandParser;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 import static org.bambrikii.tiny.db.cmd.none.NoCommand.NO_COMMAND;
-import static org.bambrikii.tiny.db.parser.ParserFunctions.TRUE_PREDICATE;
-import static org.bambrikii.tiny.db.parser.predicates.SequencePredicate.chars;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.chars;
 
 public class ShutdownProcParser extends AbstractCommandParser {
     @Override
