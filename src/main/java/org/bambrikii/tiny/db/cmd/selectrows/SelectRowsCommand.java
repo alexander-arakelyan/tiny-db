@@ -1,5 +1,6 @@
 package org.bambrikii.tiny.db.cmd.selectrows;
 
+import lombok.ToString;
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.AbstractExecutorContext;
 import org.bambrikii.tiny.db.cmd.CommandResult;
@@ -9,6 +10,7 @@ import org.bambrikii.tiny.db.model.Filter;
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString
 public class SelectRowsCommand implements AbstractCommand, FilterCommandable {
     private final List<String> select = new ArrayList<>();
     private String table;
