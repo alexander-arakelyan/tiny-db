@@ -1,33 +1,49 @@
 package org.bambrikii.tiny.db.disk;
 
-import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.model.Table;
 import org.bambrikii.tiny.db.storage.AbstractStorage;
 
+import java.util.function.Predicate;
+
 public class DiskStorage implements AbstractStorage {
-    private final FileIO fileIO;
+    private final FileIO io;
 
     public DiskStorage() {
-        fileIO = new FileIO();
+        io = new FileIO();
+    }
+
+    private byte[] serialize(Object obj) {
+        return null;
+    }
+
+    private <T> T deserialize(Object b) {
+        return null;
     }
 
     @Override
-    public void insert(Table table, Row row) {
-        fileIO.append(table, row.getValues());
+    public void write(String key, Object obj) {
+        byte[] b = serialize(obj);
+        io.write(key, b);
     }
 
     @Override
-    public void update(Table table, Row row, String filter) {
-        fileIO.update(table, row, filter);
+    public <T> T read(String key) {
+        var b = io.read(key);
+        return deserialize(b);
     }
 
     @Override
-    public void delete(Table table, String filter) {
-        fileIO.markDeleted(table, filter);
+    public void append(String key, Object obj) {
+        byte[] b = serialize(obj);
+        io.append(key, b);
     }
 
     @Override
-    public void select(Table table, String filter) {
-        fileIO.filter(table, filter);
+    public void drop(String key) {
+        io.drop(key);
+    }
+
+    @Override
+    public void delete(String key, Predicate<Boolean> filter) {
+        io.delete(key, filter);
     }
 }

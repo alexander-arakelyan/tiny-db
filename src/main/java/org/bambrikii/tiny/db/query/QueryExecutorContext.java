@@ -6,7 +6,7 @@ import org.bambrikii.tiny.db.cmd.AbstractExecutorContext;
 
 @Getter
 @Setter
-public class QueryExecutorContext implements AbstractExecutorContext {
+public class QueryExecutorContext extends AbstractExecutorContext {
     private boolean shouldRun = true;
 
     public boolean shouldRun() {

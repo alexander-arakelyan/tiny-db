@@ -1,14 +1,15 @@
 package org.bambrikii.tiny.db.storage;
 
-import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.model.Table;
+import java.util.function.Predicate;
 
 public interface AbstractStorage {
-    void select(Table table, String rowId);
+    void write(String key, Object obj);
 
-    void insert(Table table, Row row);
+    <T> T read(String key);
 
-    void update(Table table, Row row, String filter);
+    void append(String key, Object obj);
 
-    void delete(Table table, String filter);
+    void drop(String key);
+
+    void delete(String key, Predicate<Boolean> filter);
 }

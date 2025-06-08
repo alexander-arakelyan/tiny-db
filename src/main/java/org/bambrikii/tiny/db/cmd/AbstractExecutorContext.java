@@ -1,4 +1,12 @@
 package org.bambrikii.tiny.db.cmd;
 
-public interface AbstractExecutorContext {
+import lombok.Getter;
+import lombok.Setter;
+import org.bambrikii.tiny.db.storage.StorageFacade;
+
+@Getter
+@Setter
+public abstract class AbstractExecutorContext {
+    private StorageFacade storage;
 }
+

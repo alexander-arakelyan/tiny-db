@@ -4,4 +4,5 @@ import org.bambrikii.tiny.db.cmd.CommandResult;
 
 public final class NoCommandResult extends CommandResult {
     public static final NoCommandResult NO_COMMAND_RESULT = new NoCommandResult();
+    public static final OkCommandResult OK_COMMAND_RESULT = new OkCommandResult();
 }

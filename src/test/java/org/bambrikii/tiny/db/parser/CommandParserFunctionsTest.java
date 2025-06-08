@@ -26,11 +26,7 @@ public class CommandParserFunctionsTest {
             var result = parser.parse(is);
 
             // then
-            var res2 = result.exec(ctx);
-
-            // then
             System.out.println(" " + result);
-            System.out.println(" " + res2);
         }
     }
 
@@ -47,11 +43,7 @@ public class CommandParserFunctionsTest {
             var result = parser.parse(is);
 
             // then
-            var res2 = result.exec(ctx);
-
-            // then
             System.out.println(" " + result);
-            System.out.println(" " + res2);
         }
     }
 
@@ -69,11 +61,7 @@ public class CommandParserFunctionsTest {
             var result = parser.parse(is);
 
             // then
-            var res2 = result.exec(ctx);
-
-            // then
             System.out.println(" " + result);
-            System.out.println(" " + res2);
         }
     }
 }

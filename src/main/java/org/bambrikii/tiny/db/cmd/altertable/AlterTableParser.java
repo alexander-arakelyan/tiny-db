@@ -1,10 +1,10 @@
 package org.bambrikii.tiny.db.cmd.altertable;
 
-import org.bambrikii.tiny.db.cmd.AbstractCommand;
+import org.bambrikii.tiny.db.cmd.AbstractMessage;
 import org.bambrikii.tiny.db.cmd.AbstractCommandParser;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
-import static org.bambrikii.tiny.db.cmd.none.NoCommand.NO_COMMAND;
+import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
 import static org.bambrikii.tiny.db.parser.CommandParserFunctions.addCol;
 import static org.bambrikii.tiny.db.parser.CommandParserFunctions.alter;
 import static org.bambrikii.tiny.db.parser.CommandParserFunctions.alterCol;
@@ -17,8 +17,8 @@ import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
 
 public class AlterTableParser extends AbstractCommandParser {
     @Override
-    public AbstractCommand parse(ParserInputStream input) {
-        var cmd = new AlterTableCommand();
+    public AbstractMessage parse(ParserInputStream input) {
+        var cmd = new AlterTableMessage();
         return alter(table(
                 word(brackets(atLeastOnceCommaSeparated(or(
                                 dropCol(cmd),
@@ -28,7 +28,7 @@ public class AlterTableParser extends AbstractCommandParser {
                         cmd::setName
                 ))).test(input)
                 ? cmd
-                : NO_COMMAND;
+                : NO_MESSAGE;
     }
 
 }

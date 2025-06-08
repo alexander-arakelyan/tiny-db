@@ -10,5 +10,5 @@ import java.util.List;
 @Setter
 public class Schema {
     private String name;
-    private final List<Table> tables = new ArrayList<>();
+    private final List<TableStruct> tableStructs = new ArrayList<>();
 }
