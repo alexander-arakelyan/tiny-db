@@ -13,13 +13,9 @@ public class AlterTableParser extends AbstractCommandParser {
     @Override
     public AbstractCommand parse(ParserInputStream input) {
         var cmd = new AlterTableCommand();
-        return alter(table(word((tableNameInput, tableName) -> {
-            cmd.setName(tableName);
-            return unordered(
-                    parseAddColumn(cmd),
-                    parseDropColumn(cmd)
-            ).test(tableNameInput, null);
-        }))).test(input, null) ? cmd : NO_COMMAND;
+        return alter(table(word(unordered(col(cmd), dropCol(cmd)), cmd::setName))).test(input)
+                ? cmd
+                : NO_COMMAND;
     }
 
 }

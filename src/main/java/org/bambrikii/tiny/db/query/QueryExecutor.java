@@ -21,7 +21,7 @@ public class QueryExecutor {
     @SneakyThrows
     public AbstractCommand parse(ParserInputStream nsr) {
         for (var parser : parsers) {
-            long mark = nsr.pos();
+            var mark = nsr.pos();
             var cmd = parser.parse(nsr);
             if (cmd == NO_COMMAND) {
                 nsr.rollback(mark);

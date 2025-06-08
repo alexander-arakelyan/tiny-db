@@ -1,13 +1,13 @@
 package org.bambrikii.tiny.db.cmd;
 
-public interface ParserInputStream {
-    long pos();
+public interface ParserInputStream extends AutoCloseable {
+    int pos();
 
-    void commit(long mark);
+    void rollback(int mark);
 
-    void rollback(long mark);
+    byte val();
 
-    byte advance();
+    void next();
 
-    String string(long start, long end);
+    byte[] bytes(int start, int end);
 }

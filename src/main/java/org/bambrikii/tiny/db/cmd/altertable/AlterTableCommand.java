@@ -26,7 +26,7 @@ public class AlterTableCommand implements AbstractCommand, AddColumnCommandable,
     }
 
     @Override
-    public void dropColumn(String name) {
+    public void dropCol(String name) {
         var col = new Column();
         col.setName(name);
         dropColumns.add(col);

@@ -6,23 +6,23 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AnyOrderPredicate implements ParserPredicate<String> {
-    private final List<ParserPredicate<String>> next;
+public class AnyOrderPredicate extends ParserPredicate {
+    private final List<ParserPredicate> next;
 
-    public AnyOrderPredicate(ParserPredicate<String>... next) {
+    public AnyOrderPredicate(ParserPredicate... next) {
         this.next = Arrays.asList(next);
     }
 
     @Override
-    public boolean test(ParserInputStream input, String output) {
+    public boolean doTest(ParserInputStream input) {
         var left = new LinkedList<>(next);
-        var right = new LinkedList<ParserPredicate<String>>();
+        var right = new LinkedList<ParserPredicate>();
         int count;
         do {
             count = 0;
             while (!left.isEmpty()) {
                 var popped = left.pop();
-                if (popped.test(input, null)) {
+                if (popped.test(input)) {
                     count++;
                 } else {
                     right.push(popped);

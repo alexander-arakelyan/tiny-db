@@ -1,89 +1,87 @@
 package org.bambrikii.tiny.db.parser;
 
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
-import org.bambrikii.tiny.db.parser.predicates.*;
+import org.bambrikii.tiny.db.parser.predicates.AndPredicate;
+import org.bambrikii.tiny.db.parser.predicates.AnyOrderPredicate;
+import org.bambrikii.tiny.db.parser.predicates.AnyWordPredicate;
+import org.bambrikii.tiny.db.parser.predicates.NumberPredicate;
+import org.bambrikii.tiny.db.parser.predicates.OptionalPredicate;
+import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
+import org.bambrikii.tiny.db.parser.predicates.SpacesPredicate;
 
 import java.util.List;
 import java.util.function.Consumer;
+
+import static org.bambrikii.tiny.db.parser.CommandParserFunctions.comma;
 
 public class ParserFunctions {
     private ParserFunctions() {
     }
 
-    public static final ParserPredicate<String> TRUE_PREDICATE = new ParserPredicate<>() {
+    public static final ParserPredicate TRUE_PREDICATE = new ParserPredicate() {
         @Override
-        public boolean test(ParserInputStream input, String output) {
+        protected boolean doTest(ParserInputStream input) {
             return true;
         }
     };
-    public static final ParserPredicate<String> FALSE_PREDICATE = new ParserPredicate<String>() {
+
+    public static final ParserPredicate FALSE_PREDICATE = new ParserPredicate() {
         @Override
-        public boolean test(ParserInputStream input, String output) {
+        protected boolean doTest(ParserInputStream input) {
             return false;
         }
     };
 
-    public static <C> ParserPredicate<String> word(ParserPredicate<String> next) {
-        return new SpacePredicate(new AnyWordPredicate(next));
+    public static final Consumer<Boolean> DEFAULT_BOOLEAN_CONSUMER = bool -> {
+    };
+
+    public static <C> ParserPredicate word(ParserPredicate next, Consumer<String> onMatch) {
+        return new SpacesPredicate(new AnyWordPredicate(next, onMatch));
     }
 
-    public static <C> ParserPredicate<String> word(Consumer<String> next) {
-        return new SpacePredicate(new AnyWordPredicate(assignString(next)));
-    }
-
-
-    public static ParserPredicate<String> assignString(Consumer<String> next) {
-        return (input, output) -> {
-            next.accept(output);
-            return true;
-        };
-    }
-
-    public static ParserPredicate<String> or(ParserPredicate<String>... next) {
-        return new SpacePredicate((input, output) -> {
-            var mark = input.pos();
-            for (var next1 : next) {
-                if (next1.test(input, output)) {
-                    return true;
+    public static ParserPredicate or(ParserPredicate... next) {
+        return new SpacesPredicate(new ParserPredicate() {
+            @Override
+            protected boolean doTest(ParserInputStream input) {
+                for (var next0 : next) {
+                    if (next0.test(input)) {
+                        return true;
+                    }
                 }
+                return false;
             }
-            input.rollback(mark);
-            return false;
         });
     }
 
-    public static ParserPredicate<String> number(Consumer<Integer> onSuccess) {
-        return new SpacePredicate(new NumberPredicate((input, output) -> {
-            onSuccess.accept(output);
-            return true;
-        }));
+    public static ParserPredicate number(Consumer<Integer> onSuccess) {
+        return new SpacesPredicate(new NumberPredicate(TRUE_PREDICATE, onSuccess));
     }
 
-    public static ParserPredicate<String> unordered(ParserPredicate<String>... next) {
-        return new SpacePredicate(new AnyOrderPredicate(next));
+    public static ParserPredicate unordered(ParserPredicate... next) {
+        return new SpacesPredicate(new AnyOrderPredicate(next));
     }
 
-    public static ParserPredicate<String> optional(ParserPredicate<String> next) {
-        return new SpacePredicate(new OptionalPredicate(next));
+    public static ParserPredicate optional(ParserPredicate next) {
+        return new SpacesPredicate(new OptionalPredicate(next));
     }
 
-    public static ParserPredicate<String> order(ParserPredicate... next) {
-        return new SpacePredicate(new AndPredicate(next));
+    public static ParserPredicate ordered(ParserPredicate... next) {
+        return new SpacesPredicate(new AndPredicate(next));
     }
 
-    public static ParserPredicate<String> any(ParserPredicate next) {
-        return new SpacePredicate((input, output) -> {
-            var mark = input.pos();
-            int count = 0;
-            while (next.test(input, output)) {
-                count++;
+    public static ParserPredicate atLeastOnce(ParserPredicate next) {
+        return new SpacesPredicate(new ParserPredicate() {
+            @Override
+            protected boolean doTest(ParserInputStream input) {
+                if (!next.test(input)) {
+                    return false;
+                }
+                int count = 0;
+                do {
+                    count++;
+                } while (comma(next).test(input));
+                return count > 0;
             }
-            if (count > 0) {
-                return true;
-            }
-
-            input.rollback(mark);
-            return false;
         });
     }
 

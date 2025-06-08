@@ -2,16 +2,16 @@ package org.bambrikii.tiny.db.parser.predicates;
 
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
-public class OptionalPredicate implements ParserPredicate<String> {
-    private final ParserPredicate<String> next;
+public class OptionalPredicate extends ParserPredicate {
+    private final ParserPredicate next;
 
-    public OptionalPredicate(ParserPredicate<String> next) {
+    public OptionalPredicate(ParserPredicate next) {
         this.next = next;
     }
 
     @Override
-    public boolean test(ParserInputStream input, String output) {
-        next.test(input, output);
+    public boolean doTest(ParserInputStream input) {
+        next.test(input);
         return true;
     }
 }

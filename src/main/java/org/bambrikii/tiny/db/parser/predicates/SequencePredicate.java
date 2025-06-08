@@ -1,32 +1,47 @@
 package org.bambrikii.tiny.db.parser.predicates;
 
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
+import org.bambrikii.tiny.db.log.DbLogger;
 
-public class SequencePredicate implements ParserPredicate<String> {
+import java.util.function.Consumer;
+
+import static org.bambrikii.tiny.db.parser.ParserFunctions.DEFAULT_BOOLEAN_CONSUMER;
+import static org.bambrikii.tiny.db.parser.ParserFunctions.TRUE_PREDICATE;
+
+public class SequencePredicate extends ParserPredicate {
     private final String s;
     private final ParserPredicate next;
+    private final Consumer<Boolean> onMatch;
 
     public SequencePredicate(String s, ParserPredicate next) {
+        this(s, next, DEFAULT_BOOLEAN_CONSUMER);
+    }
+
+    public SequencePredicate(String s, ParserPredicate next, Consumer<Boolean> onMatch) {
         this.s = s;
         this.next = next;
+        this.onMatch = onMatch;
     }
 
     @Override
-    public boolean test(ParserInputStream input, String output) {
-        var mark1 = input.pos();
-        var ch = input.advance();
+    public boolean doTest(ParserInputStream input) {
+        DbLogger.log(this, input, s);
+        var ch = input.val();
         int pos = 0;
         int len = s.length();
         while ((pos < len && ch == s.charAt(pos))) {
-            ch = input.advance();
+            input.next();
+            ch = input.val();
             pos++;
         }
-        if (len != pos) {
-            input.rollback(mark1);
-            return false;
-        }
+        return len == pos && next.test(input);
+    }
 
-        next.test(input, true);
-        return true;
+    public static SequencePredicate chars(String str, ParserPredicate next) {
+        return new SequencePredicate(str, next);
+    }
+
+    public static SequencePredicate chars(String str, Consumer<Boolean> onMatch) {
+        return new SequencePredicate(str, TRUE_PREDICATE, onMatch);
     }
 }
