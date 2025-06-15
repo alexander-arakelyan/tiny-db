@@ -1,7 +1,12 @@
 package org.bambrikii.tiny.db.disk;
 
+import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.storage.AbstractStorage;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.function.Predicate;
 
 public class DiskStorage implements AbstractStorage {
@@ -11,12 +16,23 @@ public class DiskStorage implements AbstractStorage {
         io = new FileIO();
     }
 
+    @SneakyThrows
     private byte[] serialize(Object obj) {
-        return null;
+        try (var baos = new ByteArrayOutputStream();
+             var oos = new ObjectOutputStream(baos)
+        ) {
+            oos.writeObject(obj);
+            return baos.toByteArray();
+        }
     }
 
-    private <T> T deserialize(Object b) {
-        return null;
+    @SneakyThrows
+    private <T> T deserialize(byte[] bytes) {
+        try (var bais = new ByteArrayInputStream(bytes);
+             var ois = new ObjectInputStream(bais)
+        ) {
+            return (T) ois.readObject();
+        }
     }
 
     @Override

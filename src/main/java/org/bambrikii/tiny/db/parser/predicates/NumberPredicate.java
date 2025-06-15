@@ -5,6 +5,8 @@ import org.bambrikii.tiny.db.log.DbLogger;
 
 import java.util.function.Consumer;
 
+import static org.bambrikii.tiny.db.parser.predicates.CharacterUtils.isDigit;
+
 public class NumberPredicate extends ParserPredicate {
     private final ParserPredicate next;
     private final Consumer<Integer> consumer;
@@ -17,11 +19,10 @@ public class NumberPredicate extends ParserPredicate {
     @Override
     public boolean doTest(ParserInputStream is) {
         DbLogger.log(this, is, next.toString());
-        var mark = is.pos();
         var ch = is.val();
         int pos = 0;
         var val = 0;
-        while (ch >= '0' && ch <= '9') {
+        while (isDigit(ch)) {
             val = val * 10 + (ch - '0');
             pos++;
             is.next();

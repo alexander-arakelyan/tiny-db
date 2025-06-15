@@ -4,6 +4,7 @@ import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ParserFunctions {
     private ParserFunctions() {
@@ -25,9 +26,12 @@ public class ParserFunctions {
 
     public static final Consumer<Boolean> DEFAULT_BOOLEAN_CONSUMER = bool -> {
     };
+    public static final Consumer<String> DEFAULT_STRING_CONSUMER = str -> {
+    };
+    public static final Function<Consumer<Boolean>, Consumer<String>> DEFAULT_STRING_TO_BOOLEAN_CONSUMER = booleanConsumer -> s -> booleanConsumer.accept(true);
 
     public static <C> ParserPredicate word(ParserPredicate next, Consumer<String> consumer) {
-        return spaces(new AnyWordPredicate(next, consumer));
+        return spaces(new WordPredicate(next, consumer));
     }
 
     public static ParserPredicate or(ParserPredicate... next) {
@@ -40,6 +44,23 @@ public class ParserFunctions {
                     }
                 }
                 return false;
+            }
+        });
+    }
+
+    public static ParserPredicate times(ParserPredicate next) {
+        return times(0, Integer.MAX_VALUE, next);
+    }
+
+    public static ParserPredicate times(int min, int max, ParserPredicate next) {
+        return spaces(new ParserPredicate() {
+            @Override
+            protected boolean doTest(ParserInputStream is) {
+                int n = 0;
+                while (next.test(is)) {
+                    n++;
+                }
+                return n >= min && n <= max;
             }
         });
     }
@@ -82,11 +103,15 @@ public class ParserFunctions {
     }
 
     public static ParserPredicate chars(String str, ParserPredicate next) {
-        return spaces(new CharsPredicate(str, next));
+        return chars(str, next, DEFAULT_STRING_CONSUMER);
     }
 
-    public static ParserPredicate chars(String str, Consumer<Boolean> onMatch) {
-        return spaces(new CharsPredicate(str, TRUE_PREDICATE, onMatch));
+    public static ParserPredicate chars(String str, Consumer<String> consumer) {
+        return chars(str, TRUE_PREDICATE, consumer);
+    }
+
+    public static ParserPredicate chars(String str, ParserPredicate next, Consumer<String> consumer) {
+        return spaces(new CharsPredicate(str, next, consumer));
     }
 
     public static SpacesPredicate spaces(ParserPredicate next) {
@@ -96,14 +121,14 @@ public class ParserFunctions {
     public static ParserPredicate brackets(ParserPredicate next) {
         return ordered(
                 spaces(chars("(", next)),
-                spaces(chars(")", DEFAULT_BOOLEAN_CONSUMER))
+                spaces(chars(")", DEFAULT_STRING_CONSUMER))
         );
     }
 
     public static ParserPredicate singleQuoted(ParserPredicate next) {
         return ordered(
                 spaces(chars("'", next)),
-                spaces(chars("'", DEFAULT_BOOLEAN_CONSUMER))
+                spaces(chars("'", DEFAULT_STRING_CONSUMER))
         );
     }
 

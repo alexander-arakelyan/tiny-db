@@ -5,18 +5,19 @@ import org.bambrikii.tiny.db.log.DbLogger;
 
 import java.util.function.Consumer;
 
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.DEFAULT_BOOLEAN_CONSUMER;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.DEFAULT_STRING_CONSUMER;
 
 public class CharsPredicate extends ParserPredicate {
     private final String s;
     private final ParserPredicate next;
-    private final Consumer<Boolean> consumer;
+    private final Consumer<String> consumer;
 
     public CharsPredicate(String s, ParserPredicate next) {
-        this(s, next, DEFAULT_BOOLEAN_CONSUMER);
+        this(s, next, DEFAULT_STRING_CONSUMER);
     }
 
-    public CharsPredicate(String s, ParserPredicate next, Consumer<Boolean> consumer) {
+    public CharsPredicate(String s, ParserPredicate next, Consumer<String> consumer) {
         this.s = s;
         this.next = next;
         this.consumer = consumer;
@@ -25,6 +26,7 @@ public class CharsPredicate extends ParserPredicate {
     @Override
     public boolean doTest(ParserInputStream is) {
         DbLogger.log(this, is, s);
+        var mark1 = is.pos();
         var ch = is.val();
         int pos = 0;
         int len = s.length();
@@ -33,6 +35,14 @@ public class CharsPredicate extends ParserPredicate {
             ch = is.val();
             pos++;
         }
-        return len == pos && next.test(is);
+        if (len != pos) {
+            return false;
+        }
+        var mark2 = is.pos();
+        if (!next.test(is)) {
+            return false;
+        }
+        consumer.accept(new String(is.bytes(mark1, mark2), UTF_8));
+        return true;
     }
 }

@@ -15,7 +15,7 @@ public class AlterTable extends AbstractCommand<AlterTableMessage, QueryExecutor
         var key = cmd.getName();
 
         var struct = new TableStruct();
-        struct.setTable(cmd.getName());
+        struct.setTable(key);
         struct.getColumns().addAll(cmd.getAddColumns());
         cmd.getDropColumns()
                 .forEach(col -> struct.getColumns()

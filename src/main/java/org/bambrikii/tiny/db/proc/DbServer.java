@@ -1,10 +1,10 @@
 package org.bambrikii.tiny.db.proc;
 
 import lombok.SneakyThrows;
-import org.bambrikii.tiny.db.cmd.AbstractMessage;
-import org.bambrikii.tiny.db.cmd.AbstractCommandParser;
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
+import org.bambrikii.tiny.db.cmd.AbstractCommandParser;
 import org.bambrikii.tiny.db.cmd.AbstractExecutorContext;
+import org.bambrikii.tiny.db.cmd.AbstractMessage;
 import org.bambrikii.tiny.db.cmd.CommandResult;
 import org.bambrikii.tiny.db.cmd.CommandStack;
 import org.bambrikii.tiny.db.cmd.NavigableStreamReader;
@@ -24,9 +24,10 @@ import org.bambrikii.tiny.db.cmd.shutdownproc.ShutdownProc;
 import org.bambrikii.tiny.db.cmd.shutdownproc.ShutdownProcParser;
 import org.bambrikii.tiny.db.cmd.updaterows.UpdateRows;
 import org.bambrikii.tiny.db.cmd.updaterows.UpdateRowsParser;
+import org.bambrikii.tiny.db.disk.DiskStorage;
+import org.bambrikii.tiny.db.mem.MemStorage;
 import org.bambrikii.tiny.db.query.CommandParserFacade;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
-import org.bambrikii.tiny.db.storage.StorageFacade;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -38,8 +39,9 @@ public class DbServer {
     private CommandParserFacade parser;
     private QueryExecutorContext ctx;
     private DbServerConfig config;
-    private StorageFacade storage;
     private CommandExecutorFacade executor;
+    private DiskStorage diskStorage;
+    private MemStorage memStorage;
 
     public static void main(String[] args) {
         var ps = new DbServer();
@@ -51,8 +53,10 @@ public class DbServer {
     void configure(DbServerConfig config) {
         this.config = config;
 
-        this.ctx = new QueryExecutorContext();
-        this.ctx.setStorage(storage);
+        this.ctx = new QueryExecutorContext(
+                diskStorage,
+                memStorage
+        );
         this.parser = new CommandParserFacade();
         this.executor = new CommandExecutorFacade(ctx);
 

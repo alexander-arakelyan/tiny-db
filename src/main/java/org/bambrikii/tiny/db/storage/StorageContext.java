@@ -1,14 +1,16 @@
 package org.bambrikii.tiny.db.storage;
 
+import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.disk.DiskStorage;
 import org.bambrikii.tiny.db.mem.MemStorage;
 
 import java.util.Map;
 import java.util.function.Predicate;
 
-public class StorageFacade {
-    private DiskStorage diskStorage;
-    private MemStorage memStorage;
+@RequiredArgsConstructor
+public class StorageContext {
+    private final DiskStorage diskStorage;
+    private final MemStorage memStorage;
 
     public void write(String key, Object obj) {
         diskStorage.write(key, obj);
@@ -28,5 +30,10 @@ public class StorageFacade {
     public void delete(String key, Predicate<Boolean> filter) {
         diskStorage.delete(key, filter);
         memStorage.delete(key, filter);
+    }
+
+    public void read(String key) {
+        diskStorage.read(key);
+        memStorage.read(key);
     }
 }

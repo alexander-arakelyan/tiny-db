@@ -3,13 +3,18 @@ package org.bambrikii.tiny.db.disk;
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.model.Filter;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Predicate;
 
 public class FileIO {
-    public void append(String tableStruct, byte[] data) {
-
+    @SneakyThrows
+    public void append(String key, byte[] data) {
+        try (var os = new FileOutputStream(key, true)) {
+            os.write(data);
+        }
     }
 
     private static String buildPartName(Filter filter1) {
@@ -18,12 +23,20 @@ public class FileIO {
                 : filter1.getLeft() + filter1.getOp().name() + filter1.getRight();
     }
 
+    @SneakyThrows
     public void write(String key, byte[] obj) {
-
+        try (var os = new FileOutputStream(key)) {
+            os.write(obj);
+        }
     }
 
+    @SneakyThrows
     public byte[] read(String key) {
-        return null;
+        var bytes = new byte[1024];
+        try (var is = new FileInputStream(key)) {
+            is.read(bytes);
+        }
+        return bytes;
     }
 
     @SneakyThrows

@@ -1,12 +1,17 @@
 package org.bambrikii.tiny.db.cmd;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.bambrikii.tiny.db.storage.StorageFacade;
+import lombok.RequiredArgsConstructor;
+import org.bambrikii.tiny.db.disk.DiskStorage;
+import org.bambrikii.tiny.db.mem.MemStorage;
+import org.bambrikii.tiny.db.storage.StorageContext;
 
-@Getter
-@Setter
+@RequiredArgsConstructor
 public abstract class AbstractExecutorContext {
-    private StorageFacade storage;
+    private final DiskStorage diskStorage;
+    private final MemStorage memStorage;
+
+    public StorageContext getStorage() {
+        return new StorageContext(diskStorage, memStorage);
+    }
 }
 
