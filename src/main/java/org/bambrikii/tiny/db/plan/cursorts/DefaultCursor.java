@@ -18,7 +18,6 @@ public class DefaultCursor extends org.bambrikii.tiny.db.plan.cursorts.Scrollabl
     private final List<Join> tablesSorted;
     private final Map<String, List<ExecutionFilter>> filtersByAlias;
     private Scrollable it;
-    private String alias;
 
 
     @Override
@@ -27,7 +26,6 @@ public class DefaultCursor extends org.bambrikii.tiny.db.plan.cursorts.Scrollabl
 
         this.it = IteratorFactory.scan(ctx, tablesSorted, filtersByAlias, 0, lr);
         var t = tablesSorted.get(0);
-        this.alias = t.getAlias();
         it.open();
     }
 

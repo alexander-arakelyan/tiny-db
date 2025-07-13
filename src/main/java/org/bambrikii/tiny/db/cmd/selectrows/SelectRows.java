@@ -19,7 +19,7 @@ public class SelectRows extends AbstractCommand<SelectRowsMessage, QueryExecutor
         for (var col : columns) {
             sb.append(col).append(",").append(System.lineSeparator());
         }
-        try (var it = planBuilder.iterate(tables, filters)) {
+        try (var it = planBuilder.execute(tables, filters)) {
             Row row;
             while ((row = it.next()) != null) {
                 sb.append(row.getRowId());

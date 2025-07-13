@@ -3,8 +3,8 @@ package org.bambrikii.tiny.db.storage;
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
-import org.bambrikii.tiny.db.storage.disk.TableScan;
 import org.bambrikii.tiny.db.storage.mem.MemIO;
+import org.bambrikii.tiny.db.storage.tables.RelTableScanIO;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -46,10 +46,12 @@ public class StorageContext {
     }
 
     public Scrollable open(String table) {
-        if (mem.read(table)) {
-
+        Scrollable read = mem.read(table);
+        if (read != null) {
+            return read;
         }
 
-        return new TableScan(disk, table);
+        return new RelTableScanIO(disk, table);
     }
+}
 

@@ -12,7 +12,7 @@ public class CursorFactory {
 
     }
 
-    public static Scrollable createCursor(
+    public static Scrollable create(
             StorageContext ctx,
             List<Join> tablesSorted,
             Map<String, List<ExecutionFilter>> filtersByAlias

@@ -26,7 +26,7 @@ public class ExecutionPlanBuilder {
         this.ctx = ctx;
     }
 
-    public Scrollable iterate(
+    public Scrollable execute(
             List<Join> tables,
             List<Filter> filters
     ) {
@@ -38,10 +38,10 @@ public class ExecutionPlanBuilder {
             var a = ts.getAlias();
             var fs = filtersByAlias.get(a);
         }
-        return CursorFactory.createCursor(ctx, tablesSorted, filtersByAlias);
+        return CursorFactory.create(ctx, tablesSorted, filtersByAlias);
     }
 
-    private HashMap<String, List<ExecutionFilter>> groupFiltersByAlias(List<Filter> filters) {
+    private Map<String, List<ExecutionFilter>> groupFiltersByAlias(List<Filter> filters) {
         var map = new HashMap<String, List<ExecutionFilter>>();
         for (var f : filters) {
             addFilter(map, f.getL(), f);

@@ -8,7 +8,7 @@ public class MemIO {
     private final Map<String, Object> store = new HashMap<>();
 
     public <T> T read(String key) {
-        return (T) key;
+        return (T) store.get(key);
     }
 
     public void append(String key, Object obj) {
