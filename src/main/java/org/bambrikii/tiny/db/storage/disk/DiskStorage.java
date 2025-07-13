@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.disk;
+package org.bambrikii.tiny.db.storage.disk;
 
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.storage.AbstractStorage;

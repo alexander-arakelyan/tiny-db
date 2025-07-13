@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.bambrikii.tiny.db.model.select.ColumnRef;
 
 @ToString
 @NoArgsConstructor
@@ -12,7 +13,9 @@ import lombok.ToString;
 @Getter
 @Setter
 public class Filter {
-    private String left;
+    private ColumnRef l;
+    private Object lVal;
     private ComparisonOpEnum op;
-    private String right;
+    private ColumnRef r;
+    private Object rVal;
 }

@@ -7,6 +7,7 @@ import org.bambrikii.tiny.db.cmd.FilterCommandable;
 import org.bambrikii.tiny.db.model.Filter;
 import org.bambrikii.tiny.db.model.Join;
 import org.bambrikii.tiny.db.model.JoinTypeEnum;
+import org.bambrikii.tiny.db.model.select.ColumnRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +15,11 @@ import java.util.List;
 @Getter
 @ToString
 public class SelectRowsMessage implements AbstractMessage, FilterCommandable {
-    private final List<String> columns = new ArrayList<>();
+    private final List<ColumnRef> columns = new ArrayList<>();
     private final List<Join> tables = new ArrayList<>();
     private final List<Filter> filters = new ArrayList<>();
 
-    public void column(String col) {
+    public void column(ColumnRef col) {
         columns.add(col);
     }
 

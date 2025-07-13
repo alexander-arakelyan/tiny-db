@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.mem;
+package org.bambrikii.tiny.db.storage.mem;
 
 import java.util.HashMap;
 import java.util.Map;

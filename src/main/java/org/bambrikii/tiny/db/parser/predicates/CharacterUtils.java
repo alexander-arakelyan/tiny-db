@@ -1,6 +1,6 @@
 package org.bambrikii.tiny.db.parser.predicates;
 
-class CharacterUtils {
+public class CharacterUtils {
     private CharacterUtils() {
     }
 

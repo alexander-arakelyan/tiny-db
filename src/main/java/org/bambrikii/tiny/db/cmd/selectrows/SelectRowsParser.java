@@ -7,10 +7,10 @@ import org.bambrikii.tiny.db.cmd.ParserInputStream;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
-import static org.bambrikii.tiny.db.parser.CommandParserFunctions.from;
-import static org.bambrikii.tiny.db.parser.CommandParserFunctions.joins;
-import static org.bambrikii.tiny.db.parser.CommandParserFunctions.select;
-import static org.bambrikii.tiny.db.parser.CommandParserFunctions.where;
+import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.from;
+import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.joins;
+import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.select;
+import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.where;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
 
 public class SelectRowsParser extends AbstractCommandParser {

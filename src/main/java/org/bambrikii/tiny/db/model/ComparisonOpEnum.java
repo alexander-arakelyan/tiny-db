@@ -13,7 +13,8 @@ public enum ComparisonOpEnum {
     GE(">="),
     LT("<"),
     LE("<="),
-    NE("<>");
+    NE("<>"),
+    IN("in");
 
     private final String sqlRepr;
 

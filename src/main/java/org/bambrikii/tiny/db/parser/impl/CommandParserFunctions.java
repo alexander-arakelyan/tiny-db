@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.parser;
+package org.bambrikii.tiny.db.parser.impl;
 
 import org.bambrikii.tiny.db.cmd.AddColumnCommandable;
 import org.bambrikii.tiny.db.cmd.DropColumnCommandable;
@@ -7,7 +7,7 @@ import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsMessage;
 import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.ComparisonOpEnum;
 import org.bambrikii.tiny.db.model.Filter;
-import org.bambrikii.tiny.db.parser.predicates.ColumnReferencePredicate;
+import org.bambrikii.tiny.db.model.select.ColumnRef;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
 
 import java.util.List;
@@ -109,7 +109,7 @@ public class CommandParserFunctions {
     }
 
     public static ParserPredicate filter(ParserPredicate next, Consumer<Filter> consumer) {
-        var left = new AtomicReference<String>();
+        var left = new AtomicReference<ColumnRef>();
         var op = new AtomicReference<ComparisonOpEnum>();
         return colRef(oneOfStrings(
                         ComparisonOpEnum.sqlRepresentations(),
@@ -125,8 +125,15 @@ public class CommandParserFunctions {
     }
 
 
-    public static <C> ParserPredicate colRef(ParserPredicate next, Consumer<String> consumer) {
-        return spaces(new ColumnReferencePredicate(next, consumer));
+    public static <C> ParserPredicate colRef(ParserPredicate next, Consumer<ColumnRef> consumer) {
+        var colRef = new AtomicReference<String>();
+        return spaces(
+                word(chars(".",
+                                word(next, colRef::set)
+                        ),
+                        s -> consumer.accept(new ColumnRef(colRef.get(), s))
+                )
+        );
     }
 
     public static <C> ParserPredicate select(SelectRowsMessage cmd) {

@@ -1,8 +1,11 @@
 package org.bambrikii.tiny.db.storage;
 
 import lombok.RequiredArgsConstructor;
-import org.bambrikii.tiny.db.disk.DiskStorage;
-import org.bambrikii.tiny.db.mem.MemStorage;
+import org.bambrikii.tiny.db.model.TableStruct;
+import org.bambrikii.tiny.db.plan.iterators.Scrollable;
+import org.bambrikii.tiny.db.storage.disk.DiskStorage;
+import org.bambrikii.tiny.db.storage.mem.MemStorage;
+import org.bambrikii.tiny.db.storage.tables.RelTableIO;
 
 import java.util.Map;
 import java.util.function.Predicate;
@@ -35,5 +38,13 @@ public class StorageContext {
     public void read(String key) {
         diskStorage.read(key);
         memStorage.read(key);
+    }
+
+    public Scrollable open(String table) {
+        return diskStorage.read(table);
+    }
+
+    public TableStruct readStruct(Object tableFileRef) {
+        return null;
     }
 }

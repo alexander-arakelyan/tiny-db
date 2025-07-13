@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.disk;
+package org.bambrikii.tiny.db.storage.disk;
 
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.model.Filter;
@@ -20,7 +20,7 @@ public class FileIO {
     private static String buildPartName(Filter filter1) {
         return filter1 == null
                 ? "default"
-                : filter1.getLeft() + filter1.getOp().name() + filter1.getRight();
+                : filter1.getL() + filter1.getOp().name() + filter1.getR();
     }
 
     @SneakyThrows

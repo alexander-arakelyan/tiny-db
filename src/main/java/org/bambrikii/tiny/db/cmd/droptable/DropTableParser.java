@@ -5,8 +5,8 @@ import org.bambrikii.tiny.db.cmd.AbstractCommandParser;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
-import static org.bambrikii.tiny.db.parser.CommandParserFunctions.drop;
-import static org.bambrikii.tiny.db.parser.CommandParserFunctions.table;
+import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.drop;
+import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.table;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
 

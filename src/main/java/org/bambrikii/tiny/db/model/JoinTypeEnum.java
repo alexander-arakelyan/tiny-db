@@ -8,11 +8,13 @@ import java.util.Objects;
 
 @Getter
 public enum JoinTypeEnum {
-    LEFT("left"), RIGHT("right"), CROSS("cross"), FULL("full");
+    LEFT("left", 0), RIGHT("right", 1), CROSS("cross", 2), FULL("full", 3);
     private final String sqlRepr;
+    private final int priority;
 
-    JoinTypeEnum(String sqlRepr) {
+    JoinTypeEnum(String sqlRepr, int priority) {
         this.sqlRepr = sqlRepr;
+        this.priority = priority;
     }
 
     public static JoinTypeEnum parse(String repr) {
