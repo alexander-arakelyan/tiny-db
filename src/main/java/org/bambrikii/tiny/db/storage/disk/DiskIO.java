@@ -3,13 +3,19 @@ package org.bambrikii.tiny.db.storage.disk;
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.model.Filter;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Predicate;
 
-public class FileIO {
+public class DiskIO {
+
     @SneakyThrows
     public void append(String key, byte[] data) {
         try (var os = new FileOutputStream(key, true)) {
@@ -46,5 +52,30 @@ public class FileIO {
 
     public void delete(String key, Predicate<Boolean> filter) {
 
+    }
+
+    @SneakyThrows
+    public RandomAccessFile open(String name) {
+        return new RandomAccessFile(name, "r");
+    }
+
+
+    @SneakyThrows
+    private byte[] serialize(Object obj) {
+        try (var baos = new ByteArrayOutputStream();
+             var oos = new ObjectOutputStream(baos)
+        ) {
+            oos.writeObject(obj);
+            return baos.toByteArray();
+        }
+    }
+
+    @SneakyThrows
+    private <T> T deserialize(byte[] bytes) {
+        try (var bais = new ByteArrayInputStream(bytes);
+             var ois = new ObjectInputStream(bais)
+        ) {
+            return (T) ois.readObject();
+        }
     }
 }

@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.cmd.none;
+package org.bambrikii.tiny.db.cmd.selectrows;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -13,13 +13,12 @@ public class IteratorFactory {
     private IteratorFactory() {
     }
 
-    public static TableIterator iterate(
+    public static TableIterator scan(
             StorageContext ctx,
             List<Join> tablesSorted,
             Map<String, List<ExecutionFilter>> filtersByAlias,
             int ind,
             LogicalRow logicalRow
-
     ) {
         return new TableIterator(ctx, tablesSorted, filtersByAlias, ind, logicalRow);
     }

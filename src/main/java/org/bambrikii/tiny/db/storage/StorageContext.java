@@ -1,50 +1,55 @@
 package org.bambrikii.tiny.db.storage;
 
 import lombok.RequiredArgsConstructor;
-import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
-import org.bambrikii.tiny.db.storage.disk.DiskStorage;
-import org.bambrikii.tiny.db.storage.mem.MemStorage;
-import org.bambrikii.tiny.db.storage.tables.RelTableIO;
+import org.bambrikii.tiny.db.storage.disk.DiskIO;
+import org.bambrikii.tiny.db.storage.disk.TableScan;
+import org.bambrikii.tiny.db.storage.mem.MemIO;
 
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @RequiredArgsConstructor
 public class StorageContext {
-    private final DiskStorage diskStorage;
-    private final MemStorage memStorage;
+    private final DiskIO disk;
+    private final MemIO mem;
 
-    public void write(String key, Object obj) {
-        diskStorage.write(key, obj);
-        memStorage.write(key, obj);
+    public boolean write(String name, Function<DiskIO, Boolean> d, Function<MemIO, Boolean> m) {
+        if (!d.apply(disk)) {
+            return false;
+        }
+        return m.apply(mem);
     }
 
     public void drop(String key) {
-        diskStorage.drop(key);
-        memStorage.drop(key);
+        disk.drop(key);
+        mem.drop(key);
     }
 
     public void append(String key, Map<String, Object> values) {
-        diskStorage.append(key, values);
-        memStorage.append(key, values);
+        disk.append(key, values);
+        mem.append(key, values);
+    }
+
+    public <T> T read(String key, Function<DiskIO, T> d, Function<MemIO, T> m) {
+        var res = m.apply(mem);
+        if (res != null) {
+            return res;
+        }
+        return d.apply(disk);
     }
 
     public void delete(String key, Predicate<Boolean> filter) {
-        diskStorage.delete(key, filter);
-        memStorage.delete(key, filter);
-    }
-
-    public void read(String key) {
-        diskStorage.read(key);
-        memStorage.read(key);
+        disk.delete(key, filter);
+        mem.delete(key, filter);
     }
 
     public Scrollable open(String table) {
-        return diskStorage.read(table);
+        if (mem.read(table)) {
+
+        }
+
+        return new TableScan(disk, table);
     }
 
-    public TableStruct readStruct(Object tableFileRef) {
-        return null;
-    }
-}

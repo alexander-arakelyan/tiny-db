@@ -25,7 +25,7 @@ public class DefaultCursor extends org.bambrikii.tiny.db.plan.cursorts.Scrollabl
     public void open() {
         var lr = new LogicalRow();
 
-        this.it = IteratorFactory.iterate(ctx, tablesSorted, filtersByAlias, 0, lr);
+        this.it = IteratorFactory.scan(ctx, tablesSorted, filtersByAlias, 0, lr);
         var t = tablesSorted.get(0);
         this.alias = t.getAlias();
         it.open();

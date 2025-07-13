@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public class MemIO {
-    private final Map<String, Object> objects = new HashMap<>();
+    private final Map<String, Object> store = new HashMap<>();
 
     public <T> T read(String key) {
         return (T) key;
@@ -15,16 +15,17 @@ public class MemIO {
 
     }
 
-    public void write(String key, Object obj) {
-        objects.put(key, obj);
+    public boolean write(String key, Object obj) {
+        store.put(key, obj);
+        return true;
     }
 
     public void drop(String key) {
-        objects.remove(key);
+        store.remove(key);
     }
 
     public void delete(String key, Predicate<Boolean> filter) {
-        objects.get(key);
+        store.get(key);
         // TODO: apply filter and delete
     }
 }

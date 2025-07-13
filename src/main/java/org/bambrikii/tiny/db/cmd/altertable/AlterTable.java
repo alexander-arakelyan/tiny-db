@@ -2,6 +2,7 @@ package org.bambrikii.tiny.db.cmd.altertable;
 
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.CommandResult;
+import org.bambrikii.tiny.db.cmd.createtable.CreateTable;
 import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
 
@@ -22,7 +23,7 @@ public class AlterTable extends AbstractCommand<AlterTableMessage, QueryExecutor
                         .removeIf(col2 -> Objects.equals(col.getName(), col2.getName()))
                 );
 
-        ctx.getStorage().write(key, struct);
+        ctx.getStorage().write(key, CreateTable.toDisk(struct), CreateTable.toMem(struct));
 
         return OK_COMMAND_RESULT;
     }

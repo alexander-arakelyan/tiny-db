@@ -2,7 +2,7 @@ package org.bambrikii.tiny.db.storage;
 
 import java.util.function.Predicate;
 
-public interface AbstractStorage {
+public interface AbstractStore {
     void write(String key, Object obj);
 
     <T> T read(String key);

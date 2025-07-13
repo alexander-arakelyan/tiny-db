@@ -36,7 +36,7 @@ public class TableIterator implements Scrollable {
         curr = ctx.open(tb.getTable());
         currShouldAdvance = true;
         if (ind + 1 < tablesSorted.size()) {
-            this.next = IteratorFactory.iterate(ctx, tablesSorted, filtersByAlias, ind + 1, logicalRow);
+            this.next = IteratorFactory.scan(ctx, tablesSorted, filtersByAlias, ind + 1, logicalRow);
             next.open();
         }
     }

@@ -24,10 +24,10 @@ import org.bambrikii.tiny.db.cmd.shutdownproc.ShutdownProc;
 import org.bambrikii.tiny.db.cmd.shutdownproc.ShutdownProcParser;
 import org.bambrikii.tiny.db.cmd.updaterows.UpdateRows;
 import org.bambrikii.tiny.db.cmd.updaterows.UpdateRowsParser;
-import org.bambrikii.tiny.db.disk.DiskStorage;
-import org.bambrikii.tiny.db.mem.MemStorage;
 import org.bambrikii.tiny.db.query.CommandParserFacade;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
+import org.bambrikii.tiny.db.storage.disk.DiskIO;
+import org.bambrikii.tiny.db.storage.mem.MemIO;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -40,8 +40,8 @@ public class DbServer {
     private QueryExecutorContext ctx;
     private DbServerConfig config;
     private CommandExecutorFacade executor;
-    private DiskStorage diskStorage;
-    private MemStorage memStorage;
+    private DiskIO disk;
+    private MemIO mem;
 
     public static void main(String[] args) {
         var ps = new DbServer();
@@ -53,10 +53,7 @@ public class DbServer {
     void configure(DbServerConfig config) {
         this.config = config;
 
-        this.ctx = new QueryExecutorContext(
-                diskStorage,
-                memStorage
-        );
+        this.ctx = new QueryExecutorContext(disk, mem);
         this.parser = new CommandParserFacade();
         this.executor = new CommandExecutorFacade(ctx);
 
