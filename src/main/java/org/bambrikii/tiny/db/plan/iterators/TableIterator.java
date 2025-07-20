@@ -22,7 +22,7 @@ public class TableIterator implements Scrollable {
 
     private Scrollable curr;
     private Join tb;
-    private String al;
+    private String alias;
     private List<ExecutionFilter> fs;
     private Scrollable next;
     private Row currRow;
@@ -30,8 +30,8 @@ public class TableIterator implements Scrollable {
 
     public void open() {
         this.tb = tablesSorted.get(ind);
-        this.al = tb.getAlias();
-        this.fs = filtersByAlias.get(al);
+        this.alias = tb.getAlias();
+        this.fs = filtersByAlias.get(alias);
 
         curr = ctx.open(tb.getTable());
         currShouldAdvance = true;
@@ -48,7 +48,7 @@ public class TableIterator implements Scrollable {
             if (currRow == null) {
                 return null;
             }
-            logicalRow.combine(al, currRow);
+            logicalRow.combine(alias, currRow);
             for (var f : fs) {
                 if (!ComparisonUtils.matches(logicalRow, f)) {
                     continue w;
@@ -62,7 +62,7 @@ public class TableIterator implements Scrollable {
             if (nextRow == null) {
                 currShouldAdvance = true;
             } else {
-                logicalRow.combine(al, nextRow);
+                logicalRow.combine(alias, nextRow);
             }
         }
 

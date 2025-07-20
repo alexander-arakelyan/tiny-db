@@ -62,10 +62,6 @@ public class RelTableScanIO implements Scrollable {
         pageIo = new RelTablePageIO(io, name + "/" + pages.get(pageN), new TableStructDecorator(struct));
     }
 
-    @SneakyThrows
-    public void read() {
-    }
-
     @Override
     public void reset() {
         pageN = 0;

@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public enum RelColumnTypes {
+public enum RelColumnType {
     INT("int"),
     STRING("str"),
     OBJECT("obj");
 
-    private static final Map<String, RelColumnTypes> typesByAlias;
+    private static final Map<String, RelColumnType> typesByAlias;
 
     private final List<String> aliases;
 
-    RelColumnTypes(String... aliases) {
+    RelColumnType(String... aliases) {
         this.aliases = Arrays
                 .stream(aliases)
                 .map(String::toLowerCase)
@@ -24,7 +24,7 @@ public enum RelColumnTypes {
     }
 
     static {
-        var vals = new HashMap<String, RelColumnTypes>();
+        var vals = new HashMap<String, RelColumnType>();
         for (var val : values()) {
             for (var alias : val.aliases) {
                 vals.put(alias, val);
@@ -33,7 +33,7 @@ public enum RelColumnTypes {
         typesByAlias = Collections.unmodifiableMap(vals);
     }
 
-    public static RelColumnTypes findByAlias(String name) {
+    public static RelColumnType findByAlias(String name) {
         return name == null
                 ? null
                 : typesByAlias.getOrDefault(name.toLowerCase(), null);

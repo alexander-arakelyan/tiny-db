@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bambrikii.tiny.db.model.Column;
 import org.bambrikii.tiny.db.model.TableStruct;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,5 +23,9 @@ public class TableStructDecorator {
 
     public Column getColumnByName(String name) {
         return columnsByName.get(name);
+    }
+
+    public List<Column> getColumns() {
+        return struct.getColumns();
     }
 }

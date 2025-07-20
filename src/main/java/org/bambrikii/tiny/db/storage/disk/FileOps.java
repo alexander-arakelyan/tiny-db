@@ -30,14 +30,18 @@ public class FileOps {
     @SneakyThrows
     private byte[] readBytes() {
         int len = readInt();
-
+        if (len == Integer.MIN_VALUE) {
+            return null;
+        }
         var buff = ByteBuffer.allocate(len);
-        channel.read(buff);
-        byte[] bytes = buff.array();
-        return bytes;
+        if (capacity(buff) < 0) {
+            return null;
+        }
+        return buff.array();
     }
 
-    private void writeBytes(byte[] bytes) throws IOException {
+    @SneakyThrows
+    private void writeBytes(byte[] bytes) {
         writeInt(bytes.length);
         channel.write(ByteBuffer.wrap(bytes));
     }
@@ -45,7 +49,7 @@ public class FileOps {
     @SneakyThrows
     public String readStr() {
         byte[] bytes = readBytes();
-        return new String(bytes, UTF_8);
+        return bytes != null ? new String(bytes, UTF_8) : null;
     }
 
     @SneakyThrows
@@ -56,23 +60,31 @@ public class FileOps {
 
     @SneakyThrows
     public int readInt() {
-        intBuff.reset();
-        channel.read(intBuff);
-        return intBuff.getInt();
+        return capacity(intBuff) >= 0 ? intBuff.getInt() : Integer.MIN_VALUE;
+    }
+
+    private long capacity(ByteBuffer buff) throws IOException {
+        var pos1 = channel.position();
+        buff.reset();
+        channel.read(buff);
+        var pos2 = channel.position();
+        var available = pos2 - pos1;
+        var limit = buff.limit();
+        return available < limit
+                ? available - limit
+                : available;
     }
 
     @SneakyThrows
-    public void writeInt(int size) {
+    public void writeInt(int val) {
         intBuff.reset();
-        intBuff.putInt(size);
+        intBuff.putInt(val);
         channel.write(intBuff);
     }
 
     @SneakyThrows
     public boolean readBool() {
-        boolBuff.reset();
-        channel.read(boolBuff);
-        return boolBuff.getInt() == 1;
+        return capacity(boolBuff) >= 0 && boolBuff.getInt() == 1;
     }
 
     @SneakyThrows
@@ -84,9 +96,7 @@ public class FileOps {
 
     @SneakyThrows
     public char readChar() {
-        charBuff.reset();
-        channel.read(charBuff);
-        return charBuff.getChar();
+        return capacity(charBuff) >= 0 ? charBuff.getChar() : 0;
     }
 
     @SneakyThrows
@@ -99,8 +109,7 @@ public class FileOps {
     @SneakyThrows
     public <T> T readObj() {
         var base64 = readBytes();
-        var bytes = Base64.getDecoder().decode(base64);
-        return deserialize(bytes);
+        return base64 != null ? deserialize(Base64.getDecoder().decode(base64)) : null;
     }
 
     @SneakyThrows
@@ -126,9 +135,18 @@ public class FileOps {
      * @return
      */
     @SneakyThrows
-    public String writeRowId() {
-        var str = UUID.randomUUID().toString();
-        writeStr(str);
+    public String writeRowId(String rowId) {
+        var rowId2 = rowId != null ? rowId : UUID.randomUUID().toString();
+        writeStr(rowId2);
+        return rowId2;
+    }
+
+    public boolean readDeleted() {
+        return readBool();
+    }
+
+    public void writeDeleted(boolean deleted) {
+        writeBool(deleted);
     }
 
     @SneakyThrows

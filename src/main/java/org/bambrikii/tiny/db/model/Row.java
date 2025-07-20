@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public abstract class Row {
     private String rowId;
+    private boolean deleted;
 
     public abstract Object read(String col);
 }

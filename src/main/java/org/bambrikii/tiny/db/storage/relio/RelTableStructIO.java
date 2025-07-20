@@ -30,7 +30,7 @@ public class RelTableStructIO implements AutoCloseable {
      */
 
     public void open() {
-        this.raf = io.open(fileName);
+        this.raf = io.openRead(fileName);
         this.channel = raf.getChannel();
         this.ops = new FileOps(channel);
     }

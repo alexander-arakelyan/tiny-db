@@ -55,10 +55,14 @@ public class DiskIO {
     }
 
     @SneakyThrows
-    public RandomAccessFile open(String name) {
+    public RandomAccessFile openRead(String name) {
         return new RandomAccessFile(name, "r");
     }
 
+    @SneakyThrows
+    public RandomAccessFile openReadWrite(String name) {
+        return new RandomAccessFile(name, "rw");
+    }
 
     @SneakyThrows
     private byte[] serialize(Object obj) {
