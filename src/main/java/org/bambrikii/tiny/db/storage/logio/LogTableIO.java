@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storage.tables;
+package org.bambrikii.tiny.db.storage.logio;
 
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;

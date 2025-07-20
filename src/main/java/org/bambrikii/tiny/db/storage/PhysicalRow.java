@@ -2,26 +2,19 @@ package org.bambrikii.tiny.db.storage;
 
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.model.TableStruct;
 
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class PhysicalRow extends Row {
-    private final TableStruct tableStruct;
+    private final Map<String, Object> vals = new HashMap<>();
 
     public Object read(String columnName) {
-        if (colNums.containsKey(columnName)) {
-            return read(columnName));
-        }
-        var columns = tableStruct.getColumns();
-        for (int i = 0; i < columns.size(); i++) {
-            var col = columns.get(i);
-            if (Objects.equals(col.getName(), columnName)) {
-                colNums.putIfAbsent(columnName, i);
-                return read(i);
-            }
-        }
-        throw new UnsupportedOperationException("Column " + columnName + " not found.");
+        return vals.get(columnName);
+    }
+
+    public void setVal(String colName, Object obj) {
+        this.vals.put(colName, obj);
     }
 }

@@ -1,11 +1,12 @@
-package org.bambrikii.tiny.db.storage.tables;
+package org.bambrikii.tiny.db.storage.relio;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.model.Row;
+import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
-import org.bambrikii.tiny.db.storage.disk.FileOps;
+import org.bambrikii.tiny.db.utils.TableStructDecorator;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,39 +22,44 @@ public class RelTableScanIO implements Scrollable {
     private final static Pattern PAGE_FILE_NAME = Pattern.compile("^data.*\\.txt$");
     private final DiskIO io;
     private final String name;
-    private FileOps ops;
-    private List<String> cols;
     private List<Path> pages;
     private int pageN;
-    private RelTablePageIO page;
+    private RelTableStructIO structIo;
+    private RelTablePageIO pageIo;
+    private TableStruct struct;
 
     @SneakyThrows
     @Override
     public void open() {
-        this.pages = Files.list(Path.of(name))
-                .filter(path -> PAGE_FILE_NAME.matcher(path.getFileName().toString()).matches())
+        structIo = new RelTableStructIO(io, name + "/struct.txt");
+        struct = structIo.read();
+        pages = Files
+                .list(Path.of(name))
+                .map(Path::getFileName)
+                .filter(fileName -> PAGE_FILE_NAME.matcher(fileName.toString()).matches())
                 .collect(Collectors.toList());
         pageN = 0;
     }
 
     @Override
     public Row next() {
-        if (page == null) {
+        if (pageIo == null) {
             if (pageN >= pages.size()) {
                 return null;
             }
-            this.page = openPage();
+            tryClosePage();
+            openPage();
         }
         Row row;
-        while ((row = page.next()) == null && ++pageN < pages.size()) {
+        while ((row = pageIo.next()) == null && ++pageN < pages.size()) {
             tryClosePage();
-            this.page = openPage();
+            openPage();
         }
         return row;
     }
 
-    private RelTablePageIO openPage() {
-        return new RelTablePageIO(io, name, pages.get(pageN));
+    private void openPage() {
+        pageIo = new RelTablePageIO(io, name + "/" + pages.get(pageN), new TableStructDecorator(struct));
     }
 
     @SneakyThrows
@@ -73,9 +79,9 @@ public class RelTableScanIO implements Scrollable {
     }
 
     private void tryClosePage() {
-        if (page != null) {
-            page.close();
+        if (pageIo != null) {
+            pageIo.close();
         }
-        page = null;
+        pageIo = null;
     }
 }

@@ -6,7 +6,7 @@ import org.bambrikii.tiny.db.cmd.CommandResult;
 import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
 import org.bambrikii.tiny.db.storage.mem.MemIO;
-import org.bambrikii.tiny.db.storage.tables.RelTableStructIO;
+import org.bambrikii.tiny.db.storage.relio.RelTableStructIO;
 
 import java.util.function.Function;
 

@@ -13,6 +13,7 @@ import java.util.Map;
 public class TableStruct {
     private String schema;
     private String table;
+    private int version = 0;
     private final Map<String, Filter> partitions = new HashMap<>();
     private final List<Column> columns = new ArrayList<>();
 }

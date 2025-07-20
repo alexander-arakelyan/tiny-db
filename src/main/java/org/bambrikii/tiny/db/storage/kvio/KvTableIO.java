@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storage.tables;
+package org.bambrikii.tiny.db.storage.kvio;
 
 import lombok.RequiredArgsConstructor;
 
