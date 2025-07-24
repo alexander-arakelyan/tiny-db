@@ -1,10 +1,10 @@
-package org.bambrikii.tiny.db.storage.relio;
+package org.bambrikii.tiny.db.storagelayout.relio;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.model.Column;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.storage.PhysicalRow;
+import org.bambrikii.tiny.db.storagelayout.PhysicalRow;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
 import org.bambrikii.tiny.db.storage.disk.FileOps;
 import org.bambrikii.tiny.db.utils.RelColumnType;
@@ -12,8 +12,8 @@ import org.bambrikii.tiny.db.utils.TableStructDecorator;
 
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,7 +24,7 @@ import static org.bambrikii.tiny.db.storage.disk.FileOps.ROW_ID_COLUMN_NAME;
 public class RelTablePageIO implements AutoCloseable {
     public static final int PAGE_SIZE = 1024 * 1;
     private final DiskIO io;
-    private final String fileName;
+    private final Path path;
     private final TableStructDecorator structDecorator;
     private RandomAccessFile raf;
     private FileChannel channel;
@@ -34,14 +34,25 @@ public class RelTablePageIO implements AutoCloseable {
     private boolean dirty;
 
     @SneakyThrows
-    public void open() {
-        this.raf = io.openRead(fileName);
+    public void open(boolean rw) {
+        var path2 = path.toString();
+        this.raf = rw ? io.openReadWrite(path2) : io.openRead(path2);
         this.channel = raf.getChannel();
         this.ops = new FileOps(channel);
         this.rowN = 0;
         this.dirty = false;
         readHeader();
         readRows();
+    }
+
+    @SneakyThrows
+    public void open() {
+        open(false);
+    }
+
+    @SneakyThrows
+    public void openReadWrite() {
+        open(true);
     }
 
     @SneakyThrows
@@ -63,7 +74,7 @@ public class RelTablePageIO implements AutoCloseable {
 
     public void readHeader() {
         var columns = structDecorator.getColumns();
-        ops.readStr();
+        ops.readStr(); // rowid column name
         for (int i = 0; i < columns.size(); i++) {
             ops.readColSeparator();
             ops.readStr();
@@ -72,6 +83,7 @@ public class RelTablePageIO implements AutoCloseable {
     }
 
     public void writeHeader() {
+        ops.writeInt(rows.size());
         var columns = structDecorator.getColumns();
         ops.writeStr(ROW_ID_COLUMN_NAME);
         for (int i = 0; i < columns.size(); i++) {
@@ -90,14 +102,9 @@ public class RelTablePageIO implements AutoCloseable {
         return rows;
     }
 
-    private void insertRow() {
+    private void writeRows() {
         for (var row : rows) {
-            var vals = new HashMap<String, Object>();
-            for (var col : structDecorator.getColumns()) {
-                var name = col.getName();
-                vals.put(name, row.read(name));
-            }
-            insertRow(row.getRowId(), vals);
+            writeRow(row);
         }
     }
 
@@ -111,7 +118,7 @@ public class RelTablePageIO implements AutoCloseable {
         row.setDeleted(ops.readDeleted());
         for (var col : structDecorator.getColumns()) {
             ops.readColSeparator();
-            row.setVal(col.getName(), readVal(col));
+            row.write(col.getName(), readVal(col));
         }
         ops.readLineSeparator();
         return row;
@@ -124,7 +131,6 @@ public class RelTablePageIO implements AutoCloseable {
             ops.writeColSeparator();
             var name = col.getName();
             var val = row.read(name);
-            ops.writeObj(val);
             writeVal(col, val);
         }
         ops.writeLineSeparator();
@@ -138,29 +144,27 @@ public class RelTablePageIO implements AutoCloseable {
         var rowid = ops.writeRowId(rowId);
         row.setRowId(rowid);
         row.setDeleted(false);
-        for (var kv : vals.entrySet()) {
-            var k = kv.getKey();
-            var v = kv.getValue();
-        }
         for (var col : structDecorator.getColumns()) {
-            ops.writeColSeparator();
             var name = col.getName();
             var val = vals.get(name);
-            ops.writeObj(val);
-            writeVal(col, val);
-            row.setVal(name, val);
+            row.write(name, val);
         }
-        ops.writeLineSeparator();
         rows.add(row);
         this.dirty = true;
         return rowid;
     }
 
-    public String updateRow(String rowId, Map<String, Object> vals) {
-        if (!deleteRow(rowId)) {
-            return null;
+    public boolean updateRow(String rowId, Map<String, Object> vals) {
+        for (var row : rows) {
+            if (Objects.equals(row.getRowId(), rowId)) {
+                for (var entry : vals.entrySet()) {
+                    row.write(entry.getKey(), entry.getValue());
+                }
+                dirty = true;
+                return true;
+            }
         }
-        return insertRow(rowId, vals);
+        return false;
     }
 
     public boolean deleteRow(String rowId) {
@@ -204,10 +208,18 @@ public class RelTablePageIO implements AutoCloseable {
     }
 
     @SneakyThrows
-    public void write() {
+    public boolean write() {
+        if (!dirty) {
+            return false;
+        }
         raf.seek(0);
         raf.setLength(0);
         writeHeader();
-        insertRow();
+        writeRows();
+        return true;
+    }
+
+    public int getAvailableCapacity() {
+        return PAGE_SIZE - rows.size();
     }
 }

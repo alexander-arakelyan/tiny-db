@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storage.relio;
+package org.bambrikii.tiny.db.storagelayout.relio;
 
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.model.Column;

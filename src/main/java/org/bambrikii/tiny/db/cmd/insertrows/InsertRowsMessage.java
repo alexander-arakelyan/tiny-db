@@ -2,27 +2,22 @@ package org.bambrikii.tiny.db.cmd.insertrows;
 
 import lombok.Getter;
 import lombok.ToString;
-import org.bambrikii.tiny.db.cmd.AbstractMessage;
+import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsMessage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @ToString
 @Getter
-public class InsertRowsMessage implements AbstractMessage {
-    private String name;
-    private final List<String> colNames = new ArrayList<>();
-    private final List<Object> colVals = new ArrayList<>();
+public class InsertRowsMessage extends SelectRowsMessage {
+    private String targetTable;
+    private final Map<String, Object> targetValues = new HashMap<>();
 
     public void name(String name) {
-        this.name = name;
+        this.targetTable = name;
     }
 
-    public void columnName(String s) {
-        colNames.add(s);
-    }
-
-    public void columnValue(Object s) {
-        colVals.add(s);
+    public void columnValue(String col, Object val) {
+        targetValues.put(col, val);
     }
 }

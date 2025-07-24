@@ -1,14 +1,17 @@
 package org.bambrikii.tiny.db.storage;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
 import org.bambrikii.tiny.db.storage.mem.MemIO;
-import org.bambrikii.tiny.db.storage.relio.RelTableScanIO;
+import org.bambrikii.tiny.db.storagelayout.relio.RelTableScanIO;
+import org.bambrikii.tiny.db.storagelayout.relio.RelTableWriteIO;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 @RequiredArgsConstructor
 public class StorageContext {
@@ -27,9 +30,35 @@ public class StorageContext {
         mem.drop(key);
     }
 
-    public void append(String key, Map<String, Object> values) {
-        disk.append(key, values);
-        mem.append(key, values);
+    public Scrollable scan(String table) {
+        Scrollable read = mem.read(table);
+        if (read != null) {
+            return read;
+        }
+
+        return new RelTableScanIO(disk, table);
+    }
+
+    @SneakyThrows
+    public void insert(String targetTable, Row row, Map<String, Object> values) {
+        try (var rw = new RelTableWriteIO(disk, targetTable)) {
+            rw.open();
+            rw.insert(resolveValues(row, values));
+        }
+    }
+
+    private Map<String, Object> resolveValues(Row row, Map<String, Object> values) {
+        var kv = new HashMap<String, Object>();
+        values.forEach((col, val) -> kv.put(col, val instanceof String ? row.read((String) val) : val));
+        return kv;
+    }
+
+    @SneakyThrows
+    public void update(String targetTable, Row row, Map<String, Object> values) {
+        try (var rw = new RelTableWriteIO(disk, targetTable)) {
+            rw.open();
+            rw.update(row.getRowId(), resolveValues(row, values));
+        }
     }
 
     public <T> T read(String key, Function<DiskIO, T> d, Function<MemIO, T> m) {
@@ -40,18 +69,12 @@ public class StorageContext {
         return d.apply(disk);
     }
 
-    public void delete(String key, Predicate<Boolean> filter) {
-        disk.delete(key, filter);
-        mem.delete(key, filter);
-    }
-
-    public Scrollable open(String table) {
-        Scrollable read = mem.read(table);
-        if (read != null) {
-            return read;
+    @SneakyThrows
+    public void delete(String targetTable, String rowId) {
+        try (var rw = new RelTableWriteIO(disk, targetTable)) {
+            rw.open();
+            rw.delete(rowId);
         }
-
-        return new RelTableScanIO(disk, table);
     }
 }
 

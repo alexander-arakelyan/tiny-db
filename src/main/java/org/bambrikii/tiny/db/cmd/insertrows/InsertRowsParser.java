@@ -1,8 +1,12 @@
 package org.bambrikii.tiny.db.cmd.insertrows;
 
-import org.bambrikii.tiny.db.cmd.AbstractMessage;
 import org.bambrikii.tiny.db.cmd.AbstractCommandParser;
+import org.bambrikii.tiny.db.cmd.AbstractMessage;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
+
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
@@ -18,15 +22,17 @@ import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
 public class InsertRowsParser extends AbstractCommandParser {
     @Override
     public AbstractMessage parse(ParserInputStream is) {
+        var colsByIndex = new ArrayList<String>();
+        var valPos = new AtomicInteger(0);
         var cmd = new InsertRowsMessage();
         return chars("insert", chars("into", word(
                         ordered(
-                                brackets(atLeastOnceCommaSeparated(word(TRUE_PREDICATE, cmd::columnName))),
+                                brackets(atLeastOnceCommaSeparated(word(TRUE_PREDICATE, colsByIndex::add))),
                                 chars("values",
                                         brackets(atLeastOnceCommaSeparated(or(
-                                                word(TRUE_PREDICATE, cmd::columnValue),
-                                                singleQuoted(word(TRUE_PREDICATE, cmd::columnValue)),
-                                                number(cmd::columnValue)
+                                                word(TRUE_PREDICATE, buildValSetter(cmd, colsByIndex, valPos)),
+                                                singleQuoted(word(TRUE_PREDICATE, buildValSetter(cmd, colsByIndex, valPos))),
+                                                number(buildValSetter(cmd, colsByIndex, valPos))
                                         )))
                                 )
                         ),
@@ -35,5 +41,9 @@ public class InsertRowsParser extends AbstractCommandParser {
         )).test(is)
                 ? cmd
                 : NO_MESSAGE;
+    }
+
+    public static <T> Consumer<T> buildValSetter(InsertRowsMessage cmd, ArrayList<String> colsByIndex, AtomicInteger valPos) {
+        return val -> cmd.columnValue(colsByIndex.get(valPos.getAndIncrement()), val);
     }
 }

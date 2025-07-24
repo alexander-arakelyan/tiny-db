@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storage;
+package org.bambrikii.tiny.db.storagelayout;
 
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.model.Row;
@@ -14,7 +14,8 @@ public class PhysicalRow extends Row {
         return vals.get(columnName);
     }
 
-    public void setVal(String colName, Object obj) {
-        this.vals.put(colName, obj);
+    @Override
+    public void write(String col, Object val) {
+        this.vals.put(col, val);
     }
 }

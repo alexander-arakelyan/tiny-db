@@ -1,21 +1,21 @@
 package org.bambrikii.tiny.db.cmd.updaterows;
 
 import lombok.Getter;
-import org.bambrikii.tiny.db.cmd.AbstractMessage;
+import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsMessage;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public class UpdateRowsMessage implements AbstractMessage {
-    private String name;
-    private final Map<String, Object> values = new HashMap<>();
+public class UpdateRowsMessage extends SelectRowsMessage {
+    private String targetTable;
+    private final Map<String, Object> targetValues = new HashMap<>();
 
     public void name(String name) {
-        this.name = name;
+        this.targetTable = name;
     }
 
-    public void put(String col, Object val) {
-        values.put(col, val);
+    public void columnValue(String col, Object val) {
+        targetValues.put(col, val);
     }
 }

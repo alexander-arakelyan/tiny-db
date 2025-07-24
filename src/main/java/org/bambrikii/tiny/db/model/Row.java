@@ -10,4 +10,6 @@ public abstract class Row {
     private boolean deleted;
 
     public abstract Object read(String col);
+
+    public abstract void write(String col, Object val);
 }

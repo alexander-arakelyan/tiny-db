@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storage.relio;
+package org.bambrikii.tiny.db.storagelayout.relio;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 public class RelTableScanIO implements Scrollable {
-    private final static Pattern PAGE_FILE_NAME = Pattern.compile("^data.*\\.txt$");
+    final static Pattern PAGE_FILE_NAME = Pattern.compile("^data.*\\.txt$");
+    public static final String STRUCT_FILE_NAME = "struct.txt";
     private final DiskIO io;
     private final String name;
     private List<Path> pages;
@@ -31,12 +32,11 @@ public class RelTableScanIO implements Scrollable {
     @SneakyThrows
     @Override
     public void open() {
-        structIo = new RelTableStructIO(io, name + "/struct.txt");
+        structIo = new RelTableStructIO(io, name + "/" + STRUCT_FILE_NAME);
         struct = structIo.read();
         pages = Files
                 .list(Path.of(name))
-                .map(Path::getFileName)
-                .filter(fileName -> PAGE_FILE_NAME.matcher(fileName.toString()).matches())
+                .filter(name -> PAGE_FILE_NAME.matcher(name.toString()).matches())
                 .collect(Collectors.toList());
         pageN = 0;
     }
@@ -59,7 +59,8 @@ public class RelTableScanIO implements Scrollable {
     }
 
     private void openPage() {
-        pageIo = new RelTablePageIO(io, name + "/" + pages.get(pageN), new TableStructDecorator(struct));
+        pageIo = new RelTablePageIO(io, pages.get(pageN), new TableStructDecorator(struct));
+        pageIo.open();
     }
 
     @Override
