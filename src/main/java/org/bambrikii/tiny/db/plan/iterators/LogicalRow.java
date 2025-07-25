@@ -8,13 +8,24 @@ import java.util.Map;
 public class LogicalRow extends Row {
     private final Map<String, Row> rows = new HashMap<>();
 
-    @Override
-    public Object read(String path) {
+    private static int getPos(String path) {
         int pos = path.indexOf(".");
         if (pos < 0) {
             throw new IllegalArgumentException(String.format("Path %s should have \".\" as delimiter", path));
         }
+        return pos;
+    }
+
+    @Override
+    public Object read(String path) {
+        int pos = getPos(path);
         return read(path.substring(0, pos), path.substring(pos + 1));
+    }
+
+    @Override
+    public void write(String path, Object val) {
+        int pos = getPos(path);
+        rows.get(path.substring(0, pos)).write(path.substring(pos + 1), val);
     }
 
     public Object read(String alias, String name) {

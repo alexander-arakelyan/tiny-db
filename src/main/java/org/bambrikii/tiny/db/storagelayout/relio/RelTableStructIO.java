@@ -26,7 +26,6 @@ public class RelTableStructIO implements AutoCloseable {
      * columns - count, [len, name, size]
      * values - [rowid, val of size]
      *
-     * @param
      */
 
     public void open() {
@@ -51,17 +50,17 @@ public class RelTableStructIO implements AutoCloseable {
 
     public TableStruct read() {
         var struct = new TableStruct();
-        struct.setTable(ops.readStr(channel));
-        struct.setVersion(ops.readInt(channel));
-        var colsCount = ops.readInt(channel);
+        struct.setTable(ops.readStr());
+        struct.setVersion(ops.readInt());
+        var colsCount = ops.readInt();
         var cols = struct.getColumns();
         for (var i = 0; i < colsCount; i++) {
             var col = new Column();
-            col.setName(ops.readStr(channel));
-            col.setType(ops.readStr(channel));
-            col.setSize(ops.readInt(channel));
-            col.setUnique(ops.readBool(channel));
-            col.setNullable(ops.readBool(channel));
+            col.setName(ops.readStr());
+            col.setType(ops.readStr());
+            col.setSize(ops.readInt());
+            col.setUnique(ops.readBool());
+            col.setNullable(ops.readBool());
             cols.add(col);
         }
         return struct;

@@ -18,7 +18,7 @@ public class EqOperator implements ExecutionOperatable {
     private static Object readVal(ExecutionFilterClause l, Row row) {
         if (l instanceof RefClause) {
             var lR = (RefClause) l;
-            return row.read(lR.getAlias(), lR.getCol());
+            return row.read(lR.getAlias() + "." + lR.getCol());
         }
         if (l instanceof ValClause) {
             var lV = (ValClause) l;

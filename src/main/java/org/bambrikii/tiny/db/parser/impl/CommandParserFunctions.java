@@ -110,13 +110,36 @@ public class CommandParserFunctions {
 
     public static ParserPredicate filter(ParserPredicate next, Consumer<Filter> consumer) {
         var left = new AtomicReference<ColumnRef>();
+        var leftVal = new AtomicReference<>();
         var op = new AtomicReference<ComparisonOpEnum>();
-        return colRef(oneOfStrings(
-                        ComparisonOpEnum.sqlRepresentations(),
-                        colRef(next, left::set),
-                        s -> op.set(ComparisonOpEnum.parse(s))
+        var right = new AtomicReference<ColumnRef>();
+        var rightVal = new AtomicReference<>();
+        return or(
+                colRef(
+                        oneOfStrings(
+                                ComparisonOpEnum.sqlRepresentations(),
+                                or(
+                                        value(next, rightVal::set, rightVal::set),
+                                        colRef(next, right::set)
+
+                                ),
+                                s -> op.set(ComparisonOpEnum.parse(s))
+                        ),
+                        s -> consumer.accept(new Filter(left.get(), leftVal.get(), op.get(), s, rightVal.get()))
                 ),
-                s -> consumer.accept(new Filter(left.get(), op.get(), s))
+                value(
+                        oneOfStrings(
+                                ComparisonOpEnum.sqlRepresentations(),
+                                or(
+                                        value(next, rightVal::set, rightVal::set),
+                                        colRef(next, right::set)
+
+                                ),
+                                s -> op.set(ComparisonOpEnum.parse(s))
+                        ),
+                        n -> consumer.accept(new Filter(null, n, op.get(), right.get(), rightVal.get())),
+                        s -> consumer.accept(new Filter(null, s, op.get(), right.get(), rightVal.get()))
+                )
         );
     }
 
@@ -171,5 +194,16 @@ public class CommandParserFunctions {
             AtomicReference<String> joinTableAliasRef
     ) {
         return times(join(cmd, joinTableAliasRef, joinTableNameRef));
+    }
+
+    public static ParserPredicate quotedString(ParserPredicate next, Consumer<String> consumer) {
+        return chars("'", word(chars("'", next), consumer));
+    }
+
+    public static ParserPredicate value(ParserPredicate next, Consumer<Integer> integerConsumer, Consumer<String> stringConsumer) {
+        return or(
+                number(next, integerConsumer),
+                quotedString(next, stringConsumer)
+        );
     }
 }

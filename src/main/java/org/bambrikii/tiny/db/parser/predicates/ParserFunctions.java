@@ -69,6 +69,10 @@ public class ParserFunctions {
         return spaces(new NumberPredicate(TRUE_PREDICATE, onSuccess));
     }
 
+    public static ParserPredicate number(ParserPredicate next, Consumer<Integer> onSuccess) {
+        return spaces(new NumberPredicate(next, onSuccess));
+    }
+
     public static ParserPredicate unordered(ParserPredicate... next) {
         return spaces(new AnyOrderPredicate(next));
     }
