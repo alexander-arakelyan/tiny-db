@@ -2,6 +2,7 @@ package org.bambrikii.tiny.db.storagelayout.relio;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
 import org.bambrikii.tiny.db.utils.TableStructDecorator;
@@ -21,88 +22,100 @@ public class RelTableWriteIO implements AutoCloseable {
     private final String name;
     private RelTableStructReadIO structIo;
     private TableStruct struct;
-    private List<Path> pagePaths;
-    private int pageN;
+    private List<RelTableWritePair> pages;
+    private TableStructDecorator structDecorator;
 
     @SneakyThrows
     public void open() {
         structIo = new RelTableStructReadIO(io, name);
         structIo.open();
         struct = structIo.read();
-        pagePaths = Files
+        structDecorator = new TableStructDecorator(struct);
+        pages = Files
                 .list(Path.of(name))
-                .map(Path::getFileName)
-                .filter(fileName -> PAGE_FILE_NAME.matcher(fileName.toString()).matches())
+                .filter(path -> PAGE_FILE_NAME.matcher(path.getFileName().toString()).matches())
+                .map(RelTableWritePair::new)
                 .collect(Collectors.toList());
-        pageN = 0;
     }
 
     public String insert(Map<String, Object> vals) {
-        if (pagePaths.isEmpty()) {
-            appendPage();
+        if (pages.isEmpty()) {
+            addPageFile();
         }
-        for (var path : pagePaths) {
-            try (var page = new RelTablePageReadWriteIO(io, path, new TableStructDecorator(struct))) {
-                page.openReadWrite();
-                if (page.getAvailableCapacity() <= 0) {
-                    continue;
-                }
-                var rowId = page.insertRow(null, vals);
-                if (!page.write()) {
-                    continue;
-                }
-                return rowId;
+        String rowId = null;
+        for (RelTableWritePair page0 : pages) {
+            var page = ensurePage(page0);
+            if (page.getAvailableCapacity() <= 0) {
+                continue;
             }
+            rowId = page.insertRow(null, vals);
         }
-        return null;
+        if (rowId == null) {
+            var page = ensurePage(addPageFile());
+            rowId = page.insertRow(null, vals);
+        }
+        return rowId;
     }
 
-    private void appendPage() {
-        var path = Path.of(buildPageFilePath(name, pageN));
-        try (var pageIo = new RelTablePageReadWriteIO(io, path, new TableStructDecorator(struct))) {
-            pageIo.openReadWrite();
-            pagePaths.add(path);
+    private int nextPageN() {
+        return pages.size();
+    }
+
+    private RelTablePageWriteIO ensurePage(RelTableWritePair pair) {
+        var pageIo = pair.getPageIo();
+        if (pageIo != null) {
+            return pageIo;
         }
+        pageIo = new RelTablePageWriteIO(io, pair.getPath(), structDecorator);
+        pageIo.open();
+        pair.setPageIo(pageIo);
+        return pageIo;
+    }
+
+    private RelTableWritePair addPageFile() {
+        var path = Path.of(buildPageFilePath(name, nextPageN()));
+        var pair = new RelTableWritePair(path);
+        pages.add(pair);
+        return pair;
     }
 
     public String update(String rowId, Map<String, Object> vals) {
         // find page with rowId
-        for (var path : pagePaths) {
-            try (var page = new RelTablePageReadWriteIO(io, path, new TableStructDecorator(struct))) {
-                page.openReadWrite();
-                if (page.getAvailableCapacity() <= 0) {
-                    continue;
-                }
-                page.updateRow(rowId, vals);
-                if (!page.write()) {
-                    continue;
-                }
-                return rowId;
+        for (var pair : pages) {
+            var page = ensurePage(pair);
+            if (page.getAvailableCapacity() <= 0) {
+                continue;
             }
+            page.updateRow(rowId, vals);
+            return rowId;
         }
         return null;
     }
 
     public String delete(String rowId) {
         // find page with rowId
-        for (var path : pagePaths) {
-            try (var page = new RelTablePageReadWriteIO(io, path, new TableStructDecorator(struct))) {
-                page.openReadWrite();
-                if (page.getAvailableCapacity() <= 0) {
-                    continue;
-                }
-                page.deleteRow(rowId);
-                if (!page.write()) {
-                    continue;
-                }
-                return rowId;
+        for (var pair : pages) {
+            var page = ensurePage(pair);
+            if (page.getAvailableCapacity() <= 0) {
+                continue;
             }
+            page.deleteRow(rowId);
+            return rowId;
         }
         return null;
     }
 
     @Override
     public void close() throws Exception {
+        for (var pair : pages) {
+            var page = pair.getPageIo();
+            if (page != null) {
+                var written = page.write();
+                if (written) {
+                    DbLogger.log(this, "Page %s has been written", pair.getPath());
+                }
+            }
+        }
         structIo.close();
     }
 }

@@ -25,7 +25,7 @@ public class RelTableScanIO implements Scrollable {
     private List<Path> pages;
     private int pageN;
     private RelTableStructReadIO structIo;
-    private RelTablePageReadWriteIO pageIo;
+    private RelTablePageReadIO pageIo;
     private TableStruct struct;
 
     @SneakyThrows
@@ -59,7 +59,7 @@ public class RelTableScanIO implements Scrollable {
     }
 
     private void openPage() {
-        pageIo = new RelTablePageReadWriteIO(io, pages.get(pageN), new TableStructDecorator(struct));
+        pageIo = new RelTablePageReadIO(io, pages.get(pageN), new TableStructDecorator(struct));
         pageIo.open();
     }
 

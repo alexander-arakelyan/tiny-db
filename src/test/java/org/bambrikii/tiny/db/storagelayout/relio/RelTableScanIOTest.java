@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class RelTableScanIOTest {
     @SneakyThrows
     @Test
@@ -35,16 +37,19 @@ public class RelTableScanIOTest {
 
         try (var writeIo = new RelTableWriteIO(io, "tbl1")) {
             writeIo.open();
-            writeIo.insert(Map.of("col1", "val1"));
-            writeIo.insert(Map.of("col1", "val2"));
-            writeIo.insert(Map.of("col1", "val3"));
+            for (int i = 0; i < 3; i++) {
+                writeIo.insert(Map.of("col1", "val" + i));
+            }
         }
         try (var scanIo = new RelTableScanIO(io, "tbl1")) {
             scanIo.open();
             Row row;
+            int n = 0;
             while ((row = scanIo.next()) != null) {
                 System.out.println("Test row read: " + row);
+                n++;
             }
+            assertThat(n).isGreaterThan(0);
         }
     }
 }
