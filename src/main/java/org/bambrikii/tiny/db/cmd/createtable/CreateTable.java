@@ -6,7 +6,7 @@ import org.bambrikii.tiny.db.cmd.CommandResult;
 import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
 import org.bambrikii.tiny.db.storage.mem.MemIO;
-import org.bambrikii.tiny.db.storagelayout.relio.RelTableStructIO;
+import org.bambrikii.tiny.db.storagelayout.relio.RelTableStructWriteIO;
 
 import java.util.function.Function;
 
@@ -28,7 +28,7 @@ public class CreateTable extends AbstractCommand<CreateTableMessage, AbstractExe
 
     public static Function<DiskIO, Boolean> toDisk(TableStruct struct) {
         return io -> {
-            try (var rel = new RelTableStructIO(io, struct.getTable())) {
+            try (var rel = new RelTableStructWriteIO(io, struct.getTable())) {
                 return rel.write(struct);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);

@@ -2,11 +2,12 @@ package org.bambrikii.tiny.db.storagelayout.relio;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.Column;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.storagelayout.PhysicalRow;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
 import org.bambrikii.tiny.db.storage.disk.FileOps;
+import org.bambrikii.tiny.db.storagelayout.PhysicalRow;
 import org.bambrikii.tiny.db.utils.RelColumnType;
 import org.bambrikii.tiny.db.utils.TableStructDecorator;
 
@@ -21,7 +22,7 @@ import java.util.Objects;
 import static org.bambrikii.tiny.db.storage.disk.FileOps.ROW_ID_COLUMN_NAME;
 
 @RequiredArgsConstructor
-public class RelTablePageIO implements AutoCloseable {
+public class RelTablePageReadWriteIO implements AutoCloseable {
     public static final int PAGE_SIZE = 1024 * 1;
     private final DiskIO io;
     private final Path path;
@@ -42,7 +43,7 @@ public class RelTablePageIO implements AutoCloseable {
         this.rowN = 0;
         this.dirty = false;
         readHeader();
-        readRows();
+        this.rows = readRows();
     }
 
     @SneakyThrows
@@ -83,7 +84,6 @@ public class RelTablePageIO implements AutoCloseable {
     }
 
     public void writeHeader() {
-        ops.writeInt(rows.size());
         var columns = structDecorator.getColumns();
         ops.writeStr(ROW_ID_COLUMN_NAME);
         for (int i = 0; i < columns.size(); i++) {
@@ -103,6 +103,7 @@ public class RelTablePageIO implements AutoCloseable {
     }
 
     private void writeRows() {
+        DbLogger.log(this, "Writing rows: %s", rows);
         for (var row : rows) {
             writeRow(row);
         }

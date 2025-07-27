@@ -9,4 +9,13 @@ public class DbLogger {
                 : obj.getClass().getName();
         System.out.println("Log: " + clsName + " " + input + " " + msg);
     }
+
+    public static void log(Object obj, String msg, Object... params) {
+        var clsName = obj == null
+                ? null
+                : obj instanceof Class
+                ? ((Class<?>) obj).getName()
+                : obj.getClass().getName();
+        System.out.println("Log: " + clsName + " " + String.format(msg, params));
+    }
 }

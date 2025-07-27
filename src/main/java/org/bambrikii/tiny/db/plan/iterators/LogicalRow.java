@@ -1,10 +1,12 @@
 package org.bambrikii.tiny.db.plan.iterators;
 
+import lombok.ToString;
 import org.bambrikii.tiny.db.model.Row;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@ToString
 public class LogicalRow extends Row {
     private final Map<String, Row> rows = new HashMap<>();
 

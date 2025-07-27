@@ -12,21 +12,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.bambrikii.tiny.db.storagelayout.relio.RelTableScanIO.PAGE_FILE_NAME;
-import static org.bambrikii.tiny.db.storagelayout.relio.RelTableScanIO.STRUCT_FILE_NAME;
+import static org.bambrikii.tiny.db.storagelayout.relio.RelTableFileUtils.PAGE_FILE_NAME;
+import static org.bambrikii.tiny.db.storagelayout.relio.RelTableFileUtils.buildPageFilePath;
 
 @RequiredArgsConstructor
 public class RelTableWriteIO implements AutoCloseable {
     private final DiskIO io;
     private final String name;
-    private RelTableStructIO structIo;
+    private RelTableStructReadIO structIo;
     private TableStruct struct;
     private List<Path> pagePaths;
     private int pageN;
 
     @SneakyThrows
     public void open() {
-        structIo = new RelTableStructIO(io, name + "/" + STRUCT_FILE_NAME);
+        structIo = new RelTableStructReadIO(io, name);
+        structIo.open();
         struct = structIo.read();
         pagePaths = Files
                 .list(Path.of(name))
@@ -37,8 +38,11 @@ public class RelTableWriteIO implements AutoCloseable {
     }
 
     public String insert(Map<String, Object> vals) {
+        if (pagePaths.isEmpty()) {
+            appendPage();
+        }
         for (var path : pagePaths) {
-            try (var page = new RelTablePageIO(io, path, new TableStructDecorator(struct))) {
+            try (var page = new RelTablePageReadWriteIO(io, path, new TableStructDecorator(struct))) {
                 page.openReadWrite();
                 if (page.getAvailableCapacity() <= 0) {
                     continue;
@@ -53,10 +57,18 @@ public class RelTableWriteIO implements AutoCloseable {
         return null;
     }
 
+    private void appendPage() {
+        var path = Path.of(buildPageFilePath(name, pageN));
+        try (var pageIo = new RelTablePageReadWriteIO(io, path, new TableStructDecorator(struct))) {
+            pageIo.openReadWrite();
+            pagePaths.add(path);
+        }
+    }
+
     public String update(String rowId, Map<String, Object> vals) {
         // find page with rowId
         for (var path : pagePaths) {
-            try (var page = new RelTablePageIO(io, path, new TableStructDecorator(struct))) {
+            try (var page = new RelTablePageReadWriteIO(io, path, new TableStructDecorator(struct))) {
                 page.openReadWrite();
                 if (page.getAvailableCapacity() <= 0) {
                     continue;
@@ -74,7 +86,7 @@ public class RelTableWriteIO implements AutoCloseable {
     public String delete(String rowId) {
         // find page with rowId
         for (var path : pagePaths) {
-            try (var page = new RelTablePageIO(io, path, new TableStructDecorator(struct))) {
+            try (var page = new RelTablePageReadWriteIO(io, path, new TableStructDecorator(struct))) {
                 page.openReadWrite();
                 if (page.getAvailableCapacity() <= 0) {
                     continue;
@@ -91,6 +103,6 @@ public class RelTableWriteIO implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-
+        structIo.close();
     }
 }

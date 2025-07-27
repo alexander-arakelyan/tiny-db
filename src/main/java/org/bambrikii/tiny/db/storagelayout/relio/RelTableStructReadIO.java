@@ -10,10 +10,12 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.List;
 
+import static org.bambrikii.tiny.db.storagelayout.relio.RelTableFileUtils.buildStructFilePath;
+
 @RequiredArgsConstructor
-public class RelTableStructIO implements AutoCloseable {
+public class RelTableStructReadIO implements AutoCloseable {
     private final DiskIO io;
-    private final String fileName;
+    private final String name;
     private RandomAccessFile raf;
     private FileChannel channel;
     private String tableName;
@@ -25,27 +27,12 @@ public class RelTableStructIO implements AutoCloseable {
      * header - table - len, name
      * columns - count, [len, name, size]
      * values - [rowid, val of size]
-     *
      */
 
     public void open() {
-        this.raf = io.openRead(fileName);
+        this.raf = io.openRead(buildStructFilePath(name));
         this.channel = raf.getChannel();
         this.ops = new FileOps(channel);
-    }
-
-    public boolean write(TableStruct struct) {
-        ops.writeStr(struct.getTable());
-        ops.writeInt(struct.getVersion());
-        ops.writeInt(struct.getColumns().size());
-        for (var col : struct.getColumns()) {
-            ops.writeStr(col.getName());
-            ops.writeStr(col.getType());
-            ops.writeInt(col.getSize());
-            ops.writeBool(col.isUnique());
-            ops.writeBool(col.isNullable());
-        }
-        return true;
     }
 
     public TableStruct read() {

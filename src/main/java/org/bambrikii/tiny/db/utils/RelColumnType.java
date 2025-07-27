@@ -1,5 +1,7 @@
 package org.bambrikii.tiny.db.utils;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Getter
 public enum RelColumnType {
     INT("int"),
     STRING("str"),

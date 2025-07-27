@@ -11,28 +11,28 @@ import org.bambrikii.tiny.db.utils.TableStructDecorator;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static org.bambrikii.tiny.db.storagelayout.relio.RelTableFileUtils.PAGE_FILE_NAME;
 
 /**
  * table files format:
  */
 @RequiredArgsConstructor
 public class RelTableScanIO implements Scrollable {
-    final static Pattern PAGE_FILE_NAME = Pattern.compile("^data.*\\.txt$");
-    public static final String STRUCT_FILE_NAME = "struct.txt";
     private final DiskIO io;
     private final String name;
     private List<Path> pages;
     private int pageN;
-    private RelTableStructIO structIo;
-    private RelTablePageIO pageIo;
+    private RelTableStructReadIO structIo;
+    private RelTablePageReadWriteIO pageIo;
     private TableStruct struct;
 
     @SneakyThrows
     @Override
     public void open() {
-        structIo = new RelTableStructIO(io, name + "/" + STRUCT_FILE_NAME);
+        structIo = new RelTableStructReadIO(io, name);
+        structIo.open();
         struct = structIo.read();
         pages = Files
                 .list(Path.of(name))
@@ -59,7 +59,7 @@ public class RelTableScanIO implements Scrollable {
     }
 
     private void openPage() {
-        pageIo = new RelTablePageIO(io, pages.get(pageN), new TableStructDecorator(struct));
+        pageIo = new RelTablePageReadWriteIO(io, pages.get(pageN), new TableStructDecorator(struct));
         pageIo.open();
     }
 

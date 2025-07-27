@@ -81,12 +81,12 @@ public class CommandParserFunctions {
                                         optional(unique(unique::set))
                                 ))),
                         newValue -> {
-                            DbLogger.log(ParserPredicate.class, null, "type " + type + " " + precision.get() + " " + scale.get() + " " + nullable.get());
+                            DbLogger.log(ParserPredicate.class, "type {} {} {} {}", type, precision.get(), scale.get(), nullable.get());
                             type.set(newValue);
                         }
                 ),
                 col -> {
-                    DbLogger.log(ParserPredicate.class, null, "col " + col + ", type " + type + " " + precision.get() + " " + scale.get() + " " + nullable.get());
+                    DbLogger.log(ParserPredicate.class, "col {}, type {}, precision {}, scale {} ", col, type, precision.get(), scale.get(), nullable.get());
                     cmd.addColumn(col, type.get(), precision.get(), scale.get(), nullable.get(), unique.get());
                 }
         );
