@@ -2,6 +2,7 @@ package org.bambrikii.tiny.db.cmd.updaterows;
 
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.CommandResult;
+import org.bambrikii.tiny.db.cmd.insertrows.InsertRows;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.plan.ExecutionPlanBuilder;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
@@ -26,10 +27,9 @@ public class UpdateRows extends AbstractCommand<UpdateRowsMessage, QueryExecutor
         try (var it = planBuilder.execute(tables, filters)) {
             Row row;
             while ((row = it.next()) != null) {
-                storage.update(targetTable, row, targetValues);
+                storage.update(targetTable, row, InsertRows.resolveValues(targetValues));
             }
         }
-
         return OK_COMMAND_RESULT;
     }
 }

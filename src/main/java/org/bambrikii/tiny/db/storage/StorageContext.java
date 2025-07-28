@@ -9,9 +9,12 @@ import org.bambrikii.tiny.db.storage.mem.MemIO;
 import org.bambrikii.tiny.db.storagelayout.relio.RelTableScanIO;
 import org.bambrikii.tiny.db.storagelayout.relio.RelTableWriteIO;
 
+import java.io.ObjectInputFilter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 public class StorageContext {
@@ -40,24 +43,18 @@ public class StorageContext {
     }
 
     @SneakyThrows
-    public void insert(String targetTable, Row row, Map<String, Object> values) {
+    public void insert(String targetTable, Row row, Function<Row, Map<String, Object>> valuesResolver) {
         try (var rw = new RelTableWriteIO(disk, targetTable)) {
             rw.open();
-            rw.insert(resolveValues(row, values));
+            rw.insert(valuesResolver.apply(row));
         }
     }
 
-    private Map<String, Object> resolveValues(Row row, Map<String, Object> values) {
-        var kv = new HashMap<String, Object>();
-        values.forEach((col, val) -> kv.put(col, val instanceof String ? row.read((String) val) : val));
-        return kv;
-    }
-
     @SneakyThrows
-    public void update(String targetTable, Row row, Map<String, Object> values) {
+    public void update(String targetTable, Row row, Function<Row, Map<String, Object>> valuesResolver) {
         try (var rw = new RelTableWriteIO(disk, targetTable)) {
             rw.open();
-            rw.update(row.getRowId(), resolveValues(row, values));
+            rw.update(row.getRowId(), valuesResolver.apply(row));
         }
     }
 

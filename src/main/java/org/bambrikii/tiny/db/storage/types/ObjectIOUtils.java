@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
+import java.nio.channels.ByteChannel;
 import java.util.Base64;
 
 import static org.bambrikii.tiny.db.storage.types.ByteIOUtils.readBytes;
@@ -18,12 +18,12 @@ public class ObjectIOUtils {
     }
 
 
-    public static <T> T readObj(FileChannel channel, ByteBuffer intBuff) {
+    public static <T> T readObj(ByteChannel channel, ByteBuffer intBuff) {
         var base64 = readBytes(channel, intBuff);
         return base64 != null ? deserialize(Base64.getDecoder().decode(base64)) : null;
     }
 
-    public static void writeObj(Object obj, FileChannel channel, ByteBuffer intBuff) {
+    public static void writeObj(Object obj, ByteChannel channel, ByteBuffer intBuff) {
         var bytes = serialize(obj);
         var base64 = Base64.getEncoder().encode(bytes);
         writeBytes(base64, channel, intBuff);

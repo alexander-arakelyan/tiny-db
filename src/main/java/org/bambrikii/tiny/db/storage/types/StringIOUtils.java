@@ -1,7 +1,7 @@
 package org.bambrikii.tiny.db.storage.types;
 
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
+import java.nio.channels.ByteChannel;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.bambrikii.tiny.db.storage.types.ByteIOUtils.readBytes;
@@ -11,12 +11,12 @@ public class StringIOUtils {
     private StringIOUtils() {
     }
 
-    public static String readStr(FileChannel channel, ByteBuffer intBuff) {
+    public static String readStr(ByteChannel channel, ByteBuffer intBuff) {
         byte[] bytes = readBytes(channel, intBuff);
         return bytes != null ? new String(bytes, UTF_8) : null;
     }
 
-    public static void writeStr(String table, FileChannel channel, ByteBuffer intBuff) {
+    public static void writeStr(String table, ByteChannel channel, ByteBuffer intBuff) {
         byte[] bytes = table.getBytes();
         writeBytes(bytes, channel, intBuff);
     }

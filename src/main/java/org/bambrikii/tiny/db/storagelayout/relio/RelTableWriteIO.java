@@ -9,6 +9,7 @@ import org.bambrikii.tiny.db.utils.TableStructDecorator;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,6 +36,7 @@ public class RelTableWriteIO implements AutoCloseable {
                 .list(Path.of(name))
                 .filter(path -> PAGE_FILE_NAME.matcher(path.getFileName().toString()).matches())
                 .map(RelTableWritePair::new)
+                .sorted(Comparator.comparing(RelTableWritePair::getPath))
                 .collect(Collectors.toList());
     }
 
@@ -49,6 +51,9 @@ public class RelTableWriteIO implements AutoCloseable {
                 continue;
             }
             rowId = page.insertRow(null, vals);
+            if (rowId != null) {
+                break;
+            }
         }
         if (rowId == null) {
             var page = ensurePage(addPageFile());

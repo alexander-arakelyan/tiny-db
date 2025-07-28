@@ -3,7 +3,7 @@ package org.bambrikii.tiny.db.storage.types;
 import lombok.SneakyThrows;
 
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
+import java.nio.channels.ByteChannel;
 
 import static org.bambrikii.tiny.db.storage.types.IntIOUtils.capacity;
 import static org.bambrikii.tiny.db.storage.types.IntIOUtils.readInt;
@@ -15,7 +15,7 @@ public class ByteIOUtils {
 
 
     @SneakyThrows
-    public static byte[] readBytes(FileChannel channel, ByteBuffer intBuff) {
+    public static byte[] readBytes(ByteChannel channel, ByteBuffer intBuff) {
         int len = readInt(channel, intBuff);
         if (len == Integer.MIN_VALUE) {
             return null;
@@ -28,7 +28,7 @@ public class ByteIOUtils {
     }
 
     @SneakyThrows
-    public static void writeBytes(byte[] bytes, FileChannel channel, ByteBuffer intBuff) {
+    public static void writeBytes(byte[] bytes, ByteChannel channel, ByteBuffer intBuff) {
         writeInt(bytes.length, channel, intBuff);
         channel.write(ByteBuffer.wrap(bytes));
     }

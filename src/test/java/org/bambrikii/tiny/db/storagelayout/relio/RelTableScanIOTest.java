@@ -37,7 +37,7 @@ public class RelTableScanIOTest {
 
         try (var writeIo = new RelTableWriteIO(io, "tbl1")) {
             writeIo.open();
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 5; i++) {
                 writeIo.insert(Map.of("col1", "val" + i));
             }
         }
