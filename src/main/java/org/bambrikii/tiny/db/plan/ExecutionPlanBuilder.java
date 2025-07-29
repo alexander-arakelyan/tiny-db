@@ -4,7 +4,7 @@ import org.bambrikii.tiny.db.model.Filter;
 import org.bambrikii.tiny.db.model.Join;
 import org.bambrikii.tiny.db.model.JoinTypeEnumComparator;
 import org.bambrikii.tiny.db.model.select.ColumnRef;
-import org.bambrikii.tiny.db.plan.cursorts.CursorFactory;
+import org.bambrikii.tiny.db.plan.cursorts.DefaultCursor;
 import org.bambrikii.tiny.db.plan.cursorts.Scrollable;
 import org.bambrikii.tiny.db.plan.filters.ExecutionFilter;
 import org.bambrikii.tiny.db.storage.StorageContext;
@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class ExecutionPlanBuilder {
@@ -38,7 +37,7 @@ public class ExecutionPlanBuilder {
             var a = ts.getAlias();
             var fs = filtersByAlias.get(a);
         }
-        return CursorFactory.create(ctx, tablesSorted, filtersByAlias);
+        return new DefaultCursor(ctx, tablesSorted, filtersByAlias);
     }
 
     private Map<String, List<ExecutionFilter>> groupFiltersByAlias(List<Filter> filters) {
@@ -100,10 +99,10 @@ public class ExecutionPlanBuilder {
     }
 
     private static Integer decTabs(HashMap<String, Integer> tabCount, String alias) {
-        return tabCount.compute(alias, (BiFunction<String, Integer, Integer>) (s, integer) -> integer - 1);
+        return tabCount.compute(alias, (s, n) -> n - 1);
     }
 
     private static Integer incTabs(HashMap<String, Integer> tabCount, ColumnRef f) {
-        return tabCount.compute(f.getAlias(), (s1, integer) -> integer == null ? 1 : integer + 1);
+        return tabCount.compute(f.getAlias(), (s, n) -> n == null ? 1 : n + 1);
     }
 }

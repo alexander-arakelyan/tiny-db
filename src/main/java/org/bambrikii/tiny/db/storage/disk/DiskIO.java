@@ -46,8 +46,8 @@ public class DiskIO {
     }
 
     @SneakyThrows
-    public void drop(String key) {
-        Files.deleteIfExists(Path.of(key));
+    public boolean drop(String key) {
+        return Files.deleteIfExists(Path.of(key));
     }
 
     public void delete(String key, Predicate<Boolean> filter) {

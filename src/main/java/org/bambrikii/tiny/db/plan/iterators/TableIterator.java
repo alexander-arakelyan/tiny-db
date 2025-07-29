@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.model.Join;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.plan.IteratorFactory;
 import org.bambrikii.tiny.db.plan.filters.ExecutionFilter;
 import org.bambrikii.tiny.db.plan.operators.ComparisonUtils;
 import org.bambrikii.tiny.db.storage.StorageContext;
@@ -36,7 +35,7 @@ public class TableIterator implements Scrollable {
         curr = ctx.scan(tb.getTable());
         currShouldAdvance = true;
         if (ind + 1 < tablesSorted.size()) {
-            this.next = IteratorFactory.scan(ctx, tablesSorted, filtersByAlias, ind + 1, logicalRow);
+            this.next = new TableIterator(ctx, tablesSorted, filtersByAlias, ind + 1, logicalRow);
             next.open();
         }
     }

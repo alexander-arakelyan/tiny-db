@@ -6,11 +6,16 @@ import org.bambrikii.tiny.db.model.Row;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @ToString
 @RequiredArgsConstructor
 public class PhysicalRow extends Row {
     private final Map<String, Object> vals = new HashMap<>();
+
+    public Set<String> keys() {
+        return vals.keySet();
+    }
 
     public Object read(String columnName) {
         return vals.get(columnName);

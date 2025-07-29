@@ -2,12 +2,12 @@ package org.bambrikii.tiny.db.cmd.altertable;
 
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.CommandResult;
-import org.bambrikii.tiny.db.cmd.createtable.CreateTable;
 import org.bambrikii.tiny.db.cmd.insertrows.InsertRows;
 import org.bambrikii.tiny.db.model.Filter;
 import org.bambrikii.tiny.db.model.Join;
 import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
+import org.bambrikii.tiny.db.storagelayout.PhysicalRow;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,14 +36,20 @@ public class AlterTable extends AbstractCommand<AlterTableMessage, QueryExecutor
         // 3. rename new table
 
         var storage = ctx.getStorage();
-        storage.write(origTableName, CreateTable.toDisk(targetStruct), CreateTable.toMem(targetStruct));
+        storage.write(origTableName, targetStruct);
         var tables = List.of(new Join(origTableName, null, origTableName));
         var filters = List.<Filter>of();
         var targetValues = new HashMap<String, Object>();
         // TODO: map to columns
 
-        InsertRows.insert(storage, tables, filters, targetTableName, InsertRows.resolveValues(targetValues));
-
+//        InsertRows.insert(storage, tables, filters, targetTableName, InsertRows.resolveValues(targetValues));
+        InsertRows.insert(storage, tables, filters, targetTableName, row -> {
+            var vals = new HashMap<String, Object>();
+            ((PhysicalRow) row)
+                    .keys()
+                    .forEach(col -> vals.put(col, row.read(col)));
+            return vals;
+        });
 
         return OK_COMMAND_RESULT;
     }

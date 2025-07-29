@@ -91,7 +91,9 @@ public class RelTableWriteIO implements AutoCloseable {
             if (page.getAvailableCapacity() <= 0) {
                 continue;
             }
-            page.updateRow(rowId, vals);
+            if (!page.updateRow(rowId, vals)) {
+                continue;
+            }
             return rowId;
         }
         return null;
@@ -104,7 +106,9 @@ public class RelTableWriteIO implements AutoCloseable {
             if (page.getAvailableCapacity() <= 0) {
                 continue;
             }
-            page.deleteRow(rowId);
+            if (!page.deleteRow(rowId)) {
+                continue;
+            }
             return rowId;
         }
         return null;

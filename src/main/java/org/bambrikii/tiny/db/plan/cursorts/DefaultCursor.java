@@ -3,10 +3,10 @@ package org.bambrikii.tiny.db.plan.cursorts;
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.model.Join;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.plan.IteratorFactory;
 import org.bambrikii.tiny.db.plan.filters.ExecutionFilter;
 import org.bambrikii.tiny.db.plan.iterators.LogicalRow;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
+import org.bambrikii.tiny.db.plan.iterators.TableIterator;
 import org.bambrikii.tiny.db.storage.StorageContext;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class DefaultCursor extends org.bambrikii.tiny.db.plan.cursorts.Scrollabl
     public void open() {
         var lr = new LogicalRow();
 
-        this.it = IteratorFactory.scan(ctx, tablesSorted, filtersByAlias, 0, lr);
+        this.it = new TableIterator(ctx, tablesSorted, filtersByAlias, 0, lr);
         var t = tablesSorted.get(0);
         it.open();
     }

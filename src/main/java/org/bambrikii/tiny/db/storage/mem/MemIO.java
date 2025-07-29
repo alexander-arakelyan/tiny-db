@@ -11,17 +11,13 @@ public class MemIO {
         return (T) store.get(key);
     }
 
-    public void append(String key, Object obj) {
-
-    }
-
     public boolean write(String key, Object obj) {
         store.put(key, obj);
         return true;
     }
 
-    public void drop(String key) {
-        store.remove(key);
+    public boolean drop(String key) {
+        return store.remove(key) != null;
     }
 
     public void delete(String key, Predicate<Boolean> filter) {
