@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storage.disk;
+package org.bambrikii.tiny.db.io.disk;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

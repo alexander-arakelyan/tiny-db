@@ -1,7 +1,7 @@
 package org.bambrikii.tiny.db.storagelayout.logio;
 
 import lombok.RequiredArgsConstructor;
-import org.bambrikii.tiny.db.storage.disk.DiskIO;
+import org.bambrikii.tiny.db.io.disk.DiskIO;
 
 @RequiredArgsConstructor
 public class LogTableIO {

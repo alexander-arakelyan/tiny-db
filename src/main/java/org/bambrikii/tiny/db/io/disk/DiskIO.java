@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storage.disk;
+package org.bambrikii.tiny.db.io.disk;
 
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.model.Filter;

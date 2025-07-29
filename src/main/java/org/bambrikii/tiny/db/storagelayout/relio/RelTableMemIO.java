@@ -1,9 +1,9 @@
 package org.bambrikii.tiny.db.storagelayout.relio;
 
 import lombok.RequiredArgsConstructor;
+import org.bambrikii.tiny.db.io.mem.MemIO;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
-import org.bambrikii.tiny.db.storage.mem.MemIO;
 import org.bambrikii.tiny.db.storagelayout.PhysicalRow;
 
 import java.util.ArrayList;

@@ -1,11 +1,11 @@
 package org.bambrikii.tiny.db.storagelayout.relio;
 
 import lombok.SneakyThrows;
+import org.bambrikii.tiny.db.io.disk.DiskIO;
+import org.bambrikii.tiny.db.io.disk.FileOps;
 import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.Column;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.storage.disk.DiskIO;
-import org.bambrikii.tiny.db.storage.disk.FileOps;
 import org.bambrikii.tiny.db.storagelayout.PhysicalRow;
 import org.bambrikii.tiny.db.utils.RelColumnType;
 import org.bambrikii.tiny.db.utils.TableStructDecorator;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.bambrikii.tiny.db.storage.disk.FileOps.ROW_ID_COLUMN_NAME;
+import static org.bambrikii.tiny.db.io.disk.FileOps.ROW_ID_COLUMN_NAME;
 
 public class RelTablePageWriteIO extends RelTablePageReadIO {
     public static final int PAGE_SIZE_LIMIT = 1024 * 1;

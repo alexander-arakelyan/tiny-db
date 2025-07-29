@@ -1,9 +1,9 @@
 package org.bambrikii.tiny.db.storagelayout.relio;
 
 import lombok.RequiredArgsConstructor;
+import org.bambrikii.tiny.db.io.disk.DiskIO;
+import org.bambrikii.tiny.db.io.disk.FileOps;
 import org.bambrikii.tiny.db.model.TableStruct;
-import org.bambrikii.tiny.db.storage.disk.DiskIO;
-import org.bambrikii.tiny.db.storage.disk.FileOps;
 
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;

@@ -2,10 +2,10 @@ package org.bambrikii.tiny.db.storagelayout.relio;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.bambrikii.tiny.db.io.disk.DiskIO;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
-import org.bambrikii.tiny.db.storage.disk.DiskIO;
 import org.bambrikii.tiny.db.utils.TableStructDecorator;
 
 import java.nio.file.Files;
