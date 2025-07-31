@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storagelayout;
+package org.bambrikii.tiny.db.algo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;

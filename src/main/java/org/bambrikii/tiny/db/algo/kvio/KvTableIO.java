@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storagelayout.kvio;
+package org.bambrikii.tiny.db.algo.kvio;
 
 import lombok.RequiredArgsConstructor;
 

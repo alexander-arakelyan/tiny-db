@@ -1,7 +1,6 @@
 package org.bambrikii.tiny.db.io.disk;
 
 import lombok.SneakyThrows;
-import org.bambrikii.tiny.db.model.Filter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,20 +14,6 @@ import java.nio.file.Path;
 import java.util.function.Predicate;
 
 public class DiskIO {
-
-    @SneakyThrows
-    public void append(String key, byte[] data) {
-        try (var os = new FileOutputStream(key, true)) {
-            os.write(data);
-        }
-    }
-
-    private static String buildPartName(Filter filter1) {
-        return filter1 == null
-                ? "default"
-                : filter1.getL() + filter1.getOp().name() + filter1.getR();
-    }
-
     @SneakyThrows
     public void write(String key, byte[] obj) {
         try (var os = new FileOutputStream(key)) {

@@ -10,13 +10,11 @@ import static org.bambrikii.tiny.db.cmd.none.NoCommandResult.OK_COMMAND_RESULT;
 public class CreateTable extends AbstractCommand<CreateTableMessage, AbstractExecutorContext> {
     @Override
     public CommandResult exec(CreateTableMessage cmd, AbstractExecutorContext ctx) {
-        var name = cmd.getName();
-
         var struct = new TableStruct();
         struct.setTable(cmd.getName());
         struct.getColumns().addAll(cmd.getColumns());
 
-        ctx.getStorage().write(name, struct);
+        ctx.getStorage().write(struct);
 
         return OK_COMMAND_RESULT;
     }

@@ -1,10 +1,10 @@
-package org.bambrikii.tiny.db.storagelayout.relio;
+package org.bambrikii.tiny.db.algo.relio;
 
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.io.mem.MemIO;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
-import org.bambrikii.tiny.db.storagelayout.PhysicalRow;
+import org.bambrikii.tiny.db.algo.PhysicalRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public class RelTableMemIO implements Scrollable, AutoCloseable {
-    private final MemIO memIo;
+    private final MemIO io;
     private final String name;
     private List<Row> rows;
     private int rowN;

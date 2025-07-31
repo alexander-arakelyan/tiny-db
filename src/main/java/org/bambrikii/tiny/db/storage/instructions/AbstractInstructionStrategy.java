@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 public interface AbstractInstructionStrategy {
+    TableStruct read(String name);
+
     boolean write(TableStruct struct);
 
     boolean drop(String name);

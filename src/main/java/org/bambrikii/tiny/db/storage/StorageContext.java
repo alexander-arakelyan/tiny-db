@@ -26,8 +26,12 @@ public class StorageContext {
         return name.startsWith("mem.") ? memInstructions : diskInstructions;
     }
 
-    public boolean write(String name, TableStruct struct) {
-        return chooseStrategy(name).write(struct);
+    public boolean write(TableStruct struct) {
+        return chooseStrategy(struct.getTable()).write(struct);
+    }
+
+    public TableStruct read(String name) {
+        return chooseStrategy(name).read(name);
     }
 
     public boolean drop(String name) {

@@ -1,11 +1,13 @@
 package org.bambrikii.tiny.db.storage.instructions;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.io.mem.MemIO;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
-import org.bambrikii.tiny.db.storagelayout.relio.RelTableMemIO;
+import org.bambrikii.tiny.db.algo.relio.RelTableMemIO;
+import org.bambrikii.tiny.db.algo.relio.RelTableMemStructIO;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -14,14 +16,31 @@ import java.util.function.Function;
 public class MemInstructionStrategy implements AbstractInstructionStrategy {
     private final MemIO mem;
 
+    @SneakyThrows
     @Override
-    public boolean write(TableStruct struct) {
-        return mem.write(struct.getTable(), struct);
+    public TableStruct read(String name) {
+        try (var rw = new RelTableMemStructIO(mem, name)) {
+            rw.open();
+            return rw.read();
+        }
     }
 
+    @SneakyThrows
+    @Override
+    public boolean write(TableStruct struct) {
+        try (var rw = new RelTableMemStructIO(mem, struct.getTable())) {
+            rw.open();
+            return rw.write(struct);
+        }
+    }
+
+    @SneakyThrows
     @Override
     public boolean drop(String name) {
-        return mem.drop(name);
+        try (var rw = new RelTableMemStructIO(mem, name)) {
+            rw.open();
+            return rw.drop(name) && mem.drop(name);
+        }
     }
 
     @Override

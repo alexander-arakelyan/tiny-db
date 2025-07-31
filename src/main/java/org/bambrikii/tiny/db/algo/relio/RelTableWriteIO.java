@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storagelayout.relio;
+package org.bambrikii.tiny.db.algo.relio;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.bambrikii.tiny.db.storagelayout.relio.RelTableFileUtils.PAGE_FILE_NAME;
-import static org.bambrikii.tiny.db.storagelayout.relio.RelTableFileUtils.buildPageFilePath;
+import static org.bambrikii.tiny.db.algo.relio.RelTableFileUtils.PAGE_FILE_NAME;
+import static org.bambrikii.tiny.db.algo.relio.RelTableFileUtils.buildPageFilePath;
 
 @RequiredArgsConstructor
 public class RelTableWriteIO implements AutoCloseable {

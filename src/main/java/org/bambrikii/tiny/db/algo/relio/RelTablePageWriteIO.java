@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storagelayout.relio;
+package org.bambrikii.tiny.db.algo.relio;
 
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.io.disk.DiskIO;
@@ -6,7 +6,7 @@ import org.bambrikii.tiny.db.io.disk.FileOps;
 import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.Column;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.storagelayout.PhysicalRow;
+import org.bambrikii.tiny.db.algo.PhysicalRow;
 import org.bambrikii.tiny.db.utils.RelColumnType;
 import org.bambrikii.tiny.db.utils.TableStructDecorator;
 

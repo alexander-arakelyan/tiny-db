@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storagelayout.relio;
+package org.bambrikii.tiny.db.algo.relio;
 
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.io.disk.DiskIO;

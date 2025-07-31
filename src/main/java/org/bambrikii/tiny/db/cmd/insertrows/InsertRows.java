@@ -28,12 +28,24 @@ public class InsertRows extends AbstractCommand<InsertRowsMessage, QueryExecutor
         var tables = cmd.getTables();
 
         var storage = ctx.getStorage();
-        insert(storage, tables, filters, targetTable, resolveValues(targetValues));
+        if (tables.isEmpty()) {
+            insertValues(storage, targetTable, targetValues);
+        } else {
+            insertScrollable(storage, tables, filters, targetTable, resolveValues(targetValues));
+        }
 
         return OK_COMMAND_RESULT;
     }
 
-    public static void insert(
+    private static void insertValues(
+            StorageContext storage,
+            String targetTable,
+            Map<String, Object> targetValues
+    ) {
+        storage.insert(targetTable, null, resolveValues(targetValues));
+    }
+
+    public static void insertScrollable(
             StorageContext storage,
             List<Join> tables,
             List<Filter> filters,
@@ -53,9 +65,12 @@ public class InsertRows extends AbstractCommand<InsertRowsMessage, QueryExecutor
         return row -> {
             var map = new HashMap<String, Object>();
             for (var entry : targetValues.entrySet()) {
-                var key1 = entry.getKey();
+                var key = entry.getKey();
                 var val = entry.getValue();
-                map.put(key1, val instanceof String ? row.read((String) val) : val);
+                var targetVal = row != null && val instanceof String
+                        ? row.read((String) val)
+                        : val;
+                map.put(key, targetVal);
             }
             return map;
         };

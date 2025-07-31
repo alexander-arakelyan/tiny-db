@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storagelayout.relio;
+package org.bambrikii.tiny.db.algo.relio;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.bambrikii.tiny.db.storagelayout.relio.RelTableFileUtils.PAGE_FILE_NAME;
+import static org.bambrikii.tiny.db.algo.relio.RelTableFileUtils.PAGE_FILE_NAME;
 
 /**
  * table files format:

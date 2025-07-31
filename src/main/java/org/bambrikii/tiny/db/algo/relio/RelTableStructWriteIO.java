@@ -1,21 +1,21 @@
-package org.bambrikii.tiny.db.storagelayout.relio;
+package org.bambrikii.tiny.db.algo.relio;
 
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.io.disk.DiskIO;
 import org.bambrikii.tiny.db.io.disk.FileOps;
-import org.bambrikii.tiny.db.model.Column;
 import org.bambrikii.tiny.db.model.TableStruct;
 
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.List;
 
-import static org.bambrikii.tiny.db.storagelayout.relio.RelTableFileUtils.buildStructFilePath;
+import static org.bambrikii.tiny.db.algo.relio.RelTableFileUtils.buildStructFilePath;
+import static org.bambrikii.tiny.db.algo.relio.RelTableFileUtils.ensureStructDir;
 
 @RequiredArgsConstructor
-public class RelTableStructReadIO implements AutoCloseable {
+public class RelTableStructWriteIO implements AutoCloseable {
     private final DiskIO io;
-    private final String name;
+    private final String fileName;
     private RandomAccessFile raf;
     private FileChannel channel;
     private String tableName;
@@ -30,27 +30,24 @@ public class RelTableStructReadIO implements AutoCloseable {
      */
 
     public void open() {
-        this.raf = io.openRead(buildStructFilePath(name));
+        ensureStructDir(fileName);
+        this.raf = io.openReadWrite(buildStructFilePath(fileName));
         this.channel = raf.getChannel();
         this.ops = new FileOps(channel);
     }
 
-    public TableStruct read() {
-        var struct = new TableStruct();
-        struct.setTable(ops.readStr());
-        struct.setVersion(ops.readInt());
-        var colsCount = ops.readInt();
-        var cols = struct.getColumns();
-        for (var i = 0; i < colsCount; i++) {
-            var col = new Column();
-            col.setName(ops.readStr());
-            col.setType(ops.readStr());
-            col.setSize(ops.readInt());
-            col.setUnique(ops.readBool());
-            col.setNullable(ops.readBool());
-            cols.add(col);
+    public boolean write(TableStruct struct) {
+        ops.writeStr(struct.getTable());
+        ops.writeInt(struct.getVersion());
+        ops.writeInt(struct.getColumns().size());
+        for (var col : struct.getColumns()) {
+            ops.writeStr(col.getName());
+            ops.writeStr(col.getType());
+            ops.writeInt(col.getSize());
+            ops.writeBool(col.isUnique());
+            ops.writeBool(col.isNullable());
         }
-        return struct;
+        return true;
     }
 
     @Override

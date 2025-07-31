@@ -7,9 +7,10 @@ import org.bambrikii.tiny.db.io.mem.MemIO;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
-import org.bambrikii.tiny.db.storagelayout.relio.RelTableScanIO;
-import org.bambrikii.tiny.db.storagelayout.relio.RelTableStructWriteIO;
-import org.bambrikii.tiny.db.storagelayout.relio.RelTableWriteIO;
+import org.bambrikii.tiny.db.algo.relio.RelTableScanIO;
+import org.bambrikii.tiny.db.algo.relio.RelTableStructReadIO;
+import org.bambrikii.tiny.db.algo.relio.RelTableStructWriteIO;
+import org.bambrikii.tiny.db.algo.relio.RelTableWriteIO;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -21,15 +22,27 @@ public class DiskInstructionStrategy implements AbstractInstructionStrategy {
 
     @Override
     public boolean write(TableStruct struct) {
-        try (var rel = new RelTableStructWriteIO(disk, struct.getTable())) {
-            return rel.write(struct) && mem.write("information_schema." + struct.getTable(), struct);
+        var table = struct.getTable();
+        try (var rel = new RelTableStructWriteIO(disk, table)) {
+            return rel.write(struct);
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw new RuntimeException("Failed to store structure " + table + " on disk.", ex);
+        }
+    }
+
+    @SneakyThrows
+    @Override
+    public TableStruct read(String name) {
+        try (var structIo = new RelTableStructReadIO(disk, name)) {
+            structIo.open();
+            return structIo.read();
         }
     }
 
     @Override
     public boolean drop(String name) {
+        // TODO: delete struct files,
+        // TODO: delete page files.
         return disk.drop(name) && mem.drop(name);
     }
 
