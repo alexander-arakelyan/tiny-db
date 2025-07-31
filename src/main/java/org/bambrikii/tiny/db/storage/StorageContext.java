@@ -6,9 +6,9 @@ import org.bambrikii.tiny.db.io.mem.MemIO;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
-import org.bambrikii.tiny.db.storage.instructions.AbstractInstructionStrategy;
-import org.bambrikii.tiny.db.storage.instructions.DiskInstructionStrategy;
-import org.bambrikii.tiny.db.storage.instructions.MemInstructionStrategy;
+import org.bambrikii.tiny.db.instructions.AbstractInstructionStrategy;
+import org.bambrikii.tiny.db.instructions.DiskInstructionStrategy;
+import org.bambrikii.tiny.db.instructions.MemInstructionStrategy;
 
 import java.util.Map;
 import java.util.function.Function;

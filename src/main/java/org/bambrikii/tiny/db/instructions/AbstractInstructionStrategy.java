@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.storage.instructions;
+package org.bambrikii.tiny.db.instructions;
 
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.model.TableStruct;
