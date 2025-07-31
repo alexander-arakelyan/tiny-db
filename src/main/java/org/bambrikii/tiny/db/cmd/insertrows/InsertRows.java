@@ -54,6 +54,7 @@ public class InsertRows extends AbstractCommand<InsertRowsMessage, QueryExecutor
     ) {
         var planBuilder = new ExecutionPlanBuilder(storage);
         try (var it = planBuilder.execute(tables, filters)) {
+            it.open();
             Row row;
             while ((row = it.next()) != null) {
                 storage.insert(targetTable, row, valuesResolver);

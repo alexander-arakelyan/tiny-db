@@ -12,15 +12,15 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RelTableScanIOTest {
+class RelTableScanIOTest {
     @SneakyThrows
     @Test
     void shouldReadAndWriteRelTable() {
         var io = new DiskIO();
-        try (var schemaIo = new RelTableStructWriteIO(io, "tbl1")) {
+        try (var schemaIo = new RelTableStructWriteIO(io, "build/tbl1-rel-table-scan")) {
             schemaIo.open();
             var struct = new TableStruct();
-            struct.setTable("tbl1");
+            struct.setTable("build/tbl1-rel-table-scan");
             struct.setSchema("schema1");
             var col1 = new Column();
             col1.setName("col1");
@@ -29,19 +29,19 @@ public class RelTableScanIOTest {
             schemaIo.write(struct);
         }
 
-        try (var schemaIo = new RelTableStructReadIO(io, "tbl1")) {
+        try (var schemaIo = new RelTableStructReadIO(io, "build/tbl1-rel-table-scan")) {
             schemaIo.open();
             var struct = schemaIo.read();
             System.out.println(struct);
         }
 
-        try (var writeIo = new RelTableWriteIO(io, "tbl1")) {
+        try (var writeIo = new RelTableWriteIO(io, "build/tbl1-rel-table-scan")) {
             writeIo.open();
             for (int i = 0; i < 5; i++) {
                 writeIo.insert(Map.of("col1", "val" + i));
             }
         }
-        try (var scanIo = new RelTableScanIO(io, "tbl1")) {
+        try (var scanIo = new RelTableScanIO(io, "build/tbl1-rel-table-scan")) {
             scanIo.open();
             Row row;
             int n = 0;

@@ -21,10 +21,18 @@ public class RelTableFileUtils {
     }
 
     public static String buildStructFilePath(String name) {
-        return name + FileSystems.getDefault().getSeparator() + name + "." + STRUCT_EXT;
+        return name
+                + FileSystems.getDefault().getSeparator()
+                + extractFileName(name)
+                + "."
+                + STRUCT_EXT;
+    }
+
+    private static String extractFileName(String name) {
+        return name.substring(name.indexOf(FileSystems.getDefault().getSeparator()) + 1);
     }
 
     public static String buildPageFilePath(String name, int pageN) {
-        return name + FileSystems.getDefault().getSeparator() + name + "." + pageN + "." + PAGE_EXT;
+        return name + FileSystems.getDefault().getSeparator() + extractFileName(name) + "." + pageN + "." + PAGE_EXT;
     }
 }

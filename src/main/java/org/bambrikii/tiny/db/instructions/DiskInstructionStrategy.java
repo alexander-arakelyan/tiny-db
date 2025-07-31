@@ -24,6 +24,7 @@ public class DiskInstructionStrategy implements AbstractInstructionStrategy {
     public boolean write(TableStruct struct) {
         var table = struct.getTable();
         try (var rel = new RelTableStructWriteIO(disk, table)) {
+            rel.open();
             return rel.write(struct);
         } catch (Exception ex) {
             throw new RuntimeException("Failed to store structure " + table + " on disk.", ex);

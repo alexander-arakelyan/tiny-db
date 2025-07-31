@@ -23,7 +23,7 @@ public class CreateTableMessage implements AbstractMessage, AddColumnCommandable
 
     @Override
     public void addColumn(String name, String type, int scale, int precision, boolean nullable, boolean unique) {
-        Column col = new Column();
+        var col = new Column();
         col.setName(name);
         col.setType(type);
         col.setScale(scale);
