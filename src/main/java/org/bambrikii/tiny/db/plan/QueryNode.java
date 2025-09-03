@@ -3,9 +3,9 @@ package org.bambrikii.tiny.db.plan;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.bambrikii.tiny.db.model.Filter;
-import org.bambrikii.tiny.db.model.Join;
-import org.bambrikii.tiny.db.model.select.ColumnRef;
+import org.bambrikii.tiny.db.model.select.WhereClause;
+import org.bambrikii.tiny.db.model.select.FromClause;
+import org.bambrikii.tiny.db.model.select.SelectClause;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +15,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QueryNode {
     private final String alias;
-    private final Join join;
-    private final List<ColumnRef> cols = new ArrayList<>();
-    private final List<Join> rights = new ArrayList<>();
-    private final List<Filter> filters = new ArrayList<>();
+    private final FromClause table;
+    private final List<SelectClause> cols = new ArrayList<>();
+    private final List<FromClause> rights = new ArrayList<>();
+    private final List<WhereClause> filters = new ArrayList<>();
 }

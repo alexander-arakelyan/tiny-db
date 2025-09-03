@@ -34,7 +34,7 @@ class AlterTableTest {
 
         var insertRowsCmd = new InsertRows();
         var insertRowsMsg = new InsertRowsMessage();
-        insertRowsMsg.name(name);
+        insertRowsMsg.into(name);
         insertRowsMsg.columnValue("col1", "val1");
         insertRowsMsg.columnValue("col2", "val2");
         insertRowsCmd.exec(insertRowsMsg, ctx);

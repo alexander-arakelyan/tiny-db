@@ -16,8 +16,7 @@ public class StringIOUtils {
         return bytes != null ? new String(bytes, UTF_8) : null;
     }
 
-    public static void writeStr(String table, ByteChannel channel, ByteBuffer intBuff) {
-        byte[] bytes = table.getBytes();
-        writeBytes(bytes, channel, intBuff);
+    public static void writeStr(String str, ByteChannel channel, ByteBuffer intBuff) {
+        writeBytes(str == null ? null : str.getBytes(), channel, intBuff);
     }
 }

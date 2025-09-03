@@ -10,6 +10,8 @@ import static org.bambrikii.tiny.db.storage.types.IntIOUtils.readInt;
 import static org.bambrikii.tiny.db.storage.types.IntIOUtils.writeInt;
 
 public class ByteIOUtils {
+    public static final int NULL_STR_LEN = -1;
+
     private ByteIOUtils() {
     }
 
@@ -18,6 +20,9 @@ public class ByteIOUtils {
     public static byte[] readBytes(ByteChannel channel, ByteBuffer intBuff) {
         int len = readInt(channel, intBuff);
         if (len == Integer.MIN_VALUE) {
+            return null;
+        }
+        if (len == NULL_STR_LEN) {
             return null;
         }
         var buff = ByteBuffer.allocate(len);
@@ -29,8 +34,12 @@ public class ByteIOUtils {
 
     @SneakyThrows
     public static void writeBytes(byte[] bytes, ByteChannel channel, ByteBuffer intBuff) {
-        writeInt(bytes.length, channel, intBuff);
+        if (bytes == null) {
+            writeInt(NULL_STR_LEN, channel, intBuff);
+            return;
+        }
+        int len = bytes.length;
+        writeInt(len, channel, intBuff);
         channel.write(ByteBuffer.wrap(bytes));
     }
-
 }

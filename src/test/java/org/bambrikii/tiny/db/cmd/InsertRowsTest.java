@@ -31,7 +31,7 @@ class InsertRowsTest {
 
         var cmd = new InsertRows();
         var msg = new InsertRowsMessage();
-        msg.name("build/insert-rel-rows-1");
+        msg.into("build/insert-rel-rows-1");
         msg.columnValue("col1", "val1");
         msg.columnValue("col2", "val2");
         msg.columnValue("col3", "val3");

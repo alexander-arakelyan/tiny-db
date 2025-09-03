@@ -2,12 +2,15 @@ package org.bambrikii.tiny.db.parser.impl;
 
 import org.bambrikii.tiny.db.cmd.AddColumnCommandable;
 import org.bambrikii.tiny.db.cmd.DropColumnCommandable;
-import org.bambrikii.tiny.db.cmd.FilterCommandable;
+import org.bambrikii.tiny.db.cmd.WhereCommandable;
 import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsMessage;
+import org.bambrikii.tiny.db.cmd.shared.AbstractQueryMessage;
 import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.ComparisonOpEnum;
-import org.bambrikii.tiny.db.model.Filter;
-import org.bambrikii.tiny.db.model.select.ColumnRef;
+import org.bambrikii.tiny.db.model.JoinTypeEnum;
+import org.bambrikii.tiny.db.model.select.FromClause;
+import org.bambrikii.tiny.db.model.select.WhereClause;
+import org.bambrikii.tiny.db.model.select.SelectClause;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
 
 import java.util.List;
@@ -104,15 +107,15 @@ public class CommandParserFunctions {
         return drop(chars("column", word(TRUE_PREDICATE, cmd::dropCol)));
     }
 
-    public static ParserPredicate filter(Consumer<Filter> consumer) {
+    public static ParserPredicate filter(Consumer<WhereClause> consumer) {
         return filter(TRUE_PREDICATE, consumer);
     }
 
-    public static ParserPredicate filter(ParserPredicate next, Consumer<Filter> consumer) {
-        var left = new AtomicReference<ColumnRef>();
+    public static ParserPredicate filter(ParserPredicate next, Consumer<WhereClause> consumer) {
+        var left = new AtomicReference<SelectClause>();
         var leftVal = new AtomicReference<>();
         var op = new AtomicReference<ComparisonOpEnum>();
-        var right = new AtomicReference<ColumnRef>();
+        var right = new AtomicReference<SelectClause>();
         var rightVal = new AtomicReference<>();
         return or(
                 colRef(
@@ -125,7 +128,7 @@ public class CommandParserFunctions {
                                 ),
                                 s -> op.set(ComparisonOpEnum.parse(s))
                         ),
-                        s -> consumer.accept(new Filter(left.get(), leftVal.get(), op.get(), s, rightVal.get()))
+                        s -> consumer.accept(new WhereClause(left.get(), leftVal.get(), op.get(), s, rightVal.get()))
                 ),
                 value(
                         oneOfStrings(
@@ -137,63 +140,63 @@ public class CommandParserFunctions {
                                 ),
                                 s -> op.set(ComparisonOpEnum.parse(s))
                         ),
-                        n -> consumer.accept(new Filter(null, n, op.get(), right.get(), rightVal.get())),
-                        s -> consumer.accept(new Filter(null, s, op.get(), right.get(), rightVal.get()))
+                        n -> consumer.accept(new WhereClause(null, n, op.get(), right.get(), rightVal.get())),
+                        s -> consumer.accept(new WhereClause(null, s, op.get(), right.get(), rightVal.get()))
                 )
         );
     }
 
-    public static ParserPredicate where(FilterCommandable cmd) {
-        return chars("where", filter(cmd::filter));
+    public static ParserPredicate where(WhereCommandable cmd) {
+        return chars("where", filter(cmd::where));
     }
 
 
-    public static <C> ParserPredicate colRef(ParserPredicate next, Consumer<ColumnRef> consumer) {
+    public static <C> ParserPredicate colRef(ParserPredicate next, Consumer<SelectClause> consumer) {
         var colRef = new AtomicReference<String>();
         return spaces(
                 word(chars(".",
                                 word(next, colRef::set)
                         ),
-                        s -> consumer.accept(new ColumnRef(colRef.get(), s))
+                        s -> consumer.accept(new SelectClause(colRef.get(), s))
                 )
         );
     }
 
     public static <C> ParserPredicate select(SelectRowsMessage cmd) {
-        return chars("select", atLeastOnceCommaSeparated(or(colRef(TRUE_PREDICATE, cmd::column))));
+        return chars("select", atLeastOnceCommaSeparated(or(colRef(TRUE_PREDICATE, cmd::select))));
     }
 
-    public static <C> ParserPredicate from(
-            SelectRowsMessage cmd,
-            AtomicReference<String> joinTableAliasRef
-    ) {
-        return chars("from", word(word(TRUE_PREDICATE, joinTableAliasRef::set), s -> cmd.table(s, null, joinTableAliasRef.get())));
+    public static <C> ParserPredicate from(AbstractQueryMessage cmd) {
+        var joinTableAliasRef = new AtomicReference<String>();
+        return chars("from",
+                word(
+                        word(
+                                TRUE_PREDICATE,
+                                joinTableAliasRef::set
+                        ),
+                        s -> cmd.from(new FromClause(s, null, joinTableAliasRef.get()))
+                )
+        );
     }
 
-    public static <C> ParserPredicate join(
-            SelectRowsMessage cmd,
-            AtomicReference<String> joinTableNameRef,
-            AtomicReference<String> joinTableAliasRef
-    ) {
+    public static <C> ParserPredicate join(SelectRowsMessage cmd) {
+        var joinTableNameRef = new AtomicReference<String>();
+        var joinTableAliasRef = new AtomicReference<String>();
         return oneOfStrings(List.of("inner", "left", "right"), chars("join",
                         word(
                                 word(
-                                        chars("on", filter(TRUE_PREDICATE, cmd::filter)),
+                                        chars("on", filter(TRUE_PREDICATE, cmd::where)),
                                         joinTableAliasRef::set
                                 ),
                                 joinTableNameRef::set
                         )
                 ),
-                joinDir -> cmd.table(joinTableNameRef.get(), joinDir, joinTableAliasRef.get())
+                joinDir -> cmd.from(new FromClause(joinTableNameRef.get(), JoinTypeEnum.parse(joinDir), joinTableAliasRef.get()))
         );
     }
 
-    public static <C> ParserPredicate joins(
-            SelectRowsMessage cmd,
-            AtomicReference<String> joinTableNameRef,
-            AtomicReference<String> joinTableAliasRef
-    ) {
-        return times(join(cmd, joinTableAliasRef, joinTableNameRef));
+    public static <C> ParserPredicate joins(SelectRowsMessage cmd) {
+        return times(join(cmd));
     }
 
     public static ParserPredicate quotedString(ParserPredicate next, Consumer<String> consumer) {

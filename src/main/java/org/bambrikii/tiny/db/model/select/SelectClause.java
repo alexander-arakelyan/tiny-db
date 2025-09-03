@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.model;
+package org.bambrikii.tiny.db.model.select;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Join {
-    private String table;
-    private JoinTypeEnum type;
-    private String alias;
+public class SelectClause {
+    private String tableAlias;
+    private String name;
 }

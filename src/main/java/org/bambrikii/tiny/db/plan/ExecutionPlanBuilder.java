@@ -1,9 +1,9 @@
 package org.bambrikii.tiny.db.plan;
 
-import org.bambrikii.tiny.db.model.Filter;
-import org.bambrikii.tiny.db.model.Join;
+import org.bambrikii.tiny.db.model.select.WhereClause;
+import org.bambrikii.tiny.db.model.select.FromClause;
 import org.bambrikii.tiny.db.model.JoinTypeEnumComparator;
-import org.bambrikii.tiny.db.model.select.ColumnRef;
+import org.bambrikii.tiny.db.model.select.SelectClause;
 import org.bambrikii.tiny.db.plan.cursorts.DefaultCursor;
 import org.bambrikii.tiny.db.plan.cursorts.Scrollable;
 import org.bambrikii.tiny.db.plan.filters.ExecutionFilter;
@@ -11,6 +11,7 @@ import org.bambrikii.tiny.db.storage.StorageContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,12 +27,12 @@ public class ExecutionPlanBuilder {
     }
 
     public Scrollable execute(
-            List<Join> tables,
-            List<Filter> filters
+            List<FromClause> from,
+            List<WhereClause> where
     ) {
         // topo sort filters
-        var tablesSorted = topoSort(tables, filters);
-        var filtersByAlias = groupFiltersByAlias(filters);
+        var tablesSorted = topoSort(from, where);
+        var filtersByAlias = groupFiltersByAlias(where);
         for (var ts : tablesSorted) {
             var t = ts.getTable();
             var a = ts.getAlias();
@@ -40,7 +41,7 @@ public class ExecutionPlanBuilder {
         return new DefaultCursor(ctx, tablesSorted, filtersByAlias);
     }
 
-    private Map<String, List<ExecutionFilter>> groupFiltersByAlias(List<Filter> filters) {
+    private Map<String, List<ExecutionFilter>> groupFiltersByAlias(List<WhereClause> filters) {
         var map = new HashMap<String, List<ExecutionFilter>>();
         for (var f : filters) {
             addFilter(map, f.getL(), f);
@@ -49,8 +50,8 @@ public class ExecutionPlanBuilder {
         return map;
     }
 
-    private static void addFilter(HashMap<String, List<ExecutionFilter>> map, ColumnRef col, Filter f) {
-        map.compute(col.getAlias(), (s, fs) -> {
+    private static void addFilter(HashMap<String, List<ExecutionFilter>> map, SelectClause col, WhereClause f) {
+        map.compute(col.getTableAlias(), (s, fs) -> {
             if (fs == null) {
                 fs = new ArrayList<>();
             }
@@ -59,39 +60,43 @@ public class ExecutionPlanBuilder {
         });
     }
 
-    private static List<Join> topoSort(List<Join> tables, List<Filter> filters) {
+    private static List<FromClause> topoSort(List<FromClause> tables, List<WhereClause> filters) {
         // build map of tables
         var tabs = groupTabsByAlias(tables);
-        var sorted = new ArrayList<Join>();
-        var aliasCount = new HashMap<String, Integer>();
+        var sorted = new ArrayList<FromClause>();
+        var tabsToAdd = new HashMap<>(tabs);
+        var aliasesIncluded = new HashMap<String, Integer>();
         for (var f : filters) {
-            incTabs(aliasCount, f.getL());
-            incTabs(aliasCount, f.getR());
+            incTabs(aliasesIncluded, f.getL());
+            incTabs(aliasesIncluded, f.getR());
         }
         while (!filters.isEmpty()) {
             var iter = filters.iterator();
             while (iter.hasNext()) {
                 var f = iter.next();
-                var alias = f.getL().getAlias();
-                if (aliasCount.get(alias) > 1) {
+                var alias = f.getL().getTableAlias();
+                if (aliasesIncluded.get(alias) > 1) {
                     continue;
                 }
-                aliasCount.remove(alias);
+                aliasesIncluded.remove(alias);
                 var t = tabs.get(alias);
-                decTabs(aliasCount, t.getAlias());
+                decTabs(aliasesIncluded, t.getAlias());
+                tabsToAdd.remove(alias);
                 sorted.add(t);
                 iter.remove();
             }
         }
+        sorted.addAll(tabsToAdd.values());
+
         return sorted;
     }
 
-    private static Map<String, Join> groupTabsByAlias(List<Join> tables) {
+    private static Map<String, FromClause> groupTabsByAlias(List<FromClause> tables) {
         var sorted = tables
                 .stream()
                 .sorted((o1, o2) -> JOIN_TYPE_ENUM_COMPARATOR.compare(o1.getType(), o2.getType()))
                 .collect(Collectors.toList());
-        var map = new HashMap<String, Join>();
+        var map = new LinkedHashMap<String, FromClause>();
         for (var s : sorted) {
             map.put(s.getAlias(), s);
         }
@@ -102,7 +107,7 @@ public class ExecutionPlanBuilder {
         return tabCount.compute(alias, (s, n) -> n - 1);
     }
 
-    private static Integer incTabs(HashMap<String, Integer> tabCount, ColumnRef f) {
-        return tabCount.compute(f.getAlias(), (s, n) -> n == null ? 1 : n + 1);
+    private static Integer incTabs(HashMap<String, Integer> tabCount, SelectClause f) {
+        return tabCount.compute(f.getTableAlias(), (s, n) -> n == null ? 1 : n + 1);
     }
 }

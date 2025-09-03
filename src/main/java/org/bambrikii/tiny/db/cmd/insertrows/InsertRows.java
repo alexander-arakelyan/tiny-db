@@ -2,8 +2,8 @@ package org.bambrikii.tiny.db.cmd.insertrows;
 
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.CommandResult;
-import org.bambrikii.tiny.db.model.Filter;
-import org.bambrikii.tiny.db.model.Join;
+import org.bambrikii.tiny.db.model.select.WhereClause;
+import org.bambrikii.tiny.db.model.select.FromClause;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.plan.ExecutionPlanBuilder;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
@@ -19,13 +19,12 @@ import static org.bambrikii.tiny.db.cmd.none.NoCommandResult.OK_COMMAND_RESULT;
 public class InsertRows extends AbstractCommand<InsertRowsMessage, QueryExecutorContext> {
     @Override
     public CommandResult exec(InsertRowsMessage cmd, QueryExecutorContext ctx) {
-        var targetTable = cmd.getTargetTable();
+        var targetTable = cmd.getInto();
 
         var targetValues = cmd.getTargetValues();
 
-        var columns = cmd.getColumns();
-        var filters = cmd.getFilters();
-        var tables = cmd.getTables();
+        var filters = cmd.getWhere();
+        var tables = cmd.getFrom();
 
         var storage = ctx.getStorage();
         if (tables.isEmpty()) {
@@ -47,8 +46,8 @@ public class InsertRows extends AbstractCommand<InsertRowsMessage, QueryExecutor
 
     public static void insertScrollable(
             StorageContext storage,
-            List<Join> tables,
-            List<Filter> filters,
+            List<FromClause> tables,
+            List<WhereClause> filters,
             String targetTable,
             Function<Row, Map<String, Object>> valuesResolver
     ) {

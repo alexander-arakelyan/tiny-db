@@ -3,6 +3,7 @@ package org.bambrikii.tiny.db.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.bambrikii.tiny.db.model.select.WhereClause;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,6 @@ public class TableStruct {
     private String schema;
     private String table;
     private int version = 0;
-    private final Map<String, Filter> partitions = new HashMap<>();
+    private final Map<String, WhereClause> partitions = new HashMap<>();
     private final List<Column> columns = new ArrayList<>();
 }

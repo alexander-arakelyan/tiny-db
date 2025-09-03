@@ -1,15 +1,14 @@
 package org.bambrikii.tiny.db.model.select;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 @Getter
 @Setter
-public class ColumnRef {
-    private String name;
-    private String alias;
+public class GroupByClause {
 }

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bambrikii.tiny.db.model.ComparisonOpEnum;
-import org.bambrikii.tiny.db.model.Filter;
+import org.bambrikii.tiny.db.model.select.WhereClause;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ public class ExecutionFilter {
     private boolean applied = false;
     private boolean passed = true;
 
-    public static ExecutionFilter build(Filter f) {
+    public static ExecutionFilter build(WhereClause f) {
         var f2 = new ExecutionFilter();
 
         f2.setL(ExecutionFilterClauseFactory.build(f.getL(), f.getLVal()));

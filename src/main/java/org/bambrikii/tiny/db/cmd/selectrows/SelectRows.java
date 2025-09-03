@@ -2,10 +2,10 @@ package org.bambrikii.tiny.db.cmd.selectrows;
 
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.CommandResult;
-import org.bambrikii.tiny.db.model.Filter;
-import org.bambrikii.tiny.db.model.Join;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.model.select.ColumnRef;
+import org.bambrikii.tiny.db.model.select.FromClause;
+import org.bambrikii.tiny.db.model.select.SelectClause;
+import org.bambrikii.tiny.db.model.select.WhereClause;
 import org.bambrikii.tiny.db.plan.ExecutionPlanBuilder;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
 
@@ -15,33 +15,37 @@ public class SelectRows extends AbstractCommand<SelectRowsMessage, QueryExecutor
     @Override
     public CommandResult exec(SelectRowsMessage cmd, QueryExecutorContext ctx) {
         var key = "";
-        var columns = cmd.getColumns();
-        var filters = cmd.getFilters();
-        var tables = cmd.getTables();
+        var select = cmd.getSelect();
+        var from = cmd.getFrom();
+        var where = cmd.getWhere();
+        var orderBy = cmd.getOrderBy();
+        var groupBy = cmd.getGroupBy();
 
-        var planBuilder = new ExecutionPlanBuilder(ctx.getStorage());
+        var plan = new ExecutionPlanBuilder(ctx.getStorage());
         var sb = new StringBuilder();
-        appendCols(columns, sb);
-        appendRows(planBuilder, tables, filters, sb, columns);
+        appendRows(plan, sb, select, from, where);
         return new ScrollableCommandResult(sb.toString());
     }
 
-    private static void appendRows(ExecutionPlanBuilder planBuilder, List<Join> tables, List<Filter> filters, StringBuilder sb, List<ColumnRef> columns) {
-        try (var it = planBuilder.execute(tables, filters)) {
+    private static void appendRows(
+            ExecutionPlanBuilder plan,
+            StringBuilder sb,
+            List<SelectClause> select,
+            List<FromClause> from,
+            List<WhereClause> where
+    ) {
+        for (var col : select) {
+            sb.append(col).append(",").append(System.lineSeparator());
+        }
+        try (var it = plan.execute(from, where)) {
             Row row;
             while ((row = it.next()) != null) {
                 sb.append(row.getRowId());
-                for (var col : columns) {
-                    sb.append(row.read(String.format("%s.%s", col.getAlias(), col.getName()))).append(",");
+                for (var col : select) {
+                    sb.append(row.read(String.format("%s.%s", col.getTableAlias(), col.getName()))).append(",");
                 }
                 sb.append(System.lineSeparator());
             }
-        }
-    }
-
-    private static void appendCols(List<ColumnRef> columns, StringBuilder sb) {
-        for (var col : columns) {
-            sb.append(col).append(",").append(System.lineSeparator());
         }
     }
 }

@@ -1,12 +1,11 @@
 package org.bambrikii.tiny.db.cmd.altertable;
 
-import org.bambrikii.tiny.db.algo.PhysicalRow;
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.CommandResult;
 import org.bambrikii.tiny.db.cmd.insertrows.InsertRows;
 import org.bambrikii.tiny.db.model.Column;
-import org.bambrikii.tiny.db.model.Filter;
-import org.bambrikii.tiny.db.model.Join;
+import org.bambrikii.tiny.db.model.select.WhereClause;
+import org.bambrikii.tiny.db.model.select.FromClause;
 import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
 import org.bambrikii.tiny.db.storage.StorageContext;
@@ -31,7 +30,7 @@ public class AlterTable extends AbstractCommand<AlterTableMessage, QueryExecutor
         // add new columns
 
         var storage = ctx.getStorage();
-        var filters = List.<Filter>of();
+        var filters = List.<WhereClause>of();
 
         var tmpStruct = copyToTmp(msg, tmpTableName, storage, tableName, filters);
         overwriteOrig(storage, tableName, tmpStruct, tmpTableName, filters);
@@ -39,14 +38,14 @@ public class AlterTable extends AbstractCommand<AlterTableMessage, QueryExecutor
         return OK_COMMAND_RESULT;
     }
 
-    private void overwriteOrig(StorageContext storage, String tableName, TableStruct tmpStruct, String tmpTableName, List<Filter> filters) {
+    private void overwriteOrig(StorageContext storage, String tableName, TableStruct tmpStruct, String tmpTableName, List<WhereClause> filters) {
         storage.drop(tableName);
         var targetStruct = createStrct(tmpStruct, tableName);
         insertRows(storage, createJoin(tmpTableName), filters, targetStruct);
         storage.drop(tmpTableName);
     }
 
-    private static TableStruct copyToTmp(AlterTableMessage cmd, String tmpTableName, StorageContext storage, String tableName, List<Filter> filters) {
+    private static TableStruct copyToTmp(AlterTableMessage cmd, String tmpTableName, StorageContext storage, String tableName, List<WhereClause> filters) {
         var tmpStruct = alterStruct(cmd, tmpTableName, storage.read(tableName));
         storage.write(tmpStruct);
         insertRows(storage, createJoin(tableName), filters, tmpStruct);
@@ -60,16 +59,21 @@ public class AlterTable extends AbstractCommand<AlterTableMessage, QueryExecutor
         return struct;
     }
 
-    private static List<Join> createJoin(String tableName) {
-        return List.of(new Join(tableName, null, tableName));
+    private static List<FromClause> createJoin(String tableName) {
+        return List.of(new FromClause(tableName, null, tableName));
     }
 
-    private static void insertRows(StorageContext storage, List<Join> tables, List<Filter> filters, TableStruct struct) {
+    private static void insertRows(StorageContext storage, List<FromClause> tables, List<WhereClause> filters, TableStruct struct) {
         InsertRows.insertScrollable(storage, tables, filters, struct.getTable(), row -> {
             var vals = new HashMap<String, Object>();
-            ((PhysicalRow) row)
-                    .keys()
-                    .forEach(col -> vals.put(col, row.read(col)));
+            for (var tab : tables) {
+                var alias = tab.getAlias();
+                for (var col : struct.getColumns()) {
+                    var colName = col.getName();
+                    var val = row.read(alias + "." + colName);
+                    vals.put(colName, val);
+                }
+            }
             return vals;
         });
     }

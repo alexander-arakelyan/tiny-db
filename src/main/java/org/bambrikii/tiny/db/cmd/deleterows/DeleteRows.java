@@ -13,9 +13,8 @@ public class DeleteRows extends AbstractCommand<DeleteRowsMessage, QueryExecutor
     public CommandResult exec(DeleteRowsMessage cmd, QueryExecutorContext ctx) {
         var targetTable = cmd.getTargetTable();
 
-        var columns = cmd.getColumns();
-        var filters = cmd.getFilters();
-        var tables = cmd.getTables();
+        var tables = cmd.getFrom();
+        var filters = cmd.getWhere();
 
         var storage = ctx.getStorage();
         var planBuilder = new ExecutionPlanBuilder(storage);

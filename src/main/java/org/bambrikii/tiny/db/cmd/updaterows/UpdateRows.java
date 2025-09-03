@@ -18,13 +18,12 @@ public class UpdateRows extends AbstractCommand<UpdateRowsMessage, QueryExecutor
 
         var targetValues = cmd.getTargetValues();
 
-        var columns = cmd.getColumns();
-        var filters = cmd.getFilters();
-        var tables = cmd.getTables();
+        var from = cmd.getFrom();
+        var where = cmd.getWhere();
 
         var storage = ctx.getStorage();
-        var planBuilder = new ExecutionPlanBuilder(storage);
-        try (var it = planBuilder.execute(tables, filters)) {
+        var plan = new ExecutionPlanBuilder(storage);
+        try (var it = plan.execute(from, where)) {
             Row row;
             while ((row = it.next()) != null) {
                 storage.update(targetTable, row, InsertRows.resolveValues(targetValues));

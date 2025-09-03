@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.bambrikii.tiny.db.model.select.WhereClause;
 
 @RequiredArgsConstructor
 @Getter
@@ -11,5 +12,5 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class PartitionStruct {
     private final TableStruct tableStruct;
-    private final Filter filter;
+    private final WhereClause filter;
 }

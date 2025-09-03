@@ -5,10 +5,13 @@ import org.bambrikii.tiny.db.cmd.AbstractMessage;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
+import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.from;
+import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.where;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.atLeastOnceCommaSeparated;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.brackets;
@@ -26,24 +29,30 @@ public class InsertRowsParser extends AbstractCommandParser {
         var valPos = new AtomicInteger(0);
         var cmd = new InsertRowsMessage();
         return chars("insert", chars("into", word(
-                        ordered(
-                                brackets(atLeastOnceCommaSeparated(word(TRUE_PREDICATE, colsByIndex::add))),
-                                chars("values",
-                                        brackets(atLeastOnceCommaSeparated(or(
-                                                word(TRUE_PREDICATE, buildValSetter(cmd, colsByIndex, valPos)),
-                                                singleQuoted(word(TRUE_PREDICATE, buildValSetter(cmd, colsByIndex, valPos))),
-                                                number(buildValSetter(cmd, colsByIndex, valPos))
-                                        )))
+                        or(
+                                ordered(
+                                        brackets(atLeastOnceCommaSeparated(word(TRUE_PREDICATE, colsByIndex::add))),
+                                        chars("values",
+                                                brackets(atLeastOnceCommaSeparated(or(
+                                                        word(TRUE_PREDICATE, buildValSetter(cmd, colsByIndex, valPos)),
+                                                        singleQuoted(word(TRUE_PREDICATE, buildValSetter(cmd, colsByIndex, valPos))),
+                                                        number(buildValSetter(cmd, colsByIndex, valPos))
+                                                )))
+                                        )
+                                ),
+                                ordered(
+                                        from(cmd),
+                                        where(cmd)
                                 )
                         ),
-                        cmd::name
+                        cmd::into
                 )
         )).test(is)
                 ? cmd
                 : NO_MESSAGE;
     }
 
-    public static <T> Consumer<T> buildValSetter(InsertRowsMessage cmd, ArrayList<String> colsByIndex, AtomicInteger valPos) {
+    public static <T> Consumer<T> buildValSetter(InsertRowsMessage cmd, List<String> colsByIndex, AtomicInteger valPos) {
         return val -> cmd.columnValue(colsByIndex.get(valPos.getAndIncrement()), val);
     }
 }
