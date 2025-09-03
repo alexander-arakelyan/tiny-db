@@ -129,6 +129,16 @@ public class ParserFunctions {
         );
     }
 
+    public static ParserPredicate optionalBrackets(ParserPredicate next, Consumer<Boolean> withBrackets) {
+        return or(
+                ordered(
+                        spaces(chars("(", new ConstantResultPredicate<>(next, withBrackets, true))),
+                        spaces(chars(")", DEFAULT_STRING_CONSUMER))
+                ),
+                new ConstantResultPredicate<>(next, withBrackets, false)
+        );
+    }
+
     public static ParserPredicate singleQuoted(ParserPredicate next) {
         return ordered(
                 spaces(chars("'", next)),

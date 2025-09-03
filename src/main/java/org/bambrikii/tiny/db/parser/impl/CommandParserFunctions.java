@@ -202,6 +202,10 @@ public class CommandParserFunctions {
         return chars("'", word(chars("'", next), consumer));
     }
 
+    public static ParserPredicate quotedString(Consumer<String> consumer) {
+        return chars("'", word(chars("'", TRUE_PREDICATE), consumer));
+    }
+
     public static ParserPredicate value(ParserPredicate next, Consumer<Integer> integerConsumer, Consumer<String> stringConsumer) {
         return or(
                 number(next, integerConsumer),
