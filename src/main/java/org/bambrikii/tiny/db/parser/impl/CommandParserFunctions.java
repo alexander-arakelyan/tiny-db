@@ -8,9 +8,8 @@ import org.bambrikii.tiny.db.cmd.shared.AbstractQueryMessage;
 import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.ComparisonOpEnum;
 import org.bambrikii.tiny.db.model.JoinTypeEnum;
-import org.bambrikii.tiny.db.model.select.FromClause;
-import org.bambrikii.tiny.db.model.select.WhereClause;
 import org.bambrikii.tiny.db.model.select.SelectClause;
+import org.bambrikii.tiny.db.model.select.WhereClause;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
 
 import java.util.List;
@@ -174,12 +173,12 @@ public class CommandParserFunctions {
                                 TRUE_PREDICATE,
                                 joinTableAliasRef::set
                         ),
-                        s -> cmd.from(new FromClause(s, null, joinTableAliasRef.get()))
+                        s -> cmd.from(s, JoinTypeEnum.INNER, joinTableAliasRef.get())
                 )
         );
     }
 
-    public static <C> ParserPredicate join(SelectRowsMessage cmd) {
+    public static <C> ParserPredicate join(AbstractQueryMessage cmd) {
         var joinTableNameRef = new AtomicReference<String>();
         var joinTableAliasRef = new AtomicReference<String>();
         return oneOfStrings(List.of("inner", "left", "right"), chars("join",
@@ -191,7 +190,7 @@ public class CommandParserFunctions {
                                 joinTableNameRef::set
                         )
                 ),
-                joinDir -> cmd.from(new FromClause(joinTableNameRef.get(), JoinTypeEnum.parse(joinDir), joinTableAliasRef.get()))
+                joinDir -> cmd.from(joinTableNameRef.get(), JoinTypeEnum.parse(joinDir), joinTableAliasRef.get())
         );
     }
 

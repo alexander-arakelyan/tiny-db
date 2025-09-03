@@ -2,8 +2,11 @@ package org.bambrikii.tiny.db.parser;
 
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.cmd.NavigableStreamReader;
+import org.bambrikii.tiny.db.cmd.createtable.CreateTableMessage;
 import org.bambrikii.tiny.db.cmd.createtable.CreateTableParser;
+import org.bambrikii.tiny.db.cmd.insertrows.InsertRowsMessage;
 import org.bambrikii.tiny.db.cmd.insertrows.InsertRowsParser;
+import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsMessage;
 import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsParser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.ByteArrayInputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class CommandParserFunctionsTest {
@@ -28,6 +32,7 @@ class CommandParserFunctionsTest {
 
             // then
             System.out.println(" " + result);
+            assertThat(result).isInstanceOf(CreateTableMessage.class);
         }
     }
 
@@ -44,6 +49,7 @@ class CommandParserFunctionsTest {
 
             // then
             System.out.println(" " + result);
+            assertThat(result).isInstanceOf(InsertRowsMessage.class);
         }
     }
 
@@ -60,6 +66,7 @@ class CommandParserFunctionsTest {
 
             // then
             System.out.println(" " + result);
+            assertThat(result).isInstanceOf(SelectRowsMessage.class);
         }
     }
 
@@ -81,6 +88,7 @@ class CommandParserFunctionsTest {
 
             // then
             System.out.println(" " + result);
+            assertThat(result).isInstanceOf(SelectRowsMessage.class);
         }
     }
 }

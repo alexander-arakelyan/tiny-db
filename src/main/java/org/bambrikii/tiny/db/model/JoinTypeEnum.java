@@ -8,7 +8,12 @@ import java.util.Objects;
 
 @Getter
 public enum JoinTypeEnum {
-    LEFT("left", 0), RIGHT("right", 1), CROSS("cross", 2), FULL("full", 3);
+    INNER("inner", 0),
+    LEFT("left", 1),
+    RIGHT("right", 2),
+    CROSS("cross", 3),
+    FULL("full", 4);
+
     private final String sqlRepr;
     private final int priority;
 
