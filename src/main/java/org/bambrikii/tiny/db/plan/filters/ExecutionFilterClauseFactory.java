@@ -10,8 +10,8 @@ public class ExecutionFilterClauseFactory {
         if (val != null) {
             return new ValClause(val);
         }
-        if (ref.getName() != null) {
-            return new RefClause(ref.getTableAlias(), ref.getName());
+        if (ref.getCol() != null) {
+            return new RefClause(ref.getTableAlias(), ref.getCol());
         }
         throw new UnsupportedOperationException("Not yet implemented");
     }

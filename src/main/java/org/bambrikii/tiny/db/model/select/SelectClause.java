@@ -13,5 +13,5 @@ import lombok.ToString;
 @Setter
 public class SelectClause {
     private String tableAlias;
-    private String name;
+    private String col;
 }

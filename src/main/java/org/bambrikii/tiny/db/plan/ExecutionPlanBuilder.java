@@ -1,16 +1,20 @@
 package org.bambrikii.tiny.db.plan;
 
-import org.bambrikii.tiny.db.model.select.WhereClause;
-import org.bambrikii.tiny.db.model.select.FromClause;
+import org.bambrikii.tiny.db.model.ComparisonOpEnum;
 import org.bambrikii.tiny.db.model.JoinTypeEnumComparator;
+import org.bambrikii.tiny.db.model.select.FromClause;
 import org.bambrikii.tiny.db.model.select.SelectClause;
+import org.bambrikii.tiny.db.model.select.WhereClause;
 import org.bambrikii.tiny.db.plan.cursorts.DefaultCursor;
-import org.bambrikii.tiny.db.plan.cursorts.Scrollable;
 import org.bambrikii.tiny.db.plan.filters.ExecutionFilter;
+import org.bambrikii.tiny.db.plan.iterators.FilterIter;
+import org.bambrikii.tiny.db.plan.iterators.JoinIter;
+import org.bambrikii.tiny.db.plan.iterators.Scrollable;
 import org.bambrikii.tiny.db.storage.StorageContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,14 +35,9 @@ public class ExecutionPlanBuilder {
             List<WhereClause> where
     ) {
         // topo sort filters
-        var tablesSorted = topoSort(from, where);
+        var scroll = scroll(from, where);
         var filtersByAlias = groupFiltersByAlias(where);
-        for (var ts : tablesSorted) {
-            var t = ts.getTable();
-            var a = ts.getAlias();
-            var fs = filtersByAlias.get(a);
-        }
-        return new DefaultCursor(ctx, tablesSorted, filtersByAlias);
+        return new DefaultCursor(ctx, scroll, filtersByAlias);
     }
 
     private Map<String, List<ExecutionFilter>> groupFiltersByAlias(List<WhereClause> filters) {
@@ -60,35 +59,71 @@ public class ExecutionPlanBuilder {
         });
     }
 
-    private static List<FromClause> topoSort(List<FromClause> tables, List<WhereClause> filters) {
-        // build map of tables
-        var tabs = groupTabsByAlias(tables);
-        var sorted = new ArrayList<FromClause>();
-        var tabsToAdd = new HashMap<>(tabs);
-        var aliasesIncluded = new HashMap<String, Integer>();
-        for (var f : filters) {
-            incTabs(aliasesIncluded, f.getL());
-            incTabs(aliasesIncluded, f.getR());
+    private Scrollable scroll(
+            List<FromClause> from,
+            List<WhereClause> where
+    ) {
+        var scrolls = new HashMap<String, Scrollable>();
+        for (var clause : from) {
+            var alias = clause.getAlias();
+            scrolls.put(alias, ctx.scan(clause.getTable()));
         }
-        while (!filters.isEmpty()) {
-            var iter = filters.iterator();
-            while (iter.hasNext()) {
-                var f = iter.next();
-                var alias = f.getL().getTableAlias();
-                if (aliasesIncluded.get(alias) > 1) {
-                    continue;
-                }
-                aliasesIncluded.remove(alias);
-                var t = tabs.get(alias);
-                decTabs(aliasesIncluded, t.getAlias());
-                tabsToAdd.remove(alias);
-                sorted.add(t);
-                iter.remove();
+        //
+        for (var clause : where) {
+            var l = clause.getL();
+            var r = clause.getR();
+            var lVal = clause.getLVal();
+            var rVal = clause.getRVal();
+            var op = clause.getOp();
+            if (lVal != null) {
+                filter(scrolls, r, op, l, lVal);
+            } else if (rVal != null) {
+                filter(scrolls, l, op, r, rVal);
+            } else if (l != null && r != null) {
+                join(scrolls, l, op, r);
             }
         }
-        sorted.addAll(tabsToAdd.values());
+        var list = new ArrayList<>(new HashSet<>(scrolls.values()));
+        while (list.size() > 1) {
+            var elem0 = list.remove(0);
+            var elem1 = list.remove(0);
+            list.add(new JoinIter(null, elem0, null, elem1));
+        }
+        return list.get(0);
+    }
 
-        return sorted;
+    private static void join(
+            HashMap<String, Scrollable> scrolls,
+            SelectClause l,
+            ComparisonOpEnum op,
+            SelectClause r
+    ) {
+        var aliasLeft = l.getTableAlias();
+        var aliasRight = r.getTableAlias();
+        var scrollLeft = scrolls.get(aliasLeft);
+        var scrollRight = scrolls.get(aliasRight);
+
+        if (!((scrollLeft == scrollRight) && (scrollLeft instanceof JoinIter))) {
+            var filter = new JoinIter(aliasLeft, scrollLeft, aliasRight, scrollRight);
+            scrolls.put(aliasLeft, filter);
+            scrolls.put(aliasRight, filter);
+        }
+        ((JoinIter) scrolls.get(aliasLeft)).filter(l.getCol(), op, r.getCol());
+    }
+
+    private static void filter(
+            HashMap<String, Scrollable> scrolls,
+            SelectClause l,
+            ComparisonOpEnum op,
+            SelectClause r,
+            Object lVal
+    ) {
+        var alias = l.getTableAlias();
+        var scroll = scrolls.get(alias);
+        if (!(scroll instanceof FilterIter)) {
+            scrolls.put(alias, new FilterIter(scroll));
+        }
+        ((FilterIter) scrolls.get(alias)).filter(r.getCol(), op, lVal);
     }
 
     private static Map<String, FromClause> groupTabsByAlias(List<FromClause> tables) {

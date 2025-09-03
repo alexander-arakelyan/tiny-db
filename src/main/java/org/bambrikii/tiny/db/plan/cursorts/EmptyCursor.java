@@ -1,8 +1,9 @@
 package org.bambrikii.tiny.db.plan.cursorts;
 
 import org.bambrikii.tiny.db.plan.iterators.LogicalRow;
+import org.bambrikii.tiny.db.plan.iterators.Scrollable;
 
-public final class EmptyCursor extends Scrollable {
+public final class EmptyCursor implements Scrollable {
     public static final EmptyCursor EMPTY_CURSOR = new EmptyCursor();
 
     @Override
@@ -18,5 +19,10 @@ public final class EmptyCursor extends Scrollable {
     @Override
     public LogicalRow next() {
         return null;
+    }
+
+    @Override
+    public void reset() {
+
     }
 }
