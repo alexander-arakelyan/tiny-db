@@ -19,4 +19,8 @@ public class ConstantResultPredicate<T> extends ParserPredicate {
         }
         return res;
     }
+
+    public static <T> ConstantResultPredicate<T> of(ParserPredicate next, Consumer<T> bracketsConsumer, T val) {
+        return new ConstantResultPredicate<>(next, bracketsConsumer, val);
+    }
 }

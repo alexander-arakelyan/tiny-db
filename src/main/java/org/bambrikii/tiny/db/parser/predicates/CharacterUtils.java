@@ -23,4 +23,8 @@ public class CharacterUtils {
     public static boolean isAsciiLower(byte ch) {
         return ch >= 'a' && ch <= 'z';
     }
+
+    public static boolean isDash(byte ch) {
+        return ch == '-';
+    }
 }

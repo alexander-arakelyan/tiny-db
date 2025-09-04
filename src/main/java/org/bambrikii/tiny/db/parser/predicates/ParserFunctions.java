@@ -31,7 +31,7 @@ public class ParserFunctions {
     public static final Function<Consumer<Boolean>, Consumer<String>> DEFAULT_STRING_TO_BOOLEAN_CONSUMER = booleanConsumer -> s -> booleanConsumer.accept(true);
 
     public static <C> ParserPredicate word(ParserPredicate next, Consumer<String> consumer) {
-        return spaces(new WordPredicate(next, consumer));
+        return spaces(WordPredicateFactory.word(next, consumer));
     }
 
     public static ParserPredicate or(ParserPredicate... next) {
@@ -129,13 +129,13 @@ public class ParserFunctions {
         );
     }
 
-    public static ParserPredicate optionalBrackets(ParserPredicate next, Consumer<Boolean> withBrackets) {
+    public static ParserPredicate optionalBrackets(ParserPredicate next, Consumer<Boolean> bracketsConsumer) {
         return or(
-                ordered(
-                        spaces(chars("(", new ConstantResultPredicate<>(next, withBrackets, true))),
-                        spaces(chars(")", DEFAULT_STRING_CONSUMER))
-                ),
-                new ConstantResultPredicate<>(next, withBrackets, false)
+                spaces(chars("(", ChainPredicate.link(
+                        next,
+                        spaces(chars(")", ConstantResultPredicate.of(TRUE_PREDICATE, bracketsConsumer, false)))
+                ))),
+                ConstantResultPredicate.of(next, bracketsConsumer, false)
         );
     }
 

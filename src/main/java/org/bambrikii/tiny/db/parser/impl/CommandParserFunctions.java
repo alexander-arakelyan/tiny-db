@@ -33,6 +33,7 @@ import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.spaces;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.times;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.unordered;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
+import static org.bambrikii.tiny.db.parser.predicates.WordPredicateFactory.wordWithDashes;
 
 public class CommandParserFunctions {
     private CommandParserFunctions() {
@@ -203,7 +204,7 @@ public class CommandParserFunctions {
     }
 
     public static ParserPredicate quotedString(Consumer<String> consumer) {
-        return chars("'", word(chars("'", TRUE_PREDICATE), consumer));
+        return chars("'", wordWithDashes(chars("'", TRUE_PREDICATE), consumer));
     }
 
     public static ParserPredicate value(ParserPredicate next, Consumer<Integer> integerConsumer, Consumer<String> stringConsumer) {
