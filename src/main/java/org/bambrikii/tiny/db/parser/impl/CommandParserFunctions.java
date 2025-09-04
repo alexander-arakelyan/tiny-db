@@ -6,11 +6,11 @@ import org.bambrikii.tiny.db.cmd.WhereCommandable;
 import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsMessage;
 import org.bambrikii.tiny.db.cmd.shared.AbstractQueryMessage;
 import org.bambrikii.tiny.db.log.DbLogger;
-import org.bambrikii.tiny.db.model.ComparisonOpEnum;
 import org.bambrikii.tiny.db.model.JoinTypeEnum;
 import org.bambrikii.tiny.db.model.select.SelectClause;
 import org.bambrikii.tiny.db.model.select.WhereClause;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
+import org.bambrikii.tiny.db.parser.predicates.WhereFunctions;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -107,47 +107,12 @@ public class CommandParserFunctions {
         return drop(chars("column", word(TRUE_PREDICATE, cmd::dropCol)));
     }
 
-    public static ParserPredicate filter(Consumer<WhereClause> consumer) {
-        return filter(TRUE_PREDICATE, consumer);
-    }
-
-    public static ParserPredicate filter(ParserPredicate next, Consumer<WhereClause> consumer) {
-        var left = new AtomicReference<SelectClause>();
-        var leftVal = new AtomicReference<>();
-        var op = new AtomicReference<ComparisonOpEnum>();
-        var right = new AtomicReference<SelectClause>();
-        var rightVal = new AtomicReference<>();
-        return or(
-                colRef(
-                        oneOfStrings(
-                                ComparisonOpEnum.sqlRepresentations(),
-                                or(
-                                        value(next, rightVal::set, rightVal::set),
-                                        colRef(next, right::set)
-
-                                ),
-                                s -> op.set(ComparisonOpEnum.parse(s))
-                        ),
-                        s -> consumer.accept(new WhereClause(left.get(), leftVal.get(), op.get(), s, rightVal.get()))
-                ),
-                value(
-                        oneOfStrings(
-                                ComparisonOpEnum.sqlRepresentations(),
-                                or(
-                                        value(next, rightVal::set, rightVal::set),
-                                        colRef(next, right::set)
-
-                                ),
-                                s -> op.set(ComparisonOpEnum.parse(s))
-                        ),
-                        n -> consumer.accept(new WhereClause(null, n, op.get(), right.get(), rightVal.get())),
-                        s -> consumer.accept(new WhereClause(null, s, op.get(), right.get(), rightVal.get()))
-                )
-        );
-    }
-
     public static ParserPredicate where(WhereCommandable cmd) {
-        return chars("where", filter(cmd::where));
+        return chars("where", conditions(cmd));
+    }
+
+    private static ParserPredicate conditions(WhereCommandable cmd) {
+        return WhereFunctions.wherePredicate(wherePredicate -> cmd.where(WhereClause.of(wherePredicate)));
     }
 
 
@@ -185,7 +150,7 @@ public class CommandParserFunctions {
         return oneOfStrings(List.of("inner", "left", "right"), chars("join",
                         word(
                                 word(
-                                        chars("on", filter(TRUE_PREDICATE, cmd::where)),
+                                        chars("on", conditions(cmd)),
                                         joinTableAliasRef::set
                                 ),
                                 joinTableNameRef::set

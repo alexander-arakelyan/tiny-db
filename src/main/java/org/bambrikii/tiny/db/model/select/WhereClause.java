@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.bambrikii.tiny.db.model.ComparisonOpEnum;
+import org.bambrikii.tiny.db.model.where.WherePredicate;
 
 @ToString
 @NoArgsConstructor
@@ -18,4 +19,11 @@ public class WhereClause {
     private ComparisonOpEnum op;
     private SelectClause r;
     private Object rVal;
+    private WherePredicate conditions;
+
+    public static WhereClause of(WherePredicate predicate) {
+        var clause = new WhereClause();
+        clause.setConditions(predicate);
+        return clause;
+    }
 }
