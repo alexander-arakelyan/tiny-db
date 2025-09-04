@@ -140,10 +140,7 @@ public class ParserFunctions {
     }
 
     public static ParserPredicate singleQuoted(ParserPredicate next) {
-        return ordered(
-                spaces(chars("'", next)),
-                spaces(chars("'", DEFAULT_STRING_CONSUMER))
-        );
+        return spaces(chars("'", ChainPredicate.link(next, spaces(chars("'", DEFAULT_STRING_CONSUMER)))));
     }
 
     public static ParserPredicate comma(ParserPredicate next) {

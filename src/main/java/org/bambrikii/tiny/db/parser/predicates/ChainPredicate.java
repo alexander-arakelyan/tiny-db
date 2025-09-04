@@ -10,7 +10,7 @@ public class ChainPredicate extends ParserPredicate {
 
     @Override
     protected boolean doTest(ParserInputStream is) {
-        return false;
+        return prev.test(is) && next.test(is);
     }
 
     public static ChainPredicate link(ParserPredicate prev, ParserPredicate next) {
