@@ -8,7 +8,8 @@ import org.bambrikii.tiny.db.model.ComparisonOpEnum;
 import org.bambrikii.tiny.db.model.LogicalOpEnum;
 import org.bambrikii.tiny.db.model.select.SelectClause;
 import org.bambrikii.tiny.db.model.where.AndPredicate;
-import org.bambrikii.tiny.db.model.where.FilterPredicate;
+import org.bambrikii.tiny.db.model.where.FilterByValuePredicate;
+import org.bambrikii.tiny.db.model.where.JoinPredicate;
 import org.bambrikii.tiny.db.model.where.OrPredicate;
 import org.bambrikii.tiny.db.model.where.WherePredicate;
 
@@ -101,7 +102,7 @@ public class WhereFunctions {
         coll.add(wherePredicate);
     }
 
-    private static ParserPredicate predicateRelation(Consumer<FilterPredicate> where) {
+    private static ParserPredicate predicateRelation(Consumer<JoinPredicate> where) {
         var op = new AtomicReference<ComparisonOpEnum>();
         var colRef2 = new AtomicReference<SelectClause>();
         return colRef(
@@ -112,11 +113,11 @@ public class WhereFunctions {
                                 colRef2::set
                         ),
                         s -> op.set(ComparisonOpEnum.parse(s))
-                ), clause -> where.accept(FilterPredicate.of(clause, op.get(), colRef2.get()))
+                ), clause -> where.accept(JoinPredicate.of(clause, op.get(), colRef2.get()))
         );
     }
 
-    private static ParserPredicate predicateValue(Consumer<FilterPredicate> where) {
+    private static ParserPredicate predicateValue(Consumer<FilterByValuePredicate> where) {
         var op = new AtomicReference<ComparisonOpEnum>();
         var val = new AtomicReference<>();
         return colRef(
@@ -126,7 +127,7 @@ public class WhereFunctions {
                                 quotedString(val::set),
                                 number(val::set)
                         ), s -> op.set(ComparisonOpEnum.parse(s))),
-                clause -> where.accept(FilterPredicate.of(clause, op.get(), val.get()))
+                clause -> where.accept(FilterByValuePredicate.of(clause, op.get(), val.get()))
         );
     }
 }

@@ -42,7 +42,7 @@ public class SelectRows extends AbstractCommand<SelectRowsMessage, QueryExecutor
             while ((row = it.next()) != null) {
                 sb.append(row.getRowId());
                 for (var col : select) {
-                    sb.append(row.read(String.format("%s.%s", col.getTableAlias(), col.getCol()))).append(",");
+                    sb.append(row.read(col.getTableAlias(), col.getCol())).append(",");
                 }
                 sb.append(System.lineSeparator());
             }

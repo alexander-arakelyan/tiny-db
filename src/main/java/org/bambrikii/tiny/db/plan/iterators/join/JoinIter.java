@@ -1,8 +1,9 @@
-package org.bambrikii.tiny.db.plan.iterators;
+package org.bambrikii.tiny.db.plan.iterators.join;
 
 import lombok.RequiredArgsConstructor;
-import org.bambrikii.tiny.db.model.ComparisonOpEnum;
 import org.bambrikii.tiny.db.model.Row;
+import org.bambrikii.tiny.db.plan.iterators.LogicalRow;
+import org.bambrikii.tiny.db.plan.iterators.Scrollable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class JoinIter implements Scrollable {
     private final Scrollable left;
     private final String rightAlias;
     private final Scrollable right;
-    private final List<JoinFilter> filters = new ArrayList<>();
+    private final List<AbstractFilter> filters = new ArrayList<>();
 
     @Override
     public void open() {
@@ -32,10 +33,11 @@ public class JoinIter implements Scrollable {
             return null;
         }
         // TODO: filter
-        // TODO: combine
         var row = new LogicalRow();
-        row.combine(leftAlias, l);
-        row.combine(rightAlias, r);
+        if (!canPass(row)) {
+            return null;
+        }
+        row.combine(leftAlias, l, rightAlias, r);
         return row;
     }
 
@@ -51,14 +53,12 @@ public class JoinIter implements Scrollable {
         right.close();
     }
 
-    public void filter(String left, ComparisonOpEnum op, String right) {
-        filters.add(new JoinFilter(left, op, right));
+    protected boolean canPass(LogicalRow row) {
+        return filters.stream().allMatch(filter -> filter.test(row));
     }
 
-    @RequiredArgsConstructor
-    private static class JoinFilter {
-        private final String leftCol;
-        private final ComparisonOpEnum op;
-        private final String rightCol;
+    public JoinIter filter(AbstractFilter filter) {
+        this.filters.add(filter);
+        return this;
     }
 }

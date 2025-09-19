@@ -17,12 +17,13 @@ public class PhysicalRow extends Row {
         return vals.keySet();
     }
 
-    public Object read(String columnName) {
-        return vals.get(columnName);
+    @Override
+    public Object read(String tab, String col) {
+        return vals.get(col);
     }
 
     @Override
-    public void write(String col, Object val) {
+    public void write(String tab, String col, Object val) {
         this.vals.put(col, val);
     }
 }

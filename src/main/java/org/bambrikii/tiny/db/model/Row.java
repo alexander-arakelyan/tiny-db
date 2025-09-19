@@ -9,7 +9,7 @@ public abstract class Row {
     private String rowId;
     private boolean deleted;
 
-    public abstract Object read(String col);
+    public abstract Object read(String tab, String col);
 
-    public abstract void write(String col, Object val);
+    public abstract void write(String tab, String col, Object val);
 }

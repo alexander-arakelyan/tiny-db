@@ -39,7 +39,7 @@ public class RelTableMemIO implements Scrollable, AutoCloseable {
     public void insert(Map<String, Object> vals) {
         var row = new PhysicalRow();
         row.setRowId(UUID.randomUUID().toString());
-        writeValues(vals, row);
+        writeValues(name, vals, row);
         rows.add(row);
     }
 
@@ -48,16 +48,16 @@ public class RelTableMemIO implements Scrollable, AutoCloseable {
         while (it.hasNext()) {
             var row = it.next();
             if (Objects.equals(rowId, row.getRowId())) {
-                writeValues(vals, row);
+                writeValues(name, vals, row);
                 return true;
             }
         }
         return false;
     }
 
-    private static void writeValues(Map<String, Object> vals, Row row) {
+    private static void writeValues(String name, Map<String, Object> vals, Row row) {
         for (var entry : vals.entrySet()) {
-            row.write(entry.getKey(), entry.getValue());
+            row.write(name, entry.getKey(), entry.getValue());
         }
     }
 

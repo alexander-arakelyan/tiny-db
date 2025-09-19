@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.plan.cursorts;
+package org.bambrikii.tiny.db.plan.cursors;
 
 import org.bambrikii.tiny.db.plan.iterators.LogicalRow;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;

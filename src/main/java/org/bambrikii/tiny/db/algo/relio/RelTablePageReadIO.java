@@ -89,10 +89,14 @@ public class RelTablePageReadIO implements AutoCloseable {
         row.setDeleted(ops.readDeleted());
         for (var col : structDecorator.getColumns()) {
             ops.readColSeparator();
-            row.write(col.getName(), readVal(col));
+            row.write(getTable(), col.getName(), readVal(col));
         }
         ops.readLineSeparator();
         return row;
+    }
+
+    private String getTable() {
+        return structDecorator.getStruct().getTable();
     }
 
     private Object readVal(Column col) {

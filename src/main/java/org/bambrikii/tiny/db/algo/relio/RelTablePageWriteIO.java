@@ -19,7 +19,7 @@ import java.util.Objects;
 import static org.bambrikii.tiny.db.io.disk.FileOps.ROW_ID_COLUMN_NAME;
 
 public class RelTablePageWriteIO extends RelTablePageReadIO {
-    public static final int PAGE_SIZE_LIMIT = 1024 * 1;
+    public static final int PAGE_SIZE_LIMIT = 1024;
     private boolean dirty;
 
     public RelTablePageWriteIO(DiskIO io, Path path, TableStructDecorator structDecorator) {
@@ -46,9 +46,9 @@ public class RelTablePageWriteIO extends RelTablePageReadIO {
         var columns = structDecorator.getColumns();
         ops.writeStr(ROW_ID_COLUMN_NAME);
         DbLogger.log(this, "Column name %s written", ROW_ID_COLUMN_NAME);
-        for (int i = 0; i < columns.size(); i++) {
+        for (Column column : columns) {
             ops.writeColSeparator();
-            var name = columns.get(i).getName();
+            var name = column.getName();
             ops.writeStr(name);
             DbLogger.log(this, "Column name %s written", name);
         }
@@ -66,7 +66,7 @@ public class RelTablePageWriteIO extends RelTablePageReadIO {
         for (var col : structDecorator.getColumns()) {
             ops.writeColSeparator();
             var name = col.getName();
-            var val = row.read(name);
+            var val = row.read(getTable(), name);
             writeVal(col, val);
         }
         ops.writeLineSeparator();
@@ -83,18 +83,22 @@ public class RelTablePageWriteIO extends RelTablePageReadIO {
         for (var col : structDecorator.getColumns()) {
             var name = col.getName();
             var val = vals.get(name);
-            row.write(name, val);
+            row.write(getTable(), name, val);
         }
         rows.add(row);
         this.dirty = true;
         return rowid;
     }
 
+    private String getTable() {
+        return structDecorator.getStruct().getTable();
+    }
+
     public boolean updateRow(String rowId, Map<String, Object> vals) {
         for (var row : rows) {
             if (Objects.equals(row.getRowId(), rowId)) {
                 for (var entry : vals.entrySet()) {
-                    row.write(entry.getKey(), entry.getValue());
+                    row.write(getTable(), entry.getKey(), entry.getValue());
                 }
                 dirty = true;
                 return true;
