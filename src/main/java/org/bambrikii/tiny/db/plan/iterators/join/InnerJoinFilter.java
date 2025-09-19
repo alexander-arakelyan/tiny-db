@@ -7,7 +7,7 @@ import org.bambrikii.tiny.db.model.Row;
 
 @Getter
 @RequiredArgsConstructor
-public class JoinFilter implements AbstractFilter {
+public class InnerJoinFilter implements AbstractFilter {
     private final String leftTab;
     private final String leftCol;
     private final ComparisonOpEnum op;

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class JoinIter implements Scrollable {
+public class NestedLoopIter implements Scrollable {
     private final String leftAlias;
     private final Scrollable left;
     private final String rightAlias;
@@ -20,6 +20,17 @@ public class JoinIter implements Scrollable {
     public void open() {
         left.open();
         right.open();
+    }
+
+    public NestedLoopIter filter(AbstractFilter filter) {
+        this.filters.add(filter);
+        return this;
+    }
+
+    protected boolean canPass(LogicalRow row) {
+        return filters
+                .stream()
+                .allMatch(filter -> filter.test(row));
     }
 
     @Override
@@ -51,14 +62,5 @@ public class JoinIter implements Scrollable {
     public void close() {
         left.close();
         right.close();
-    }
-
-    protected boolean canPass(LogicalRow row) {
-        return filters.stream().allMatch(filter -> filter.test(row));
-    }
-
-    public JoinIter filter(AbstractFilter filter) {
-        this.filters.add(filter);
-        return this;
     }
 }

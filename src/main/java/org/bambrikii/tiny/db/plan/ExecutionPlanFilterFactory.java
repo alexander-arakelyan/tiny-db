@@ -9,8 +9,8 @@ import org.bambrikii.tiny.db.model.where.OrPredicate;
 import org.bambrikii.tiny.db.model.where.WherePredicate;
 import org.bambrikii.tiny.db.plan.iterators.FilterIter;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
-import org.bambrikii.tiny.db.plan.iterators.join.JoinFilter;
-import org.bambrikii.tiny.db.plan.iterators.join.JoinIter;
+import org.bambrikii.tiny.db.plan.iterators.join.InnerJoinFilter;
+import org.bambrikii.tiny.db.plan.iterators.join.NestedLoopIter;
 import org.bambrikii.tiny.db.plan.iterators.join.ValueFilter;
 
 import java.util.Map;
@@ -24,15 +24,21 @@ public class ExecutionPlanFilterFactory {
     ) {
         if (predicate instanceof AndPredicate) {
             ExecutionPlanFilterFactory.and(scrolls, (AndPredicate) predicate);
-        } else if (predicate instanceof OrPredicate) {
-            ExecutionPlanFilterFactory.or(scrolls, (OrPredicate) predicate);
-        } else if (predicate instanceof FilterByValuePredicate) {
-            ExecutionPlanFilterFactory.filter(scrolls, (FilterByValuePredicate) predicate)
-        } else if (predicate instanceof JoinPredicate) {
-            ExecutionPlanFilterFactory.join(scrolls, (JoinPredicate) predicate);
-        } else {
-            throw new UnsupportedOperationException("Not yet implemented");
+            return;
         }
+        if (predicate instanceof OrPredicate) {
+            ExecutionPlanFilterFactory.or(scrolls, (OrPredicate) predicate);
+            return;
+        }
+        if (predicate instanceof FilterByValuePredicate) {
+            ExecutionPlanFilterFactory.filter(scrolls, (FilterByValuePredicate) predicate);
+            return;
+        }
+        if (predicate instanceof JoinPredicate) {
+            ExecutionPlanFilterFactory.join(scrolls, (JoinPredicate) predicate);
+            return;
+        }
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private static void join(Map<String, Scrollable> scrolls, JoinPredicate join) {
@@ -45,12 +51,12 @@ public class ExecutionPlanFilterFactory {
         var scrollLeft = scrolls.get(aliasLeft);
         var scrollRight = scrolls.get(aliasRight);
 
-        if (!((scrollLeft == scrollRight) && (scrollLeft instanceof JoinIter))) {
-            var filter = new JoinIter(aliasLeft, scrollLeft, aliasRight, scrollRight);
+        if (!(scrollLeft == scrollRight) || !(scrollLeft instanceof NestedLoopIter)) {
+            var filter = new NestedLoopIter(aliasLeft, scrollLeft, aliasRight, scrollRight);
             scrolls.put(aliasLeft, filter);
             scrolls.put(aliasRight, filter);
         }
-        ((JoinIter) scrolls.get(aliasLeft)).filter(new JoinFilter(l.getTableAlias(), l.getCol(), op, r.getTableAlias(), r.getCol()));
+        ((NestedLoopIter) scrolls.get(aliasLeft)).filter(new InnerJoinFilter(l.getTableAlias(), l.getCol(), op, r.getTableAlias(), r.getCol()));
 
     }
 
@@ -68,6 +74,12 @@ public class ExecutionPlanFilterFactory {
     }
 
     private static void and(Map<String, Scrollable> scrolls, AndPredicate predicate) {
+        // 1. recursively create child filters first
+        // 2. left part
+        // 3. right part
+        // 4. find all child aliases
+        // 5. find scrollable by aliases
+        // 6. nested loop with and
         predicate
                 .getAnds()
                 .forEach(wherePredicate -> create(scrolls, wherePredicate));
