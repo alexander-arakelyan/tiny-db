@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static org.bambrikii.tiny.db.parser.predicates.WordPredicateFactory.wordWithAnyCharacters;
+import static org.bambrikii.tiny.db.parser.predicates.WordPredicateFactory.wordWithDashes;
+
 public class ParserFunctions {
     private ParserFunctions() {
     }
@@ -145,5 +148,27 @@ public class ParserFunctions {
 
     public static ParserPredicate comma(ParserPredicate next) {
         return spaces(chars(",", next));
+    }
+
+    public static ParserPredicate quotedString(ParserPredicate next, Consumer<String> consumer) {
+        return chars("'", word(chars("'", next), consumer));
+    }
+
+    public static ParserPredicate quotedString(Consumer<String> consumer) {
+        return chars("'", wordWithDashes(chars("'", TRUE_PREDICATE), consumer));
+    }
+
+    public static ParserPredicate optionalDoubleQuotedString(ParserPredicate next, Consumer<String> consumer) {
+        return or(
+                spaces(chars("\"", wordWithAnyCharacters(chars("\"", next), consumer))),
+                word(next, consumer)
+        );
+    }
+
+    public static ParserPredicate value(ParserPredicate next, Consumer<Integer> integerConsumer, Consumer<String> stringConsumer) {
+        return or(
+                number(next, integerConsumer),
+                quotedString(next, stringConsumer)
+        );
     }
 }

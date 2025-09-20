@@ -27,14 +27,13 @@ import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.comma;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.number;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.oneOfStrings;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.optional;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.optionalDoubleQuotedString;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.or;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.spaces;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.times;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.unordered;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
-import static org.bambrikii.tiny.db.parser.predicates.WordPredicateFactory.wordWithAnyCharacters;
-import static org.bambrikii.tiny.db.parser.predicates.WordPredicateFactory.wordWithDashes;
 
 public class CommandParserFunctions {
     private CommandParserFunctions() {
@@ -163,27 +162,5 @@ public class CommandParserFunctions {
 
     public static <C> ParserPredicate joins(SelectRowsMessage cmd) {
         return times(join(cmd));
-    }
-
-    public static ParserPredicate quotedString(ParserPredicate next, Consumer<String> consumer) {
-        return chars("'", word(chars("'", next), consumer));
-    }
-
-    public static ParserPredicate quotedString(Consumer<String> consumer) {
-        return chars("'", wordWithDashes(chars("'", TRUE_PREDICATE), consumer));
-    }
-
-    public static ParserPredicate optionalDoubleQuotedString(ParserPredicate next, Consumer<String> consumer) {
-        return or(
-                spaces(chars("\"", wordWithAnyCharacters(chars("\"", next), consumer))),
-                word(next, consumer)
-        );
-    }
-
-    public static ParserPredicate value(ParserPredicate next, Consumer<Integer> integerConsumer, Consumer<String> stringConsumer) {
-        return or(
-                number(next, integerConsumer),
-                quotedString(next, stringConsumer)
-        );
     }
 }

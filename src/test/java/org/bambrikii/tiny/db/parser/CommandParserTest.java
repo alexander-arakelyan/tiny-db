@@ -1,5 +1,6 @@
-package org.bambrikii.tiny.db.cmd;
+package org.bambrikii.tiny.db.parser;
 
+import org.bambrikii.tiny.db.cmd.CommandParser;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

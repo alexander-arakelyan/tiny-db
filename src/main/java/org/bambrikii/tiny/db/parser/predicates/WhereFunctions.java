@@ -21,13 +21,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.colRef;
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.quotedString;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.number;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.oneOfStrings;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.optionalBrackets;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.or;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
+import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.quotedString;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.times;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -13,7 +13,7 @@ public class LogTest {
     @Test
     public void shouldStore() throws IOException {
         // given
-        String fileName = "build/test.log";
+        var fileName = "build/test.log";
         var log = new Log(fileName);
         log.destroy();
         log.store("name1", "val1");
@@ -33,7 +33,7 @@ public class LogTest {
     @Test
     public void shouldLoad() throws IOException {
         // given
-        String fileName = "build/test.log";
+        var fileName = "build/test.log";
         var log = new Log(fileName);
         log.destroy();
         log.store("name1", "val1");
@@ -43,7 +43,7 @@ public class LogTest {
         log.store("name3", null);
 
         // when
-        State state = new State();
+        var state = new State();
         log.load(state);
 
         // then

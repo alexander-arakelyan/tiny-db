@@ -68,9 +68,6 @@ class SelectRowsTest {
         var parserFacade = new CommandParserFacade();
         var parser = new SelectRowsParser();
         parserFacade.init(parser);
-        var disk = new DiskIO();
-        var mem = new MemIO();
-        var ctx = new QueryExecutorContext(disk, mem);
         var execFacade = new CommandExecutorFacade(ctx);
         execFacade.init(new CommandStack(parser, new SelectRows()));
         var query = "select t1.col1, t1.col2, t1.col3 from \"" + tableName + "\" t1 where t1.col1 = 'val1'";
