@@ -6,11 +6,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.function.Predicate;
 
 public class DiskIO {
@@ -32,7 +37,26 @@ public class DiskIO {
 
     @SneakyThrows
     public boolean drop(String key) {
-        return Files.deleteIfExists(Path.of(key));
+        var counter = new ArrayList<Path>();
+        Files.walkFileTree(Path.of(key), new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                counter.add(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc != null) {
+                    throw exc;
+                }
+                Files.delete(dir);
+                counter.add(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        return !counter.isEmpty();
     }
 
     public void delete(String key, Predicate<Boolean> filter) {

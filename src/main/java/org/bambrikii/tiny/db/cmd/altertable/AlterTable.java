@@ -21,18 +21,14 @@ import static org.bambrikii.tiny.db.cmd.none.NoCommandResult.OK_COMMAND_RESULT;
 public class AlterTable extends AbstractCommand<AlterTableMessage, QueryExecutorContext> {
     @Override
     public CommandResult exec(AlterTableMessage msg, QueryExecutorContext ctx) {
-
         var tableName = msg.getName();
         var tmpTableName = tableName + UUID.randomUUID();
-
-        // clone struct
-        // remove deleted columns
-        // add new columns
 
         var storage = ctx.getStorage();
         var filters = List.<WhereClause>of();
 
-        var tmpStruct = copyToTmp(msg, tmpTableName, storage, tableName, filters);
+        var alteredStruct = alterStruct(msg, tmpTableName, storage.read(tableName));
+        var tmpStruct = copyAll(storage, tableName, filters, alteredStruct);
         overwriteOrig(storage, tableName, tmpStruct, tmpTableName, filters);
 
         return OK_COMMAND_RESULT;
@@ -40,19 +36,18 @@ public class AlterTable extends AbstractCommand<AlterTableMessage, QueryExecutor
 
     private void overwriteOrig(StorageContext storage, String tableName, TableStruct tmpStruct, String tmpTableName, List<WhereClause> filters) {
         storage.drop(tableName);
-        var targetStruct = createStrct(tmpStruct, tableName);
-        insertRows(storage, createJoin(tmpTableName), filters, targetStruct);
+        var targetStruct = createStruct(tmpStruct, tableName);
+        copyAll(storage, tmpTableName, filters, targetStruct);
         storage.drop(tmpTableName);
     }
 
-    private static TableStruct copyToTmp(AlterTableMessage cmd, String tmpTableName, StorageContext storage, String tableName, List<WhereClause> filters) {
-        var tmpStruct = alterStruct(cmd, tmpTableName, storage.read(tableName));
+    private static TableStruct copyAll(StorageContext storage, String tableName, List<WhereClause> filters, TableStruct tmpStruct) {
         storage.write(tmpStruct);
         insertRows(storage, createJoin(tableName), filters, tmpStruct);
         return tmpStruct;
     }
 
-    private TableStruct createStrct(TableStruct tmpStruct, String tableName) {
+    private TableStruct createStruct(TableStruct tmpStruct, String tableName) {
         var struct = new TableStruct();
         struct.setTable(tableName);
         struct.getColumns().addAll(tmpStruct.getColumns());
