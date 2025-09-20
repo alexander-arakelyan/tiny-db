@@ -10,7 +10,7 @@ import org.bambrikii.tiny.db.storage.StorageContext;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class PlanExecutor {
+public class Planner {
     private final StorageContext storageContext;
 
     public Scrollable execute(List<FromClause> from, List<WhereClause> where) {

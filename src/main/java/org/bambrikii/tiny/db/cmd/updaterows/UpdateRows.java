@@ -4,7 +4,7 @@ import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.CommandResult;
 import org.bambrikii.tiny.db.cmd.insertrows.InsertRows;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.plan.PlanExecutor;
+import org.bambrikii.tiny.db.plan.Planner;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
 
 import static org.bambrikii.tiny.db.cmd.none.NoCommandResult.OK_COMMAND_RESULT;
@@ -22,8 +22,8 @@ public class UpdateRows extends AbstractCommand<UpdateRowsMessage, QueryExecutor
         var where = cmd.getWhere();
 
         var storage = ctx.getStorage();
-        var plan = new PlanExecutor(storage);
-        try (var it = plan.execute(from, where)) {
+        var planner = new Planner(storage);
+        try (var it = planner.execute(from, where)) {
             Row row;
             while ((row = it.next()) != null) {
                 storage.update(targetTable, row, InsertRows.resolveValues(targetTable, targetValues));

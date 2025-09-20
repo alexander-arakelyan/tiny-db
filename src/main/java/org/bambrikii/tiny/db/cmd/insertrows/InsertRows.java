@@ -5,7 +5,7 @@ import org.bambrikii.tiny.db.cmd.CommandResult;
 import org.bambrikii.tiny.db.model.select.WhereClause;
 import org.bambrikii.tiny.db.model.select.FromClause;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.plan.PlanExecutor;
+import org.bambrikii.tiny.db.plan.Planner;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
 import org.bambrikii.tiny.db.storage.StorageContext;
 
@@ -51,8 +51,8 @@ public class InsertRows extends AbstractCommand<InsertRowsMessage, QueryExecutor
             String targetTable,
             Function<Row, Map<String, Object>> valuesResolver
     ) {
-        var planBuilder = new PlanExecutor(storage);
-        try (var it = planBuilder.execute(tables, filters)) {
+        var planner = new Planner(storage);
+        try (var it = planner.execute(tables, filters)) {
             it.open();
             Row row;
             while ((row = it.next()) != null) {
