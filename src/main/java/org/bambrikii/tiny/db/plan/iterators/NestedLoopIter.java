@@ -1,36 +1,19 @@
-package org.bambrikii.tiny.db.plan.iterators.join;
+package org.bambrikii.tiny.db.plan.iterators;
 
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.plan.iterators.LogicalRow;
-import org.bambrikii.tiny.db.plan.iterators.Scrollable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RequiredArgsConstructor
-public class NestedLoopIter implements Scrollable {
+public class NestedLoopIter extends AbstractIter<NestedLoopIter> {
     private final String leftAlias;
     private final Scrollable left;
     private final String rightAlias;
     private final Scrollable right;
-    private final List<AbstractFilter> filters = new ArrayList<>();
 
     @Override
     public void open() {
         left.open();
         right.open();
-    }
-
-    public NestedLoopIter filter(AbstractFilter filter) {
-        this.filters.add(filter);
-        return this;
-    }
-
-    protected boolean canPass(LogicalRow row) {
-        return filters
-                .stream()
-                .allMatch(filter -> filter.test(row));
     }
 
     @Override
@@ -43,12 +26,11 @@ public class NestedLoopIter implements Scrollable {
         if ((r = right.next()) == null) {
             return null;
         }
-        // TODO: filter
         var row = new LogicalRow();
-        if (!canPass(row)) {
+        row.combine(leftAlias, l, rightAlias, r);
+        if (!test(row)) {
             return null;
         }
-        row.combine(leftAlias, l, rightAlias, r);
         return row;
     }
 

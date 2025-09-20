@@ -5,7 +5,7 @@ import org.bambrikii.tiny.db.cmd.CommandResult;
 import org.bambrikii.tiny.db.model.select.WhereClause;
 import org.bambrikii.tiny.db.model.select.FromClause;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.plan.ExecutionPlanBuilder;
+import org.bambrikii.tiny.db.plan.PlanExecutor;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
 import org.bambrikii.tiny.db.storage.StorageContext;
 
@@ -30,7 +30,7 @@ public class InsertRows extends AbstractCommand<InsertRowsMessage, QueryExecutor
         if (tables.isEmpty()) {
             insertValues(storage, targetTable, targetValues);
         } else {
-            insertScrollable(storage, tables, filters, targetTable, resolveValues(targetValues));
+            insertScrollable(storage, tables, filters, targetTable, resolveValues(targetTable, targetValues));
         }
 
         return OK_COMMAND_RESULT;
@@ -41,7 +41,7 @@ public class InsertRows extends AbstractCommand<InsertRowsMessage, QueryExecutor
             String targetTable,
             Map<String, Object> targetValues
     ) {
-        storage.insert(targetTable, null, resolveValues(targetValues));
+        storage.insert(targetTable, null, resolveValues(targetTable, targetValues));
     }
 
     public static void insertScrollable(
@@ -51,7 +51,7 @@ public class InsertRows extends AbstractCommand<InsertRowsMessage, QueryExecutor
             String targetTable,
             Function<Row, Map<String, Object>> valuesResolver
     ) {
-        var planBuilder = new ExecutionPlanBuilder(storage);
+        var planBuilder = new PlanExecutor(storage);
         try (var it = planBuilder.execute(tables, filters)) {
             it.open();
             Row row;
@@ -61,14 +61,17 @@ public class InsertRows extends AbstractCommand<InsertRowsMessage, QueryExecutor
         }
     }
 
-    public static Function<Row, Map<String, Object>> resolveValues(Map<String, Object> targetValues) {
+    public static Function<Row, Map<String, Object>> resolveValues(
+            String alias,
+            Map<String, Object> targetValues
+    ) {
         return row -> {
             var map = new HashMap<String, Object>();
             for (var entry : targetValues.entrySet()) {
                 var key = entry.getKey();
                 var val = entry.getValue();
                 var targetVal = row != null && val instanceof String
-                        ? row.read((String) val)
+                        ? row.read(alias, (String) val)
                         : val;
                 map.put(key, targetVal);
             }

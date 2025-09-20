@@ -1,11 +1,11 @@
-package org.bambrikii.tiny.db.plan.iterators.join;
+package org.bambrikii.tiny.db.plan.filters;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.model.ComparisonOpEnum;
 import org.bambrikii.tiny.db.model.Row;
 
-import static org.bambrikii.tiny.db.plan.iterators.join.FilterValueComparator.VALUE_COMPARATOR;
+import static org.bambrikii.tiny.db.plan.filters.FilterValueComparator.VALUE_COMPARATOR;
 
 @Getter
 @RequiredArgsConstructor

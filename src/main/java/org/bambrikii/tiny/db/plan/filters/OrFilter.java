@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.plan.iterators.join;
+package org.bambrikii.tiny.db.plan.filters;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

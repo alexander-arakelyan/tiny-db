@@ -4,26 +4,34 @@ import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.model.Row;
 
 @RequiredArgsConstructor
-public class GroupByIter implements Scrollable {
+public class DefaultIter extends AbstractIter<DefaultIter> {
     private final Scrollable child;
 
     @Override
-    public void open() {
 
+    public void open() {
+        child.open();
     }
 
     @Override
     public Row next() {
-        return null;
+        Row row;
+        if ((row = child.next()) == null) {
+            return null;
+        }
+        if (!test(row)) {
+            return null;
+        }
+        return row;
     }
 
     @Override
     public void reset() {
-
+        child.reset();
     }
 
     @Override
     public void close() {
-
+        child.close();
     }
 }

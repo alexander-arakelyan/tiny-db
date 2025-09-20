@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.plan.iterators.join;
+package org.bambrikii.tiny.db.plan.filters;
 
 import org.bambrikii.tiny.db.model.Row;
 

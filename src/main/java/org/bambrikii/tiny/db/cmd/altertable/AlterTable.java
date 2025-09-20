@@ -70,7 +70,7 @@ public class AlterTable extends AbstractCommand<AlterTableMessage, QueryExecutor
                 var alias = tab.getAlias();
                 for (var col : struct.getColumns()) {
                     var colName = col.getName();
-                    var val = row.read(alias + "." + colName);
+                    var val = row.read(alias, colName);
                     vals.put(colName, val);
                 }
             }

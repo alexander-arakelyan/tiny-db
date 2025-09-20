@@ -6,7 +6,7 @@ import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.model.select.FromClause;
 import org.bambrikii.tiny.db.model.select.SelectClause;
 import org.bambrikii.tiny.db.model.select.WhereClause;
-import org.bambrikii.tiny.db.plan.ExecutionPlanBuilder;
+import org.bambrikii.tiny.db.plan.PlanExecutor;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
 
 import java.util.List;
@@ -21,14 +21,14 @@ public class SelectRows extends AbstractCommand<SelectRowsMessage, QueryExecutor
         var orderBy = cmd.getOrderBy();
         var groupBy = cmd.getGroupBy();
 
-        var plan = new ExecutionPlanBuilder(ctx.getStorage());
+        var plan = new PlanExecutor(ctx.getStorage());
         var sb = new StringBuilder();
         appendRows(plan, sb, select, from, where);
         return new ScrollableCommandResult(sb.toString());
     }
 
     private static void appendRows(
-            ExecutionPlanBuilder plan,
+            PlanExecutor plan,
             StringBuilder sb,
             List<SelectClause> select,
             List<FromClause> from,
