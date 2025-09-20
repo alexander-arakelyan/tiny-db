@@ -25,7 +25,7 @@ public class AlterTableParser extends AbstractCommandParser {
                                 alterCol(cmd),
                                 addCol(cmd)
                         ))),
-                        cmd::setName
+                        cmd::name
                 ))).test(input)
                 ? cmd
                 : NO_MESSAGE;

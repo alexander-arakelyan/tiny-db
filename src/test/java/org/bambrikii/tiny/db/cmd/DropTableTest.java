@@ -1,9 +1,9 @@
 package org.bambrikii.tiny.db.cmd;
 
-import org.bambrikii.tiny.db.cmd.altertable.AlterTable;
-import org.bambrikii.tiny.db.cmd.altertable.AlterTableMessage;
 import org.bambrikii.tiny.db.cmd.createtable.CreateTable;
 import org.bambrikii.tiny.db.cmd.createtable.CreateTableMessage;
+import org.bambrikii.tiny.db.cmd.droptable.DropTable;
+import org.bambrikii.tiny.db.cmd.droptable.DropTableMessage;
 import org.bambrikii.tiny.db.cmd.insertrows.InsertRows;
 import org.bambrikii.tiny.db.cmd.insertrows.InsertRowsMessage;
 import org.bambrikii.tiny.db.io.disk.DiskIO;
@@ -17,7 +17,7 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AlterTableTest {
+class DropTableTest {
     private QueryExecutorContext ctx;
 
     @BeforeEach
@@ -28,7 +28,7 @@ class AlterTableTest {
     @Test
     void shouldAlter() {
         // given
-        var name = "build/alter-rel-table-1";
+        var name = "build/drop-rel-table-1";
 
         var createCmd = new CreateTable();
         var createMsg = new CreateTableMessage();
@@ -44,16 +44,14 @@ class AlterTableTest {
         insertRowsMsg.columnValue("col2", "val2");
         insertRowsCmd.exec(insertRowsMsg, ctx);
 
-        var cmd = new AlterTable();
-        var msg = new AlterTableMessage();
+        var cmd = new DropTable();
+        var msg = new DropTableMessage();
         msg.name(name);
-        msg.addColumn("col3", "str", 0, 0, false, false);
-        msg.dropCol("col2");
 
         // when
         cmd.exec(msg, ctx);
 
         // then
-        assertThat(Files.exists(Path.of(name))).isTrue();
+        assertThat(Files.exists(Path.of(name))).isFalse();
     }
 }
