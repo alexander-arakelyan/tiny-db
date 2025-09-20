@@ -53,6 +53,9 @@ public class DbServer {
     void configure(DbServerConfig config) {
         this.config = config;
 
+        this.disk = new DiskIO();
+        this.mem = new MemIO();
+
         this.ctx = new QueryExecutorContext(disk, mem);
         this.parser = new CommandParserFacade();
         this.executor = new CommandExecutorFacade(ctx);

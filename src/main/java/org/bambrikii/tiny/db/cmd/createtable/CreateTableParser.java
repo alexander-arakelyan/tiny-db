@@ -12,7 +12,7 @@ import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.atLeastOnc
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
 
-public class CreateTableParser extends AbstractCommandParser {
+public class CreateTableParser extends AbstractCommandParser<CreateTableMessage> {
     @Override
     public AbstractMessage parse(ParserInputStream input) {
         var cmd = new CreateTableMessage();

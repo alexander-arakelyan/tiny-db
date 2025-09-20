@@ -11,7 +11,7 @@ import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.select;
 import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.where;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
 
-public class SelectRowsParser extends AbstractCommandParser {
+public class SelectRowsParser extends AbstractCommandParser<SelectRowsMessage> {
     @Override
     public AbstractMessage parse(ParserInputStream is) {
         var cmd = new SelectRowsMessage();

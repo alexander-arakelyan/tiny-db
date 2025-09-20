@@ -23,4 +23,13 @@ public class WordPredicateFactory {
                 next, consumer
         );
     }
+
+
+    public static CharsRangePredicate wordWithAnyCharacters(ParserPredicate next, Consumer<String> consumer) {
+        return new CharsRangePredicate(
+                List.of(CharacterUtils::isAsciiLower, CharacterUtils::isAsciiUpper, CharacterUtils::isUnderscore),
+                List.of(CharacterUtils::isDigit, CharacterUtils::isDash, CharacterUtils::isSlash),
+                next, consumer
+        );
+    }
 }

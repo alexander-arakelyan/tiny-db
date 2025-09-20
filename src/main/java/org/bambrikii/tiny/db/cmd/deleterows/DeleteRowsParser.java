@@ -10,7 +10,7 @@ import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.where;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.chars;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
 
-public class DeleteRowsParser extends AbstractCommandParser {
+public class DeleteRowsParser extends AbstractCommandParser<DeleteRowsMessage> {
     @Override
     public AbstractMessage parse(ParserInputStream input) {
         var cmd = new DeleteRowsMessage();

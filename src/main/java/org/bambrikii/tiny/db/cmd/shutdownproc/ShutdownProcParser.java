@@ -8,7 +8,7 @@ import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.chars;
 
-public class ShutdownProcParser extends AbstractCommandParser {
+public class ShutdownProcParser extends AbstractCommandParser<ShutdownProcMessage> {
     @Override
     public AbstractMessage parse(ParserInputStream nsr) {
         return chars("shutdown", TRUE_PREDICATE).test(nsr)

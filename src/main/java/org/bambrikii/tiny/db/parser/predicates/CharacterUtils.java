@@ -27,4 +27,8 @@ public class CharacterUtils {
     public static boolean isDash(byte ch) {
         return ch == '-';
     }
+
+    public static boolean isSlash(byte ch) {
+        return ch == '\\' || ch == '/';
+    }
 }

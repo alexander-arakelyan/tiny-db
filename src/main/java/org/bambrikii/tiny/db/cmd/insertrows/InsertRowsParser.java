@@ -22,7 +22,7 @@ import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.singleQuoted;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
 
-public class InsertRowsParser extends AbstractCommandParser {
+public class InsertRowsParser extends AbstractCommandParser<InsertRowsMessage> {
     @Override
     public AbstractMessage parse(ParserInputStream is) {
         var colsByIndex = new ArrayList<String>();

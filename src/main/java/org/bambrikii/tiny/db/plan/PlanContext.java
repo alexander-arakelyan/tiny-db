@@ -22,7 +22,8 @@ public class PlanContext {
 
     private String find0(String alias) {
         while (!Objects.equals(parents.get(alias), alias)) {
-            parents.put(alias, parents.get(parents.get(alias)));
+            var pp = parents.get(parents.get(alias));
+            parents.put(alias, pp == null ? alias : pp);
         }
         return parents.get(alias);
     }

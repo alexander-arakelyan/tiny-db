@@ -10,7 +10,7 @@ import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.table;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
 
-public class DropTableParser extends AbstractCommandParser {
+public class DropTableParser extends AbstractCommandParser<DropTableMessage> {
     @Override
     public AbstractMessage parse(ParserInputStream input) {
         var cmd = new DropTableMessage();

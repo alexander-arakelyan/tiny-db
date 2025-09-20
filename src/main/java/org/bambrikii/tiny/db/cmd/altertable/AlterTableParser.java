@@ -15,7 +15,7 @@ import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.or;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
 
-public class AlterTableParser extends AbstractCommandParser {
+public class AlterTableParser extends AbstractCommandParser<AlterTableMessage> {
     @Override
     public AbstractMessage parse(ParserInputStream input) {
         var cmd = new AlterTableMessage();

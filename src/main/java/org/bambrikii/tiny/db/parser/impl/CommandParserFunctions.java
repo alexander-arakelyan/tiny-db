@@ -33,6 +33,7 @@ import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.spaces;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.times;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.unordered;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
+import static org.bambrikii.tiny.db.parser.predicates.WordPredicateFactory.wordWithAnyCharacters;
 import static org.bambrikii.tiny.db.parser.predicates.WordPredicateFactory.wordWithDashes;
 
 public class CommandParserFunctions {
@@ -134,7 +135,7 @@ public class CommandParserFunctions {
     public static <C> ParserPredicate from(AbstractQueryMessage cmd) {
         var joinTableAliasRef = new AtomicReference<String>();
         return chars("from",
-                word(
+                optionalDoubleQuotedString(
                         word(
                                 TRUE_PREDICATE,
                                 joinTableAliasRef::set
@@ -170,6 +171,13 @@ public class CommandParserFunctions {
 
     public static ParserPredicate quotedString(Consumer<String> consumer) {
         return chars("'", wordWithDashes(chars("'", TRUE_PREDICATE), consumer));
+    }
+
+    public static ParserPredicate optionalDoubleQuotedString(ParserPredicate next, Consumer<String> consumer) {
+        return or(
+                spaces(chars("\"", wordWithAnyCharacters(chars("\"", next), consumer))),
+                word(next, consumer)
+        );
     }
 
     public static ParserPredicate value(ParserPredicate next, Consumer<Integer> integerConsumer, Consumer<String> stringConsumer) {
