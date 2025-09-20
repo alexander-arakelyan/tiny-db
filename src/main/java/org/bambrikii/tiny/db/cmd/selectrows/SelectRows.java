@@ -38,6 +38,7 @@ public class SelectRows extends AbstractCommand<SelectRowsMessage, QueryExecutor
             sb.append(col).append(",").append(System.lineSeparator());
         }
         try (var it = planner.execute(from, where)) {
+            it.open();
             Row row;
             while ((row = it.next()) != null) {
                 sb.append(row.getRowId());
