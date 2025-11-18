@@ -10,9 +10,9 @@ public abstract class AbstractIter<T extends AbstractIter<T>> implements Scrolla
     protected final List<AbstractFilter> ands = new ArrayList<>();
     protected final List<AbstractFilter> ors = new ArrayList<>();
 
-    public DefaultIter and(AbstractFilter filter) {
+    public AbstractIter and(AbstractFilter filter) {
         ands.add(filter);
-        return (DefaultIter) this;
+        return this;
     }
 
     public T or(AbstractFilter filter) {

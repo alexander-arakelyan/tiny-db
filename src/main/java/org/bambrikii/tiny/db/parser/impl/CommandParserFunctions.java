@@ -148,7 +148,7 @@ public class CommandParserFunctions {
         var joinTableNameRef = new AtomicReference<String>();
         var joinTableAliasRef = new AtomicReference<String>();
         return oneOfStrings(List.of("inner", "left", "right"), chars("join",
-                        word(
+                        optionalDoubleQuotedString(
                                 word(
                                         chars("on", conditions(cmd)),
                                         joinTableAliasRef::set

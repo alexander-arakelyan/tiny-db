@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RequiredArgsConstructor
 public class TableTestUtils {
     private final QueryExecutorContext ctx;
@@ -69,10 +71,10 @@ public class TableTestUtils {
         ) {
             var msg = parserFacade.parse(nis);
             System.out.println(msg);
-            if (msg instanceof SelectRowsMessage) {
-                var res = selectRows.exec((SelectRowsMessage) msg, ctx);
-                System.out.println(res);
-            }
+            assertThat(msg).isInstanceOf(SelectRowsMessage.class);
+
+            var res = selectRows.exec((SelectRowsMessage) msg, ctx);
+            System.out.println(res);
         }
         return this;
     }

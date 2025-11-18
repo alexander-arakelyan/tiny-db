@@ -8,6 +8,8 @@ import org.bambrikii.tiny.db.utils.TableTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.text.MessageFormat;
+
 class SelectPlanTest {
     private QueryExecutorContext ctx;
 
@@ -45,6 +47,16 @@ class SelectPlanTest {
                     msg.columnValue("col22", "val2");
                     msg.columnValue("col23", "val3");
                 })
-                .select("select t1.col1, t2.col21 from t1 t1 inner join t2 t2 on t1.col1 = t2.col21 where t2.col23 = 'val3' ");
+                .insert(t2, msg -> {
+                    msg.columnValue("col21", "val21");
+                    msg.columnValue("col22", "val22");
+                    msg.columnValue("col23", "val23");
+                })
+                .select(MessageFormat.format("select t1.col1, t2.col21 "
+                                + " from \"{0}\" t1 "
+                                + " inner join \"{1}\" t2 on t1.col1 = t2.col21 "
+                                + " where t2.col23 = ''val3'' ",
+                        t1, t2
+                ));
     }
 }
