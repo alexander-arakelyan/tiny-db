@@ -1,5 +1,6 @@
 package org.bambrikii.tiny.db.parser.predicates;
 
+import lombok.ToString;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 import org.bambrikii.tiny.db.log.DbLogger;
 
@@ -8,6 +9,7 @@ import java.util.function.Consumer;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.DEFAULT_STRING_CONSUMER;
 
+@ToString
 public class CharsPredicate extends ParserPredicate {
     private final String s;
     private final ParserPredicate next;

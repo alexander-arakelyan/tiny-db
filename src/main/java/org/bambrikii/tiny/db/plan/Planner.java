@@ -24,6 +24,6 @@ public class Planner {
         }
 
         var scroll = ctx.scan();
-        return new DefaultCursor(storageContext, scroll);
+        return new DefaultCursor(scroll);
     }
 }

@@ -5,10 +5,6 @@ import org.bambrikii.tiny.db.io.disk.DiskIO;
 import org.bambrikii.tiny.db.io.disk.FileOps;
 import org.bambrikii.tiny.db.model.TableStruct;
 
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.util.List;
-
 import static org.bambrikii.tiny.db.algo.relio.RelTableFileUtils.buildStructFilePath;
 import static org.bambrikii.tiny.db.algo.relio.RelTableFileUtils.ensureStructDir;
 
@@ -16,11 +12,6 @@ import static org.bambrikii.tiny.db.algo.relio.RelTableFileUtils.ensureStructDir
 public class RelTableStructWriteIO implements AutoCloseable {
     private final DiskIO io;
     private final String fileName;
-    private RandomAccessFile raf;
-    private FileChannel channel;
-    private String tableName;
-    private List<String> cols;
-    private Object vals;
     private FileOps ops;
 
     /**
@@ -31,9 +22,7 @@ public class RelTableStructWriteIO implements AutoCloseable {
 
     public void open() {
         ensureStructDir(fileName);
-        this.raf = io.openReadWrite(buildStructFilePath(fileName));
-        this.channel = raf.getChannel();
-        this.ops = new FileOps(channel);
+        this.ops = io.openReadWrite(buildStructFilePath(fileName));
     }
 
     public boolean write(TableStruct struct) {
@@ -52,10 +41,9 @@ public class RelTableStructWriteIO implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        if (raf == null) {
+        if (ops == null) {
             return;
         }
-        channel.close();
-        raf.close();
+        ops.close();
     }
 }

@@ -9,16 +9,18 @@ import org.bambrikii.tiny.db.storage.types.IntIOUtils;
 import org.bambrikii.tiny.db.storage.types.ObjectIOUtils;
 import org.bambrikii.tiny.db.storage.types.StringIOUtils;
 
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class FileOps {
+public class FileOps implements AutoCloseable {
     public static final String ROW_ID_COLUMN_NAME = "rowid";
     public static final char COL_SEPARATOR = ',';
     public static final char LINE_SEPARATOR = '\n';
 
+    private final RandomAccessFile raf;
     private final FileChannel channel;
 
     private final ByteBuffer intBuff = ByteBuffer.allocate(4);
@@ -129,5 +131,20 @@ public class FileOps {
 
     public void writeColSeparator() {
         writeChar(COL_SEPARATOR);
+    }
+
+    @Override
+    public void close() throws Exception {
+        raf.close();
+    }
+
+    @SneakyThrows
+    public void seek(int i) {
+        raf.seek(i);
+    }
+
+    @SneakyThrows
+    public void setLength(int i) {
+        raf.setLength(i);
     }
 }

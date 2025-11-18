@@ -6,21 +6,12 @@ import org.bambrikii.tiny.db.io.disk.FileOps;
 import org.bambrikii.tiny.db.model.Column;
 import org.bambrikii.tiny.db.model.TableStruct;
 
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.util.List;
-
 import static org.bambrikii.tiny.db.algo.relio.RelTableFileUtils.buildStructFilePath;
 
 @RequiredArgsConstructor
 public class RelTableStructReadIO implements AutoCloseable {
     private final DiskIO io;
     private final String name;
-    private RandomAccessFile raf;
-    private FileChannel channel;
-    private String tableName;
-    private List<String> cols;
-    private Object vals;
     private FileOps ops;
 
     /**
@@ -30,9 +21,7 @@ public class RelTableStructReadIO implements AutoCloseable {
      */
 
     public void open() {
-        this.raf = io.openRead(buildStructFilePath(name));
-        this.channel = raf.getChannel();
-        this.ops = new FileOps(channel);
+        this.ops = io.openRead(buildStructFilePath(name));
     }
 
     public TableStruct read() {
@@ -55,10 +44,9 @@ public class RelTableStructReadIO implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        if (raf == null) {
+        if (ops == null) {
             return;
         }
-        channel.close();
-        raf.close();
+        ops.close();
     }
 }

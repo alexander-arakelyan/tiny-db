@@ -1,12 +1,11 @@
 package org.bambrikii.tiny.db.algo.relio;
 
 import lombok.SneakyThrows;
+import org.bambrikii.tiny.db.algo.PhysicalRow;
 import org.bambrikii.tiny.db.io.disk.DiskIO;
-import org.bambrikii.tiny.db.io.disk.FileOps;
 import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.Column;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.algo.PhysicalRow;
 import org.bambrikii.tiny.db.utils.RelColumnType;
 import org.bambrikii.tiny.db.utils.TableStructDecorator;
 
@@ -29,9 +28,7 @@ public class RelTablePageWriteIO extends RelTablePageReadIO {
     @SneakyThrows
     public void open() {
         var exists = Files.exists(path);
-        this.raf = io.openReadWrite(this.path.toString());
-        this.channel = raf.getChannel();
-        this.ops = new FileOps(channel);
+        this.ops = io.openReadWrite(this.path.toString());
         this.rowN = 0;
         this.dirty = false;
         if (exists) {
@@ -138,8 +135,8 @@ public class RelTablePageWriteIO extends RelTablePageReadIO {
         if (!dirty) {
             return false;
         }
-        raf.seek(0);
-        raf.setLength(0);
+        ops.seek(0);
+        ops.setLength(0);
         writeHeader();
         writeRows();
         return true;
@@ -152,7 +149,6 @@ public class RelTablePageWriteIO extends RelTablePageReadIO {
     @SneakyThrows
     @Override
     public void close() {
-        channel.close();
-        raf.close();
+        ops.close();
     }
 }

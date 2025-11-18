@@ -8,10 +8,8 @@ import org.bambrikii.tiny.db.model.TableStruct;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
 import org.bambrikii.tiny.db.utils.TableStructDecorator;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.bambrikii.tiny.db.algo.relio.RelTableFileUtils.PAGE_FILE_NAME;
 
@@ -34,10 +32,7 @@ public class RelTableScanIO implements Scrollable {
         structIo = new RelTableStructReadIO(io, name);
         structIo.open();
         struct = structIo.read();
-        pages = Files
-                .list(Path.of(name))
-                .filter(name -> PAGE_FILE_NAME.matcher(name.toString()).matches())
-                .collect(Collectors.toList());
+        pages = io.find(Path.of(name), name -> PAGE_FILE_NAME.matcher(name.toString()).matches());
         pageN = 0;
     }
 

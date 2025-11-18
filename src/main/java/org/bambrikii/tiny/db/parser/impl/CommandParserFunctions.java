@@ -122,7 +122,7 @@ public class CommandParserFunctions {
                 word(chars(".",
                                 word(next, colRef::set)
                         ),
-                        s -> consumer.accept(new SelectClause(colRef.get(), s))
+                        s -> consumer.accept(new SelectClause(s, colRef.get()))
                 )
         );
     }

@@ -2,17 +2,15 @@ package org.bambrikii.tiny.db.algo.relio;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.bambrikii.tiny.db.algo.PhysicalRow;
 import org.bambrikii.tiny.db.io.disk.DiskIO;
 import org.bambrikii.tiny.db.io.disk.FileOps;
 import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.Column;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.algo.PhysicalRow;
 import org.bambrikii.tiny.db.utils.RelColumnType;
 import org.bambrikii.tiny.db.utils.TableStructDecorator;
 
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +22,6 @@ public class RelTablePageReadIO implements AutoCloseable {
     protected final DiskIO io;
     protected final Path path;
     protected final TableStructDecorator structDecorator;
-    protected RandomAccessFile raf;
-    protected FileChannel channel;
     protected FileOps ops;
     protected List<Row> rows;
     protected int rowN;
@@ -35,9 +31,7 @@ public class RelTablePageReadIO implements AutoCloseable {
         DbLogger.log(this, "Scanning page %s", path);
         this.rowN = 0;
         var path = this.path.toString();
-        this.raf = io.openRead(path);
-        this.channel = raf.getChannel();
-        this.ops = new FileOps(channel);
+        this.ops = io.openRead(path);
         readHeader();
         readRows();
     }
@@ -116,7 +110,6 @@ public class RelTablePageReadIO implements AutoCloseable {
     @SneakyThrows
     @Override
     public void close() {
-        channel.close();
-        raf.close();
+        ops.close();
     }
 }

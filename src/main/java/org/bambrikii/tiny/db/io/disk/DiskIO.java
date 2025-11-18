@@ -2,13 +2,7 @@ package org.bambrikii.tiny.db.io.disk;
 
 import lombok.SneakyThrows;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -16,25 +10,11 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class DiskIO {
-    @SneakyThrows
-    public void write(String key, byte[] obj) {
-        try (var os = new FileOutputStream(key)) {
-            os.write(obj);
-        }
-    }
-
-    @SneakyThrows
-    public byte[] read(String key) {
-        var bytes = new byte[1024];
-        try (var is = new FileInputStream(key)) {
-            is.read(bytes);
-        }
-        return bytes;
-    }
-
     @SneakyThrows
     public boolean drop(String key) {
         var counter = new ArrayList<Path>();
@@ -64,31 +44,24 @@ public class DiskIO {
     }
 
     @SneakyThrows
-    public RandomAccessFile openRead(String name) {
-        return new RandomAccessFile(name, "r");
+    public FileOps openRead(String name) {
+        var raf = new RandomAccessFile(name, "r");
+        var channel = raf.getChannel();
+        return new FileOps(raf, channel);
     }
 
     @SneakyThrows
-    public RandomAccessFile openReadWrite(String name) {
-        return new RandomAccessFile(name, "rw");
+    public FileOps openReadWrite(String name) {
+        var raf = new RandomAccessFile(name, "rw");
+        var channel = raf.getChannel();
+        return new FileOps(raf, channel);
     }
 
     @SneakyThrows
-    private byte[] serialize(Object obj) {
-        try (var baos = new ByteArrayOutputStream();
-             var oos = new ObjectOutputStream(baos)
-        ) {
-            oos.writeObject(obj);
-            return baos.toByteArray();
-        }
-    }
-
-    @SneakyThrows
-    private <T> T deserialize(byte[] bytes) {
-        try (var bais = new ByteArrayInputStream(bytes);
-             var ois = new ObjectInputStream(bais)
-        ) {
-            return (T) ois.readObject();
-        }
+    public List<Path> find(Path dir, Predicate<Path> filter) {
+        return Files
+                .list(dir)
+                .filter(filter)
+                .collect(Collectors.toList());
     }
 }
