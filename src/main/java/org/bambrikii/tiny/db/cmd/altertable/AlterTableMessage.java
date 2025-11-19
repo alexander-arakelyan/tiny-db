@@ -21,7 +21,7 @@ public class AlterTableMessage implements AbstractMessage, AddColumnCommandable,
     }
 
     @Override
-    public void addColumn(String name, String type, int scale, int precision, boolean nullable, boolean unique) {
+    public AlterTableMessage addColumn(String name, String type, int scale, int precision, boolean nullable, boolean unique) {
         var col = new Column();
         col.setName(name);
         col.setType(type);
@@ -30,6 +30,7 @@ public class AlterTableMessage implements AbstractMessage, AddColumnCommandable,
         col.setNullable(nullable);
         col.setUnique(unique);
         addColumns.add(col);
+        return this;
     }
 
     @Override

@@ -5,44 +5,50 @@ import org.bambrikii.tiny.db.model.Row;
 
 @RequiredArgsConstructor
 public class NestedLoopIter extends AbstractIter<NestedLoopIter> {
-    private final String leftAlias;
-    private final Scrollable left;
-    private final String rightAlias;
-    private final Scrollable right;
+    private final String outerAlias;
+    private final Scrollable outerScroll;
+    private final String innerAlias;
+    private final Scrollable innerScroll;
+    private final boolean innerJoin;
+    private Row o;
+    private Row i;
 
     @Override
     public void open() {
-        left.open();
-        right.open();
+        outerScroll.open();
+        innerScroll.open();
     }
 
     @Override
     public Row next() {
-        Row l;
-        if ((l = left.next()) == null) {
-            return null;
+        while (true) {
+            if (o == null && (o = outerScroll.next()) == null) {
+                return null;
+            }
+            if ((i = innerScroll.next()) == null) {
+                o = null;
+                innerScroll.reset();
+                if (innerJoin) {
+                    continue;
+                }
+            }
+            var row = new LogicalRow();
+            row.combine(outerAlias, o, innerAlias, i);
+            if (match(row)) {
+                return row;
+            }
         }
-        Row r;
-        if ((r = right.next()) == null) {
-            return null;
-        }
-        var row = new LogicalRow();
-        row.combine(leftAlias, l, rightAlias, r);
-        if (!test(row)) {
-            return null;
-        }
-        return row;
     }
 
     @Override
     public void reset() {
-        left.reset();
-        right.reset();
+        outerScroll.reset();
+        innerScroll.reset();
     }
 
     @Override
     public void close() {
-        left.close();
-        right.close();
+        outerScroll.close();
+        innerScroll.close();
     }
 }

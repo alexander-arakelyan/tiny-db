@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 @RequiredArgsConstructor
-public class JoinTwoIterators implements AbstractFilterStrategy<JoinPredicate> {
+public class JoinIterators implements AbstractFilterStrategy<JoinPredicate> {
     private final PlanBuilder factory;
 
     @Override
@@ -26,9 +26,8 @@ public class JoinTwoIterators implements AbstractFilterStrategy<JoinPredicate> {
         var scrollRight = factory.find(aliasRight);
 
         if (!(scrollLeft == scrollRight) || !(scrollLeft instanceof NestedLoopIter)) {
-            var filter = new NestedLoopIter(aliasLeft, scrollLeft, aliasRight, scrollRight);
-            factory.merge(aliasLeft, filter);
-            factory.merge(aliasRight, filter);
+            var filter = new NestedLoopIter(aliasLeft, scrollLeft, aliasRight, scrollRight, true);
+            factory.merge(aliasLeft, aliasRight, filter);
         }
         filterBiConsumer.accept(aliasLeft, new InnerJoinFilter(l.getTableAlias(), l.getCol(), op, r.getTableAlias(), r.getCol()));
         return Set.of(aliasLeft, aliasRight);

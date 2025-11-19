@@ -1,6 +1,7 @@
 package org.bambrikii.tiny.db.utils;
 
 import lombok.RequiredArgsConstructor;
+import org.bambrikii.tiny.db.cmd.CommandResult;
 import org.bambrikii.tiny.db.cmd.CommandStack;
 import org.bambrikii.tiny.db.cmd.NavigableStreamReader;
 import org.bambrikii.tiny.db.cmd.createtable.CreateTable;
@@ -57,7 +58,7 @@ public class TableTestUtils {
         return this;
     }
 
-    public TableTestUtils select(String query) throws IOException {
+    public TableTestUtils select(String query, Consumer<CommandResult> consumer) throws IOException {
         var selectRows = new SelectRows();
 
         var parserFacade = new CommandParserFacade();
@@ -75,6 +76,7 @@ public class TableTestUtils {
 
             var res = selectRows.exec((SelectRowsMessage) msg, ctx);
             System.out.println(res);
+            consumer.accept(res);
         }
         return this;
     }

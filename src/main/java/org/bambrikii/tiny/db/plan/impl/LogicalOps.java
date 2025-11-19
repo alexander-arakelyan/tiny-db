@@ -39,7 +39,7 @@ public class LogicalOps implements AbstractFilterStrategy<List<WherePredicate>> 
                     var l = factory.find(left);
                     var r = factory.find(right);
                     if (!Objects.equals(l, r)) {
-                        factory.merge(left, right, new NestedLoopIter(left, l, right, r));
+                        factory.merge(left, right, new NestedLoopIter(left, l, right, r, true));
                     }
                     res.add(right);
                 } else {

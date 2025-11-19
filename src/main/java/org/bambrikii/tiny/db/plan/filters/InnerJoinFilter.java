@@ -15,7 +15,7 @@ public class InnerJoinFilter implements AbstractFilter {
     private final String rightCol;
 
     @Override
-    public boolean test(Row row) {
+    public boolean match(Row row) {
         var leftVal = row.read(leftTab, leftCol);
         var rightVal = row.read(rightTab, rightCol);
         return ValueFilter.compare(leftVal, op, rightVal);

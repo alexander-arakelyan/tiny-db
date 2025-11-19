@@ -12,7 +12,8 @@ public class LogicalRow extends Row {
 
     @Override
     public Object read(String tab, String col) {
-        return rows.get(tab).read(tab, col);
+        var row = rows.get(tab);
+        return row == null ? null : row.read(tab, col);
     }
 
     @Override
@@ -27,5 +28,15 @@ public class LogicalRow extends Row {
     public void combine(String leftAlias, Row leftRow, String rightAlias, Row rightRow) {
         combine(leftAlias, leftRow);
         combine(rightAlias, rightRow);
+        setRowId(extractRpwOd(leftRow) + "-" + extractRpwOd(rightRow));
+        setDeleted(extractDeleted(leftRow) && extractDeleted(rightRow));
+    }
+
+    private static boolean extractDeleted(Row row) {
+        return row != null && row.isDeleted();
+    }
+
+    private static String extractRpwOd(Row row) {
+        return row == null ? "-" : row.getRowId();
     }
 }

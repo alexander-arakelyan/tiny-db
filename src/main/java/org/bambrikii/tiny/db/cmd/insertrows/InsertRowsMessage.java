@@ -23,8 +23,9 @@ public class InsertRowsMessage implements AbstractQueryMessage {
         this.into = into;
     }
 
-    public void columnValue(String col, Object val) {
+    public InsertRowsMessage columnValue(String col, Object val) {
         targetValues.put(col, val);
+        return this;
     }
 
     @Override

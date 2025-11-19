@@ -18,9 +18,9 @@ public class OrFilter implements AbstractFilter {
     }
 
     @Override
-    public boolean test(Row row) {
+    public boolean match(Row row) {
         return ors
                 .stream()
-                .anyMatch(filter -> filter.test(row));
+                .anyMatch(filter -> filter.match(row));
     }
 }

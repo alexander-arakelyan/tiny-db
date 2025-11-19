@@ -20,12 +20,12 @@ public abstract class AbstractIter<T extends AbstractIter<T>> implements Scrolla
         return (T) this;
     }
 
-    protected boolean test(Row row) {
+    protected boolean match(Row row) {
         if (!ands.isEmpty()) {
-            return !ands.stream().allMatch(filter -> filter.test(row));
+            return ands.stream().allMatch(filter -> filter.match(row));
         }
         if (!ors.isEmpty()) {
-            return ors.stream().noneMatch(filter -> filter.test(row));
+            return ors.stream().noneMatch(filter -> filter.match(row));
         }
         return true;
     }

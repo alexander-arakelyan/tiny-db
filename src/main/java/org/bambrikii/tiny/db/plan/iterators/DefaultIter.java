@@ -15,14 +15,15 @@ public class DefaultIter extends AbstractIter<DefaultIter> {
 
     @Override
     public Row next() {
-        Row row;
-        if ((row = child.next()) == null) {
-            return null;
+        while (true) {
+            Row row;
+            if ((row = child.next()) == null) {
+                return null;
+            }
+            if (match(row)) {
+                return row;
+            }
         }
-        if (!test(row)) {
-            return null;
-        }
-        return row;
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.bambrikii.tiny.db.model.where.OrPredicate;
 import org.bambrikii.tiny.db.model.where.WherePredicate;
 import org.bambrikii.tiny.db.plan.filters.AbstractFilter;
 import org.bambrikii.tiny.db.plan.impl.FilterByValue;
-import org.bambrikii.tiny.db.plan.impl.JoinTwoIterators;
+import org.bambrikii.tiny.db.plan.impl.JoinIterators;
 import org.bambrikii.tiny.db.plan.impl.LogicalOps;
 import org.bambrikii.tiny.db.plan.iterators.Scrollable;
 
@@ -18,13 +18,13 @@ public class PlanBuilder {
     private final PlanContext ctx;
     private final LogicalOps logicalOps;
     private final FilterByValue filterByValue;
-    private final JoinTwoIterators joinTwoIterators;
+    private final JoinIterators joinIterators;
 
     public PlanBuilder(PlanContext ctx) {
         this.ctx = ctx;
         logicalOps = new LogicalOps(this);
         filterByValue = new FilterByValue(this);
-        joinTwoIterators = new JoinTwoIterators(this);
+        joinIterators = new JoinIterators(this);
     }
 
     public Set<String> build(WherePredicate predicate) {
@@ -42,7 +42,7 @@ public class PlanBuilder {
             return filterByValue.apply((FilterByValuePredicate) predicate, consumer);
         }
         if (predicate instanceof JoinPredicate) {
-            return joinTwoIterators.apply((JoinPredicate) predicate, consumer);
+            return joinIterators.apply((JoinPredicate) predicate, consumer);
         }
         throw new UnsupportedOperationException("Not yet implemented");
     }

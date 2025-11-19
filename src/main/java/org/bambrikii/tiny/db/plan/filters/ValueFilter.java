@@ -16,7 +16,7 @@ public class ValueFilter implements AbstractFilter {
     private final Object val;
 
     @Override
-    public boolean test(Row row) {
+    public boolean match(Row row) {
         var val1 = row.read(leftTab, leftCol);
         return compare(val1, op, val);
     }

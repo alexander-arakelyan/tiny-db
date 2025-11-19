@@ -18,9 +18,9 @@ public class AndFilter implements AbstractFilter {
     }
 
     @Override
-    public boolean test(Row row) {
+    public boolean match(Row row) {
         return ands
                 .stream()
-                .allMatch(filter -> filter.test(row));
+                .allMatch(filter -> filter.match(row));
     }
 }
