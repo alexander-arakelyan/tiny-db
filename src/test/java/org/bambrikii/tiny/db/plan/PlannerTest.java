@@ -1,14 +1,14 @@
 package org.bambrikii.tiny.db.plan;
 
+import org.bambrikii.tiny.db.algo.rel.disk.FileRelTablePage;
 import org.bambrikii.tiny.db.cmd.NavigableStreamReader;
 import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsMessage;
 import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsParser;
-import org.bambrikii.tiny.db.io.disk.DiskIO;
-import org.bambrikii.tiny.db.io.disk.FileOps;
-import org.bambrikii.tiny.db.io.mem.MemIO;
 import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.storage.StorageContext;
+import org.bambrikii.tiny.db.storage.disk.DiskIO;
+import org.bambrikii.tiny.db.storage.mem.MemIO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -30,14 +30,14 @@ class PlannerTest {
     @Mock
     private DiskIO disk;
     @Mock
-    private FileOps fileOps;
+    private FileRelTablePage page;
 
     @Test
     void shouldBuildMultiLevelPlan() throws IOException {
         // given
-        doReturn(fileOps).when(disk).openRead(anyString());
+        doReturn(page).when(disk).openRead(anyString());
         doReturn(List.of(Path.of("file1"))).when(disk).find(any(), any());
-        doReturn("rowid").when(fileOps).readStr();
+        doReturn("rowid").when(page).readStr();
 
         var mem = new MemIO();
         var ctx = new StorageContext(disk, mem);

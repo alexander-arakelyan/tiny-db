@@ -2,8 +2,8 @@ package org.bambrikii.tiny.db.query;
 
 import lombok.Getter;
 import org.bambrikii.tiny.db.cmd.AbstractExecutorContext;
-import org.bambrikii.tiny.db.io.disk.DiskIO;
-import org.bambrikii.tiny.db.io.mem.MemIO;
+import org.bambrikii.tiny.db.storage.disk.DiskIO;
+import org.bambrikii.tiny.db.storage.mem.MemIO;
 
 @Getter
 public class QueryExecutorContext extends AbstractExecutorContext {

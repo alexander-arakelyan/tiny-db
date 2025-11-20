@@ -6,9 +6,9 @@ import org.bambrikii.tiny.db.cmd.droptable.DropTable;
 import org.bambrikii.tiny.db.cmd.droptable.DropTableMessage;
 import org.bambrikii.tiny.db.cmd.insertrows.InsertRows;
 import org.bambrikii.tiny.db.cmd.insertrows.InsertRowsMessage;
-import org.bambrikii.tiny.db.io.disk.DiskIO;
-import org.bambrikii.tiny.db.io.mem.MemIO;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
+import org.bambrikii.tiny.db.storage.disk.DiskIO;
+import org.bambrikii.tiny.db.storage.mem.MemIO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
