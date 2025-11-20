@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.query;
+package org.bambrikii.tiny.db.proc;
 
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.cmd.AbstractCommandParser;

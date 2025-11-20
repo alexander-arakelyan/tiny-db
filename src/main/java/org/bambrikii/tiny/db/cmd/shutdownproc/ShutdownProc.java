@@ -2,7 +2,7 @@ package org.bambrikii.tiny.db.cmd.shutdownproc;
 
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.CommandResult;
-import org.bambrikii.tiny.db.query.QueryExecutorContext;
+import org.bambrikii.tiny.db.proc.QueryExecutorContext;
 
 public class ShutdownProc extends AbstractCommand<ShutdownProcMessage, QueryExecutorContext> {
     @Override

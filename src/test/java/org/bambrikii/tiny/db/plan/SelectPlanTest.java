@@ -2,7 +2,7 @@ package org.bambrikii.tiny.db.plan;
 
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.cmd.CommandResult;
-import org.bambrikii.tiny.db.query.QueryExecutorContext;
+import org.bambrikii.tiny.db.proc.QueryExecutorContext;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
 import org.bambrikii.tiny.db.storage.mem.MemIO;
 import org.bambrikii.tiny.db.utils.TableTestUtils;

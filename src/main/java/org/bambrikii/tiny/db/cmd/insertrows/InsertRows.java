@@ -6,7 +6,7 @@ import org.bambrikii.tiny.db.model.clauses.WhereClause;
 import org.bambrikii.tiny.db.model.clauses.FromClause;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.plan.Planner;
-import org.bambrikii.tiny.db.query.QueryExecutorContext;
+import org.bambrikii.tiny.db.proc.QueryExecutorContext;
 import org.bambrikii.tiny.db.storage.StorageContext;
 
 import java.util.HashMap;

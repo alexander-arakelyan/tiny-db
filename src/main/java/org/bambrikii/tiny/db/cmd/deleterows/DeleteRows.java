@@ -4,7 +4,7 @@ import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.CommandResult;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.plan.Planner;
-import org.bambrikii.tiny.db.query.QueryExecutorContext;
+import org.bambrikii.tiny.db.proc.QueryExecutorContext;
 
 import static org.bambrikii.tiny.db.cmd.none.NoCommandResult.OK_COMMAND_RESULT;
 

@@ -24,8 +24,6 @@ import org.bambrikii.tiny.db.cmd.shutdownproc.ShutdownProc;
 import org.bambrikii.tiny.db.cmd.shutdownproc.ShutdownProcParser;
 import org.bambrikii.tiny.db.cmd.updaterows.UpdateRows;
 import org.bambrikii.tiny.db.cmd.updaterows.UpdateRowsParser;
-import org.bambrikii.tiny.db.query.CommandParserFacade;
-import org.bambrikii.tiny.db.query.QueryExecutorContext;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
 import org.bambrikii.tiny.db.storage.mem.MemIO;
 

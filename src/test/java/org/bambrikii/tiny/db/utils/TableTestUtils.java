@@ -14,8 +14,8 @@ import org.bambrikii.tiny.db.cmd.selectrows.SelectRows;
 import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsMessage;
 import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsParser;
 import org.bambrikii.tiny.db.proc.CommandExecutorFacade;
-import org.bambrikii.tiny.db.query.CommandParserFacade;
-import org.bambrikii.tiny.db.query.QueryExecutorContext;
+import org.bambrikii.tiny.db.proc.CommandParserFacade;
+import org.bambrikii.tiny.db.proc.QueryExecutorContext;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
