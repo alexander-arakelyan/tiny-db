@@ -30,7 +30,7 @@ class SelectRowsTest {
     @Test
     void shouldSelect() throws IOException {
         // given
-        var tableName = "build/select-rel-rows-1";
+        var tableName = "build/clauses-rel-rows-1";
         new TableTestUtils(ctx)
                 .dropTable(tableName)
                 .createTable(tableName, msg -> {
@@ -50,7 +50,7 @@ class SelectRowsTest {
         parserFacade.init(parser);
         var execFacade = new CommandExecutorFacade(ctx);
         execFacade.init(new CommandStack(parser, new SelectRows()));
-        var query = "select t1.col1, t1.col2, t1.col3 from \"" + tableName + "\" t1 where t1.col1 = 'val1'";
+        var query = "clauses t1.col1, t1.col2, t1.col3 from \"" + tableName + "\" t1 predicates t1.col1 = 'val1'";
         try (
                 var bis = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
                 var nis = new NavigableStreamReader(bis);

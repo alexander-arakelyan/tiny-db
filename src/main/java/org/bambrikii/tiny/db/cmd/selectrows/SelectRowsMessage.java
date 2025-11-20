@@ -3,11 +3,11 @@ package org.bambrikii.tiny.db.cmd.selectrows;
 import lombok.Getter;
 import lombok.ToString;
 import org.bambrikii.tiny.db.cmd.shared.AbstractQueryMessage;
-import org.bambrikii.tiny.db.model.select.FromClause;
-import org.bambrikii.tiny.db.model.select.GroupByClause;
-import org.bambrikii.tiny.db.model.select.OrderByClause;
-import org.bambrikii.tiny.db.model.select.SelectClause;
-import org.bambrikii.tiny.db.model.select.WhereClause;
+import org.bambrikii.tiny.db.model.clauses.FromClause;
+import org.bambrikii.tiny.db.model.clauses.GroupByClause;
+import org.bambrikii.tiny.db.model.clauses.OrderByClause;
+import org.bambrikii.tiny.db.model.clauses.SelectClause;
+import org.bambrikii.tiny.db.model.clauses.WhereClause;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package org.bambrikii.tiny.db.plan.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.bambrikii.tiny.db.model.where.WherePredicate;
+import org.bambrikii.tiny.db.model.predicates.WherePredicate;
 import org.bambrikii.tiny.db.plan.PlanBuilder;
 import org.bambrikii.tiny.db.plan.filters.AbstractFilter;
 import org.bambrikii.tiny.db.plan.iterators.AbstractIter;

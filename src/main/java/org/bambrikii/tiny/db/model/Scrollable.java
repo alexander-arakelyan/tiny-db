@@ -1,6 +1,4 @@
-package org.bambrikii.tiny.db.plan.iterators;
-
-import org.bambrikii.tiny.db.model.Row;
+package org.bambrikii.tiny.db.model;
 
 public interface Scrollable extends AutoCloseable {
     void open();

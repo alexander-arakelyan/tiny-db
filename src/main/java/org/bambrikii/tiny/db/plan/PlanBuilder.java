@@ -1,15 +1,15 @@
 package org.bambrikii.tiny.db.plan;
 
-import org.bambrikii.tiny.db.model.where.AndPredicate;
-import org.bambrikii.tiny.db.model.where.FilterByValuePredicate;
-import org.bambrikii.tiny.db.model.where.JoinPredicate;
-import org.bambrikii.tiny.db.model.where.OrPredicate;
-import org.bambrikii.tiny.db.model.where.WherePredicate;
+import org.bambrikii.tiny.db.model.predicates.AndPredicate;
+import org.bambrikii.tiny.db.model.predicates.FilterByValuePredicate;
+import org.bambrikii.tiny.db.model.predicates.JoinPredicate;
+import org.bambrikii.tiny.db.model.predicates.OrPredicate;
+import org.bambrikii.tiny.db.model.predicates.WherePredicate;
 import org.bambrikii.tiny.db.plan.filters.AbstractFilter;
 import org.bambrikii.tiny.db.plan.impl.FilterByValue;
 import org.bambrikii.tiny.db.plan.impl.JoinIterators;
 import org.bambrikii.tiny.db.plan.impl.LogicalOps;
-import org.bambrikii.tiny.db.plan.iterators.Scrollable;
+import org.bambrikii.tiny.db.model.Scrollable;
 
 import java.util.Set;
 import java.util.function.BiConsumer;

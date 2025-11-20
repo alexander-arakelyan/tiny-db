@@ -1,7 +1,7 @@
 package org.bambrikii.tiny.db.plan;
 
 
-import org.bambrikii.tiny.db.plan.iterators.Scrollable;
+import org.bambrikii.tiny.db.model.Scrollable;
 
 import java.util.HashMap;
 import java.util.Map;

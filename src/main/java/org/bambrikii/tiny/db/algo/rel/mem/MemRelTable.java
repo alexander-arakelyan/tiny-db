@@ -3,7 +3,7 @@ package org.bambrikii.tiny.db.algo.rel.mem;
 import lombok.RequiredArgsConstructor;
 import org.bambrikii.tiny.db.algo.PhysicalRow;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.plan.iterators.Scrollable;
+import org.bambrikii.tiny.db.model.Scrollable;
 import org.bambrikii.tiny.db.storage.mem.MemIO;
 
 import java.util.ArrayList;

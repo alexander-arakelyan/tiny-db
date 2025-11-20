@@ -2,8 +2,8 @@ package org.bambrikii.tiny.db.cmd.deleterows;
 
 import lombok.Getter;
 import org.bambrikii.tiny.db.cmd.shared.AbstractQueryMessage;
-import org.bambrikii.tiny.db.model.select.FromClause;
-import org.bambrikii.tiny.db.model.select.WhereClause;
+import org.bambrikii.tiny.db.model.clauses.FromClause;
+import org.bambrikii.tiny.db.model.clauses.WhereClause;
 
 import java.util.ArrayList;
 import java.util.List;

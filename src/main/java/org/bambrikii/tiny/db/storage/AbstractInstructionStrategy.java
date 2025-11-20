@@ -2,7 +2,7 @@ package org.bambrikii.tiny.db.storage;
 
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.model.TableStruct;
-import org.bambrikii.tiny.db.plan.iterators.Scrollable;
+import org.bambrikii.tiny.db.model.Scrollable;
 
 import java.util.Map;
 import java.util.function.Function;

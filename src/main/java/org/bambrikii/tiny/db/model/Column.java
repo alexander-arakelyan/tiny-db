@@ -15,5 +15,4 @@ public class Column {
     private int size;
     private boolean unique;
     private boolean nullable;
-    private Reference reference;
 }

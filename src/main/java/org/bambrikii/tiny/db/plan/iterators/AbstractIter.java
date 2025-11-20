@@ -1,6 +1,7 @@
 package org.bambrikii.tiny.db.plan.iterators;
 
 import org.bambrikii.tiny.db.model.Row;
+import org.bambrikii.tiny.db.model.Scrollable;
 import org.bambrikii.tiny.db.plan.filters.AbstractFilter;
 
 import java.util.ArrayList;

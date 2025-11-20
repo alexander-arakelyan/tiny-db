@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.model.where;
+package org.bambrikii.tiny.db.model.predicates;
 
 import lombok.Getter;
 import lombok.Setter;

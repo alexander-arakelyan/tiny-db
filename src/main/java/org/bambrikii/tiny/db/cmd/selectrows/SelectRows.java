@@ -3,9 +3,9 @@ package org.bambrikii.tiny.db.cmd.selectrows;
 import org.bambrikii.tiny.db.cmd.AbstractCommand;
 import org.bambrikii.tiny.db.cmd.CommandResult;
 import org.bambrikii.tiny.db.model.Row;
-import org.bambrikii.tiny.db.model.select.FromClause;
-import org.bambrikii.tiny.db.model.select.SelectClause;
-import org.bambrikii.tiny.db.model.select.WhereClause;
+import org.bambrikii.tiny.db.model.clauses.FromClause;
+import org.bambrikii.tiny.db.model.clauses.SelectClause;
+import org.bambrikii.tiny.db.model.clauses.WhereClause;
 import org.bambrikii.tiny.db.plan.Planner;
 import org.bambrikii.tiny.db.query.QueryExecutorContext;
 

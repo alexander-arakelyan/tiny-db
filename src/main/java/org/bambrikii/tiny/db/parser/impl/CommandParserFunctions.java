@@ -7,8 +7,8 @@ import org.bambrikii.tiny.db.cmd.selectrows.SelectRowsMessage;
 import org.bambrikii.tiny.db.cmd.shared.AbstractQueryMessage;
 import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.JoinTypeEnum;
-import org.bambrikii.tiny.db.model.select.SelectClause;
-import org.bambrikii.tiny.db.model.select.WhereClause;
+import org.bambrikii.tiny.db.model.clauses.SelectClause;
+import org.bambrikii.tiny.db.model.clauses.WhereClause;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
 import org.bambrikii.tiny.db.parser.predicates.WhereFunctions;
 
@@ -108,7 +108,7 @@ public class CommandParserFunctions {
     }
 
     public static ParserPredicate where(WhereCommandable cmd) {
-        return chars("where", conditions(cmd));
+        return chars("predicates", conditions(cmd));
     }
 
     private static ParserPredicate conditions(WhereCommandable cmd) {
@@ -128,7 +128,7 @@ public class CommandParserFunctions {
     }
 
     public static <C> ParserPredicate select(SelectRowsMessage cmd) {
-        return chars("select", atLeastOnceCommaSeparated(or(colRef(TRUE_PREDICATE, cmd::select))));
+        return chars("clauses", atLeastOnceCommaSeparated(or(colRef(TRUE_PREDICATE, cmd::select))));
     }
 
     public static <C> ParserPredicate from(AbstractQueryMessage cmd) {

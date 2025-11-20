@@ -3,7 +3,7 @@ package org.bambrikii.tiny.db.storage;
 import lombok.SneakyThrows;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.model.TableStruct;
-import org.bambrikii.tiny.db.plan.iterators.Scrollable;
+import org.bambrikii.tiny.db.model.Scrollable;
 import org.bambrikii.tiny.db.storage.disk.DiskIO;
 import org.bambrikii.tiny.db.storage.disk.DiskInstructionStrategy;
 import org.bambrikii.tiny.db.storage.mem.MemIO;

@@ -61,10 +61,10 @@ class SelectPlanTest {
                         .columnValue("col22", "val22")
                         .columnValue("col23", "val32")
                 )
-                .select(MessageFormat.format("select t1.col1, t2.col21, t2.col23 "
+                .select(MessageFormat.format("clauses t1.col1, t2.col21, t2.col23 "
                                         + " from \"{0}\" t1 "
                                         + " inner join \"{1}\" t2 on t1.col1 = t2.col21 "
-                                        + " where t2.col23 = ''val32'' ",
+                                        + " predicates t2.col23 = ''val32'' ",
                                 t1, t2
                         ),
                         (Consumer<CommandResult>) res -> assertThat(res.toString()).contains("val32")

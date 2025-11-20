@@ -1,10 +1,10 @@
 package org.bambrikii.tiny.db.plan;
 
 import lombok.RequiredArgsConstructor;
-import org.bambrikii.tiny.db.model.select.FromClause;
-import org.bambrikii.tiny.db.model.select.WhereClause;
-import org.bambrikii.tiny.db.plan.cursors.DefaultCursor;
-import org.bambrikii.tiny.db.plan.iterators.Scrollable;
+import org.bambrikii.tiny.db.model.clauses.FromClause;
+import org.bambrikii.tiny.db.model.clauses.WhereClause;
+import org.bambrikii.tiny.db.plan.iterators.DefaultIter;
+import org.bambrikii.tiny.db.model.Scrollable;
 import org.bambrikii.tiny.db.storage.StorageContext;
 
 import java.util.List;
@@ -24,6 +24,6 @@ public class Planner {
         }
 
         var scroll = ctx.scan();
-        return new DefaultCursor(scroll);
+        return new DefaultIter(scroll);
     }
 }

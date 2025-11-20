@@ -1,11 +1,11 @@
-package org.bambrikii.tiny.db.model.select;
+package org.bambrikii.tiny.db.model.clauses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.bambrikii.tiny.db.model.where.WherePredicate;
+import org.bambrikii.tiny.db.model.predicates.WherePredicate;
 
 @ToString
 @NoArgsConstructor

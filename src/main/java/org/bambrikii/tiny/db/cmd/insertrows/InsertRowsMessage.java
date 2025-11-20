@@ -3,8 +3,8 @@ package org.bambrikii.tiny.db.cmd.insertrows;
 import lombok.Getter;
 import lombok.ToString;
 import org.bambrikii.tiny.db.cmd.shared.AbstractQueryMessage;
-import org.bambrikii.tiny.db.model.select.FromClause;
-import org.bambrikii.tiny.db.model.select.WhereClause;
+import org.bambrikii.tiny.db.model.clauses.FromClause;
+import org.bambrikii.tiny.db.model.clauses.WhereClause;
 
 import java.util.ArrayList;
 import java.util.HashMap;

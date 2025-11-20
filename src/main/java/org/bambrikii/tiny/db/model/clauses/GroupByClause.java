@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.model.select;
+package org.bambrikii.tiny.db.model.clauses;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.ToString;
 
 @ToString
 @NoArgsConstructor
-//@AllArgsConstructor
 @Getter
 @Setter
 public class GroupByClause {

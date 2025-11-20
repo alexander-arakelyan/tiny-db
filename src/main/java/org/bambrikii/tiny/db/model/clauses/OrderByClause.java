@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.model.select;
+package org.bambrikii.tiny.db.model.clauses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

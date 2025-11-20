@@ -1,6 +1,6 @@
 package org.bambrikii.tiny.db.plan.impl;
 
-import org.bambrikii.tiny.db.model.where.FilterByValuePredicate;
+import org.bambrikii.tiny.db.model.predicates.FilterByValuePredicate;
 import org.bambrikii.tiny.db.plan.PlanBuilder;
 import org.bambrikii.tiny.db.plan.filters.AbstractFilter;
 import org.bambrikii.tiny.db.plan.filters.ValueFilter;

@@ -1,10 +1,10 @@
-package org.bambrikii.tiny.db.model.where;
+package org.bambrikii.tiny.db.model.predicates;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.bambrikii.tiny.db.model.ComparisonOpEnum;
-import org.bambrikii.tiny.db.model.select.SelectClause;
+import org.bambrikii.tiny.db.model.clauses.SelectClause;
 
 @ToString
 @Setter

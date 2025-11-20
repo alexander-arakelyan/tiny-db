@@ -8,7 +8,7 @@ import org.bambrikii.tiny.db.algo.rel.disk.FileRelTableStructWriter;
 import org.bambrikii.tiny.db.algo.rel.disk.FileRelTableWriter;
 import org.bambrikii.tiny.db.model.Row;
 import org.bambrikii.tiny.db.model.TableStruct;
-import org.bambrikii.tiny.db.plan.iterators.Scrollable;
+import org.bambrikii.tiny.db.model.Scrollable;
 import org.bambrikii.tiny.db.storage.AbstractInstructionStrategy;
 import org.bambrikii.tiny.db.storage.mem.MemIO;
 

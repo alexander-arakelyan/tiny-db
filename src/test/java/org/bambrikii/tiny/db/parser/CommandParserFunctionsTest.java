@@ -58,7 +58,7 @@ class CommandParserFunctionsTest {
     void shouldParseSelectRows() {
         // given
         var parser = new SelectRowsParser();
-        try (var bais = new ByteArrayInputStream("select t1.col1, t1.col2, t1.col3 from table1 t1 where t1.col4 = t1.col5".getBytes(UTF_8));
+        try (var bais = new ByteArrayInputStream("clauses t1.col1, t1.col2, t1.col3 from table1 t1 predicates t1.col4 = t1.col5".getBytes(UTF_8));
              var is = new NavigableStreamReader(bais)) {
 
             // when
@@ -75,11 +75,11 @@ class CommandParserFunctionsTest {
     void shouldParseSelectRowsWithJoins() {
         // given
         var parser = new SelectRowsParser();
-        try (var bais = new ByteArrayInputStream(("select t1.col1, t2.col2, t3.col3" +
+        try (var bais = new ByteArrayInputStream(("clauses t1.col1, t2.col2, t3.col3" +
                 " from table1 t1" +
                 " inner join table2 t2 on table1.col2 = table2.col2" +
                 " left join table3 t3 on table2.col3 = t3.col3" +
-                " where t2.col4 = t3.col5"
+                " predicates t2.col4 = t3.col5"
         ).getBytes(UTF_8));
              var is = new NavigableStreamReader(bais)) {
 

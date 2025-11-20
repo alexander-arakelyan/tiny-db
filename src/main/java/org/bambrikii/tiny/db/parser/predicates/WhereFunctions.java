@@ -6,12 +6,12 @@ import org.bambrikii.tiny.db.cmd.ParserInputStream;
 import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.ComparisonOpEnum;
 import org.bambrikii.tiny.db.model.LogicalOpEnum;
-import org.bambrikii.tiny.db.model.select.SelectClause;
-import org.bambrikii.tiny.db.model.where.AndPredicate;
-import org.bambrikii.tiny.db.model.where.FilterByValuePredicate;
-import org.bambrikii.tiny.db.model.where.JoinPredicate;
-import org.bambrikii.tiny.db.model.where.OrPredicate;
-import org.bambrikii.tiny.db.model.where.WherePredicate;
+import org.bambrikii.tiny.db.model.clauses.SelectClause;
+import org.bambrikii.tiny.db.model.predicates.AndPredicate;
+import org.bambrikii.tiny.db.model.predicates.FilterByValuePredicate;
+import org.bambrikii.tiny.db.model.predicates.JoinPredicate;
+import org.bambrikii.tiny.db.model.predicates.OrPredicate;
+import org.bambrikii.tiny.db.model.predicates.WherePredicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public class WhereFunctions {
                 where.accept(OrPredicate.of(ors));
             } else if (ors.isEmpty()) {
                 DbLogger.log(whereRef.get(), "Predicate: ANDS %s %s %d", whereRef.get(), ands, n);
-                where.accept(org.bambrikii.tiny.db.model.where.AndPredicate.of(ands));
+                where.accept(org.bambrikii.tiny.db.model.predicates.AndPredicate.of(ands));
             } else {
                 DbLogger.log(whereRef.get(), "Predicate: ANDS+ORS %s %s %s %d", whereRef.get(), ands, ors, n);
                 where.accept(AndPredicate.of(ands).and(OrPredicate.of(ors)));
