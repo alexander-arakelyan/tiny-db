@@ -5,7 +5,7 @@ import org.bambrikii.tiny.db.cmd.AbstractMessage;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
-import static org.bambrikii.tiny.db.parser.predicates.WhereFunctions.wherePredicate;
+import static org.bambrikii.tiny.db.parser.functions.WhereFunctions.wherePredicate;
 
 class TestWherePredicate extends AbstractCommandParser<TestWhereMessage> {
     @Override

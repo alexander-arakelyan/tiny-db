@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.parser.predicates;
+package org.bambrikii.tiny.db.parser.functions;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,6 +12,7 @@ import org.bambrikii.tiny.db.model.nodes.FilterByValueNode;
 import org.bambrikii.tiny.db.model.nodes.JoinNode;
 import org.bambrikii.tiny.db.model.nodes.OrNode;
 import org.bambrikii.tiny.db.model.nodes.WhereNode;
+import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +21,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.colRef;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.number;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.oneOfStrings;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.optionalBrackets;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.or;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.quotedString;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.times;
+import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.colRef;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.TRUE_PREDICATE;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.number;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.oneOfStrings;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.optionalBrackets;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.ordered;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.times;
+import static org.bambrikii.tiny.db.parser.functions.QuotedFunctions.quotedString;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WhereFunctions {

@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.parser.impl;
+package org.bambrikii.tiny.db.parser.functions;
 
 import org.bambrikii.tiny.db.cmd.AddColumnCommandable;
 import org.bambrikii.tiny.db.cmd.DropColumnCommandable;
@@ -10,7 +10,6 @@ import org.bambrikii.tiny.db.model.JoinTypeEnum;
 import org.bambrikii.tiny.db.model.clauses.SelectClause;
 import org.bambrikii.tiny.db.model.clauses.WhereClause;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
-import org.bambrikii.tiny.db.parser.predicates.WhereFunctions;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,25 +17,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.DEFAULT_STRING_TO_BOOLEAN_CONSUMER;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.atLeastOnceCommaSeparated;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.brackets;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.chars;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.comma;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.number;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.oneOfStrings;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.optional;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.optionalDoubleQuotedString;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.or;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.spaces;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.times;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.unordered;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.DEFAULT_STRING_TO_BOOLEAN_CONSUMER;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.TRUE_PREDICATE;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.atLeastOnceCommaSeparated;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.brackets;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.chars;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.comma;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.number;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.oneOfStrings;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.optional;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.ordered;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.spaces;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.times;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.unordered;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.word;
+import static org.bambrikii.tiny.db.parser.functions.QuotedFunctions.optionalDoubleQuotedString;
 
-public class CommandParserFunctions {
-    private CommandParserFunctions() {
+public class CommandFunctions {
+    private CommandFunctions() {
     }
 
     public static ParserPredicate create(ParserPredicate next) {

@@ -5,7 +5,7 @@ import org.bambrikii.tiny.db.log.DbLogger;
 
 import java.util.function.Consumer;
 
-import static org.bambrikii.tiny.db.parser.predicates.CharacterUtils.isDigit;
+import static org.bambrikii.tiny.db.parser.utils.CharacterUtils.isDigit;
 
 public class NumberPredicate extends ParserPredicate {
     private final ParserPredicate next;

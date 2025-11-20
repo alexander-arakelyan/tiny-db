@@ -5,11 +5,11 @@ import org.bambrikii.tiny.db.cmd.AbstractMessage;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.from;
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.joins;
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.select;
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.where;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
+import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.from;
+import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.joins;
+import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.select;
+import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.where;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.ordered;
 
 public class SelectRowsParser extends AbstractCommandParser<SelectRowsMessage> {
     @Override

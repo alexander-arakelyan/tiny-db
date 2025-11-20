@@ -18,7 +18,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class CommandParserFunctionsTest {
+class CommandCompositeFunctionsTest {
     @SneakyThrows
     @Test
     void shouldParseCreateTable() {

@@ -5,12 +5,12 @@ import org.bambrikii.tiny.db.cmd.AbstractCommandParser;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.colDef;
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.create;
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.table;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.atLeastOnceCommaSeparated;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.brackets;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
+import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.colDef;
+import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.create;
+import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.table;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.atLeastOnceCommaSeparated;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.brackets;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.word;
 
 public class CreateTableParser extends AbstractCommandParser<CreateTableMessage> {
     @Override

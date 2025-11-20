@@ -10,17 +10,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.from;
-import static org.bambrikii.tiny.db.parser.impl.CommandParserFunctions.where;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.TRUE_PREDICATE;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.atLeastOnceCommaSeparated;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.brackets;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.chars;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.number;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.or;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.ordered;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.singleQuoted;
-import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.word;
+import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.from;
+import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.where;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.TRUE_PREDICATE;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.atLeastOnceCommaSeparated;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.brackets;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.chars;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.number;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.ordered;
+import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.word;
+import static org.bambrikii.tiny.db.parser.functions.QuotedFunctions.singleQuoted;
 
 public class InsertRowsParser extends AbstractCommandParser<InsertRowsMessage> {
     @Override

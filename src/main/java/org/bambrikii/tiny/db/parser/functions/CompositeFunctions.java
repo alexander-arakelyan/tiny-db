@@ -1,16 +1,25 @@
-package org.bambrikii.tiny.db.parser.predicates;
+package org.bambrikii.tiny.db.parser.functions;
 
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
+import org.bambrikii.tiny.db.parser.predicates.AllPredicate;
+import org.bambrikii.tiny.db.parser.predicates.AnyOrderPredicate;
+import org.bambrikii.tiny.db.parser.predicates.ChainPredicate;
+import org.bambrikii.tiny.db.parser.predicates.CharsPredicate;
+import org.bambrikii.tiny.db.parser.predicates.ConstantResultPredicate;
+import org.bambrikii.tiny.db.parser.predicates.NumberPredicate;
+import org.bambrikii.tiny.db.parser.predicates.OneOfStringsPredicate;
+import org.bambrikii.tiny.db.parser.predicates.OptionalPredicate;
+import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
+import org.bambrikii.tiny.db.parser.predicates.SpacesPredicate;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static org.bambrikii.tiny.db.parser.predicates.WordPredicateFactory.wordWithAnyCharacters;
-import static org.bambrikii.tiny.db.parser.predicates.WordPredicateFactory.wordWithDashes;
+import static org.bambrikii.tiny.db.parser.functions.QuotedFunctions.quotedString;
 
-public class ParserFunctions {
-    private ParserFunctions() {
+public class CompositeFunctions {
+    private CompositeFunctions() {
     }
 
     public static final ParserPredicate TRUE_PREDICATE = new ParserPredicate() {
@@ -34,7 +43,7 @@ public class ParserFunctions {
     public static final Function<Consumer<Boolean>, Consumer<String>> DEFAULT_STRING_TO_BOOLEAN_CONSUMER = booleanConsumer -> s -> booleanConsumer.accept(true);
 
     public static <C> ParserPredicate word(ParserPredicate next, Consumer<String> consumer) {
-        return spaces(WordPredicateFactory.word(next, consumer));
+        return spaces(WordFunctions.word(next, consumer));
     }
 
     public static ParserPredicate or(ParserPredicate... next) {
@@ -142,27 +151,8 @@ public class ParserFunctions {
         );
     }
 
-    public static ParserPredicate singleQuoted(ParserPredicate next) {
-        return spaces(chars("'", ChainPredicate.link(next, spaces(chars("'", DEFAULT_STRING_CONSUMER)))));
-    }
-
     public static ParserPredicate comma(ParserPredicate next) {
         return spaces(chars(",", next));
-    }
-
-    public static ParserPredicate quotedString(ParserPredicate next, Consumer<String> consumer) {
-        return chars("'", word(chars("'", next), consumer));
-    }
-
-    public static ParserPredicate quotedString(Consumer<String> consumer) {
-        return chars("'", wordWithDashes(chars("'", TRUE_PREDICATE), consumer));
-    }
-
-    public static ParserPredicate optionalDoubleQuotedString(ParserPredicate next, Consumer<String> consumer) {
-        return or(
-                spaces(chars("\"", wordWithAnyCharacters(chars("\"", next), consumer))),
-                word(next, consumer)
-        );
     }
 
     public static ParserPredicate value(ParserPredicate next, Consumer<Integer> integerConsumer, Consumer<String> stringConsumer) {
