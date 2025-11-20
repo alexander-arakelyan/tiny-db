@@ -1,7 +1,7 @@
 package org.bambrikii.tiny.db.plan.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.bambrikii.tiny.db.model.predicates.WherePredicate;
+import org.bambrikii.tiny.db.model.nodes.WhereNode;
 import org.bambrikii.tiny.db.plan.PlanBuilder;
 import org.bambrikii.tiny.db.plan.filters.AbstractFilter;
 import org.bambrikii.tiny.db.plan.iterators.AbstractIter;
@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 @RequiredArgsConstructor
-public class LogicalOps implements AbstractFilterStrategy<List<WherePredicate>> {
+public class LogicalOps implements AbstractFilterStrategy<List<WhereNode>> {
     private final PlanBuilder factory;
 
     public void orFilter(String alias, AbstractFilter filter) {
@@ -26,7 +26,7 @@ public class LogicalOps implements AbstractFilterStrategy<List<WherePredicate>> 
     }
 
     @Override
-    public Set<String> apply(List<WherePredicate> predicates, BiConsumer<String, AbstractFilter> filterBiConsumer) {
+    public Set<String> apply(List<WhereNode> predicates, BiConsumer<String, AbstractFilter> filterBiConsumer) {
         var res = new HashSet<String>();
         String left = null;
         for (var pred : predicates) {

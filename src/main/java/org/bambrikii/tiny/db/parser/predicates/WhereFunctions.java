@@ -7,11 +7,11 @@ import org.bambrikii.tiny.db.log.DbLogger;
 import org.bambrikii.tiny.db.model.ComparisonOpEnum;
 import org.bambrikii.tiny.db.model.LogicalOpEnum;
 import org.bambrikii.tiny.db.model.clauses.SelectClause;
-import org.bambrikii.tiny.db.model.predicates.AndPredicate;
-import org.bambrikii.tiny.db.model.predicates.FilterByValuePredicate;
-import org.bambrikii.tiny.db.model.predicates.JoinPredicate;
-import org.bambrikii.tiny.db.model.predicates.OrPredicate;
-import org.bambrikii.tiny.db.model.predicates.WherePredicate;
+import org.bambrikii.tiny.db.model.nodes.AndNode;
+import org.bambrikii.tiny.db.model.nodes.FilterByValueNode;
+import org.bambrikii.tiny.db.model.nodes.JoinNode;
+import org.bambrikii.tiny.db.model.nodes.OrNode;
+import org.bambrikii.tiny.db.model.nodes.WhereNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +32,11 @@ import static org.bambrikii.tiny.db.parser.predicates.ParserFunctions.times;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WhereFunctions {
-    public static ParserPredicate wherePredicate(Consumer<WherePredicate> where) {
-        var whereRef = new AtomicReference<WherePredicate>();
-        var ands = new ArrayList<WherePredicate>();
-        var ors = new ArrayList<WherePredicate>();
-        var nextWhereRef = new AtomicReference<WherePredicate>();
+    public static ParserPredicate wherePredicate(Consumer<WhereNode> where) {
+        var whereRef = new AtomicReference<WhereNode>();
+        var ands = new ArrayList<WhereNode>();
+        var ors = new ArrayList<WhereNode>();
+        var nextWhereRef = new AtomicReference<WhereNode>();
         var debugCounter = new AtomicInteger();
         return optionalBrackets(ordered(
                 basicPredicate(whereRef),
@@ -71,18 +71,18 @@ public class WhereFunctions {
                 where.accept(whereRef.get());
             } else if (ands.isEmpty()) {
                 DbLogger.log(whereRef.get(), "Predicate: ORS %s %s %d", whereRef.get(), ors, n);
-                where.accept(OrPredicate.of(ors));
+                where.accept(OrNode.of(ors));
             } else if (ors.isEmpty()) {
                 DbLogger.log(whereRef.get(), "Predicate: ANDS %s %s %d", whereRef.get(), ands, n);
-                where.accept(org.bambrikii.tiny.db.model.predicates.AndPredicate.of(ands));
+                where.accept(AndNode.of(ands));
             } else {
                 DbLogger.log(whereRef.get(), "Predicate: ANDS+ORS %s %s %s %d", whereRef.get(), ands, ors, n);
-                where.accept(AndPredicate.of(ands).and(OrPredicate.of(ors)));
+                where.accept(AndNode.of(ands).and(OrNode.of(ors)));
             }
         });
     }
 
-    private static ParserPredicate basicPredicate(AtomicReference<WherePredicate> whereRef) {
+    private static ParserPredicate basicPredicate(AtomicReference<WhereNode> whereRef) {
         return or(
                 predicateRelation(whereRef::set),
                 predicateValue(whereRef::set)
@@ -90,19 +90,19 @@ public class WhereFunctions {
     }
 
     private static void appendPredicate(
-            AtomicReference<WherePredicate> whereRef,
-            List<WherePredicate> coll,
-            WherePredicate wherePredicate
+            AtomicReference<WhereNode> whereRef,
+            List<WhereNode> coll,
+            WhereNode whereNode
     ) {
         var first = whereRef.get();
         if (first != null) {
             coll.add(first);
             whereRef.set(null);
         }
-        coll.add(wherePredicate);
+        coll.add(whereNode);
     }
 
-    private static ParserPredicate predicateRelation(Consumer<JoinPredicate> where) {
+    private static ParserPredicate predicateRelation(Consumer<JoinNode> where) {
         var op = new AtomicReference<ComparisonOpEnum>();
         var colRef2 = new AtomicReference<SelectClause>();
         return colRef(
@@ -113,11 +113,11 @@ public class WhereFunctions {
                                 colRef2::set
                         ),
                         s -> op.set(ComparisonOpEnum.parse(s))
-                ), clause -> where.accept(JoinPredicate.of(clause, op.get(), colRef2.get()))
+                ), clause -> where.accept(JoinNode.of(clause, op.get(), colRef2.get()))
         );
     }
 
-    private static ParserPredicate predicateValue(Consumer<FilterByValuePredicate> where) {
+    private static ParserPredicate predicateValue(Consumer<FilterByValueNode> where) {
         var op = new AtomicReference<ComparisonOpEnum>();
         var val = new AtomicReference<>();
         return colRef(
@@ -127,7 +127,7 @@ public class WhereFunctions {
                                 quotedString(val::set),
                                 number(val::set)
                         ), s -> op.set(ComparisonOpEnum.parse(s))),
-                clause -> where.accept(FilterByValuePredicate.of(clause, op.get(), val.get()))
+                clause -> where.accept(FilterByValueNode.of(clause, op.get(), val.get()))
         );
     }
 }

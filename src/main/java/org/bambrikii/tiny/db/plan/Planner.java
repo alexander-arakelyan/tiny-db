@@ -20,7 +20,7 @@ public class Planner {
         from.forEach(clause -> ctx.merge(clause.getAlias(), storageContext.scan(clause.getTable())));
 
         for (WhereClause clause : where) {
-            factory.build(clause.getPredicate());
+            factory.build(clause.getNode());
         }
 
         var scroll = ctx.scan();

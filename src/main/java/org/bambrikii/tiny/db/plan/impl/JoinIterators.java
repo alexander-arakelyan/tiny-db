@@ -1,7 +1,7 @@
 package org.bambrikii.tiny.db.plan.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.bambrikii.tiny.db.model.predicates.JoinPredicate;
+import org.bambrikii.tiny.db.model.nodes.JoinNode;
 import org.bambrikii.tiny.db.plan.PlanBuilder;
 import org.bambrikii.tiny.db.plan.filters.AbstractFilter;
 import org.bambrikii.tiny.db.plan.filters.InnerJoinFilter;
@@ -11,11 +11,11 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 @RequiredArgsConstructor
-public class JoinIterators implements AbstractFilterStrategy<JoinPredicate> {
+public class JoinIterators implements AbstractFilterStrategy<JoinNode> {
     private final PlanBuilder factory;
 
     @Override
-    public Set<String> apply(JoinPredicate join, BiConsumer<String, AbstractFilter> filterBiConsumer) {
+    public Set<String> apply(JoinNode join, BiConsumer<String, AbstractFilter> filterBiConsumer) {
         var l = join.getLeft();
         var op = join.getOp();
         var r = join.getRight();

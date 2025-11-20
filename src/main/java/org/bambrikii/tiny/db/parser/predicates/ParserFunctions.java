@@ -85,7 +85,7 @@ public class ParserFunctions {
     }
 
     public static ParserPredicate ordered(ParserPredicate... next) {
-        return spaces(new AndPredicate(next));
+        return spaces(new AllPredicate(next));
     }
 
     public static ParserPredicate atLeastOnceCommaSeparated(ParserPredicate next) {

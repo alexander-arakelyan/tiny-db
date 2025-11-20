@@ -1,6 +1,6 @@
 package org.bambrikii.tiny.db.plan.impl;
 
-import org.bambrikii.tiny.db.model.predicates.FilterByValuePredicate;
+import org.bambrikii.tiny.db.model.nodes.FilterByValueNode;
 import org.bambrikii.tiny.db.plan.PlanBuilder;
 import org.bambrikii.tiny.db.plan.filters.AbstractFilter;
 import org.bambrikii.tiny.db.plan.filters.ValueFilter;
@@ -9,7 +9,7 @@ import org.bambrikii.tiny.db.plan.iterators.DefaultIter;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-public class FilterByValue implements AbstractFilterStrategy<FilterByValuePredicate> {
+public class FilterByValue implements AbstractFilterStrategy<FilterByValueNode> {
     private final PlanBuilder factory;
 
     public FilterByValue(PlanBuilder factory) {
@@ -17,7 +17,7 @@ public class FilterByValue implements AbstractFilterStrategy<FilterByValuePredic
     }
 
     @Override
-    public Set<String> apply(FilterByValuePredicate filter, BiConsumer<String, AbstractFilter> filterBiConsumer) {
+    public Set<String> apply(FilterByValueNode filter, BiConsumer<String, AbstractFilter> filterBiConsumer) {
         var l = filter.getLeft();
         var op = filter.getOp();
         var val = filter.getRightVal();

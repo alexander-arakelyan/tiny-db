@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.bambrikii.tiny.db.model.predicates.WherePredicate;
+import org.bambrikii.tiny.db.model.nodes.WhereNode;
 
 @ToString
 @NoArgsConstructor
@@ -13,11 +13,11 @@ import org.bambrikii.tiny.db.model.predicates.WherePredicate;
 @Getter
 @Setter
 public class WhereClause {
-    private WherePredicate predicate;
+    private WhereNode node;
 
-    public static WhereClause of(WherePredicate predicate) {
+    public static WhereClause of(WhereNode predicate) {
         var clause = new WhereClause();
-        clause.setPredicate(predicate);
+        clause.setNode(predicate);
         return clause;
     }
 }

@@ -64,7 +64,7 @@ class SelectPlanTest {
                 .select(MessageFormat.format("clauses t1.col1, t2.col21, t2.col23 "
                                         + " from \"{0}\" t1 "
                                         + " inner join \"{1}\" t2 on t1.col1 = t2.col21 "
-                                        + " predicates t2.col23 = ''val32'' ",
+                                        + " nodes t2.col23 = ''val32'' ",
                                 t1, t2
                         ),
                         (Consumer<CommandResult>) res -> assertThat(res.toString()).contains("val32")

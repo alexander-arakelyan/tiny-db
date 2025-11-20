@@ -1,4 +1,4 @@
-package org.bambrikii.tiny.db.model.predicates;
+package org.bambrikii.tiny.db.model.nodes;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,16 +9,16 @@ import org.bambrikii.tiny.db.model.clauses.SelectClause;
 @ToString
 @Setter
 @Getter
-public class JoinPredicate implements WherePredicate {
+public class FilterByValueNode implements WhereNode {
     private SelectClause left;
     private ComparisonOpEnum op;
-    private SelectClause right;
+    private Object rightVal;
 
-    public static JoinPredicate of(SelectClause left, ComparisonOpEnum op, SelectClause right) {
-        var predicate = new JoinPredicate();
+    public static FilterByValueNode of(SelectClause left, ComparisonOpEnum op, Object rightVal) {
+        var predicate = new FilterByValueNode();
         predicate.setLeft(left);
         predicate.setOp(op);
-        predicate.setRight(right);
+        predicate.setRightVal(rightVal);
         return predicate;
     }
 }

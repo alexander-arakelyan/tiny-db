@@ -108,7 +108,7 @@ public class CommandParserFunctions {
     }
 
     public static ParserPredicate where(WhereCommandable cmd) {
-        return chars("predicates", conditions(cmd));
+        return chars("nodes", conditions(cmd));
     }
 
     private static ParserPredicate conditions(WhereCommandable cmd) {

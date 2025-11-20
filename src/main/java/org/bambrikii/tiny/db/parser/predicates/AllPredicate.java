@@ -5,10 +5,10 @@ import org.bambrikii.tiny.db.log.DbLogger;
 
 import java.util.Arrays;
 
-public class AndPredicate extends ParserPredicate {
+public class AllPredicate extends ParserPredicate {
     private final ParserPredicate[] next;
 
-    public AndPredicate(ParserPredicate... next) {
+    public AllPredicate(ParserPredicate... next) {
         this.next = next;
     }
 
