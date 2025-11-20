@@ -33,7 +33,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
-import java.net.Socket;
+import java.net.ServerSocket;
 
 public class DbServer {
     private CommandParserFacade parser;
@@ -86,8 +86,8 @@ public class DbServer {
 
     @SneakyThrows
     void listen() {
-        try (var socket = new Socket(config.getHost(), config.getPort());
-
+        try (var serverSocket = new ServerSocket(config.getPort());
+             var socket = serverSocket.accept();
              var bis = new BufferedInputStream(socket.getInputStream());
              var nis = new NavigableStreamReader(bis);
 
