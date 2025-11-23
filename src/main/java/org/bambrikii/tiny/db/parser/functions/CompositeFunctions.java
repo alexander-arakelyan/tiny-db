@@ -3,8 +3,6 @@ package org.bambrikii.tiny.db.parser.functions;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 import org.bambrikii.tiny.db.parser.predicates.AllPredicate;
 import org.bambrikii.tiny.db.parser.predicates.AnyOrderPredicate;
-import org.bambrikii.tiny.db.parser.predicates.ChainPredicate;
-import org.bambrikii.tiny.db.parser.predicates.ConstantResultPredicate;
 import org.bambrikii.tiny.db.parser.predicates.OneOfStringsPredicate;
 import org.bambrikii.tiny.db.parser.predicates.OptionalPredicate;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
@@ -13,7 +11,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.chars;
 import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.comma;
 import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.spaces;
 import static org.bambrikii.tiny.db.parser.functions.NumberFunctions.number;
@@ -44,7 +41,7 @@ public class CompositeFunctions {
     public static final Function<Consumer<Boolean>, Consumer<String>> DEFAULT_STRING_TO_BOOLEAN_CONSUMER = booleanConsumer -> s -> booleanConsumer.accept(true);
 
     public static <C> ParserPredicate word(ParserPredicate next, Consumer<String> consumer) {
-        return spaces(WordFunctions.word(next, consumer));
+        return spaces(WordFunctions.wordOnly(next, consumer));
     }
 
     public static ParserPredicate or(ParserPredicate... next) {
@@ -109,24 +106,6 @@ public class CompositeFunctions {
 
     public static ParserPredicate oneOfStrings(List<String> strings, ParserPredicate next, Consumer<String> consumer) {
         return spaces(new OneOfStringsPredicate(strings, next, consumer));
-    }
-
-
-    public static ParserPredicate brackets(ParserPredicate next) {
-        return ordered(
-                spaces(chars("(", next)),
-                spaces(chars(")", DEFAULT_STRING_CONSUMER))
-        );
-    }
-
-    public static ParserPredicate optionalBrackets(ParserPredicate next, Consumer<Boolean> bracketsConsumer) {
-        return or(
-                spaces(chars("(", ChainPredicate.link(
-                        next,
-                        spaces(chars(")", ConstantResultPredicate.of(TRUE_PREDICATE, bracketsConsumer, false)))
-                ))),
-                ConstantResultPredicate.of(next, bracketsConsumer, false)
-        );
     }
 
     public static ParserPredicate value(ParserPredicate next, Consumer<Integer> integerConsumer, Consumer<String> stringConsumer) {

@@ -10,7 +10,7 @@ import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.spaces;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.DEFAULT_STRING_CONSUMER;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.TRUE_PREDICATE;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
-import static org.bambrikii.tiny.db.parser.functions.WordFunctions.word;
+import static org.bambrikii.tiny.db.parser.functions.WordFunctions.wordOnly;
 import static org.bambrikii.tiny.db.parser.functions.WordFunctions.wordWithAnyCharacters;
 import static org.bambrikii.tiny.db.parser.functions.WordFunctions.wordWithDashes;
 
@@ -23,7 +23,7 @@ public class QuotedFunctions {
     }
 
     public static ParserPredicate quotedString(ParserPredicate next, Consumer<String> consumer) {
-        return chars("'", word(chars("'", next), consumer));
+        return chars("'", wordOnly(chars("'", next), consumer));
     }
 
     public static ParserPredicate quotedString(Consumer<String> consumer) {
@@ -33,7 +33,7 @@ public class QuotedFunctions {
     public static ParserPredicate optionalDoubleQuotedString(ParserPredicate next, Consumer<String> consumer) {
         return or(
                 spaces(chars("\"", wordWithAnyCharacters(chars("\"", next), consumer))),
-                word(next, consumer)
+                wordOnly(next, consumer)
         );
     }
 }

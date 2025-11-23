@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WordFunctions {
-    public static CharsRangePredicate word(ParserPredicate next, Consumer<String> consumer) {
+    public static CharsRangePredicate wordOnly(ParserPredicate next, Consumer<String> consumer) {
         return new CharsRangePredicate(
                 List.of(CharacterUtils::isAsciiLower, CharacterUtils::isAsciiUpper, CharacterUtils::isUnderscore),
                 List.of(CharacterUtils::isDigit),

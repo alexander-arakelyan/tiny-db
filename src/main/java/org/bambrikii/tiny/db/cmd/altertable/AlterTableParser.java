@@ -5,13 +5,13 @@ import org.bambrikii.tiny.db.cmd.AbstractCommandParser;
 import org.bambrikii.tiny.db.cmd.ParserInputStream;
 
 import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
+import static org.bambrikii.tiny.db.parser.functions.BracketsFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.addCol;
 import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.alter;
 import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.alterCol;
 import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.dropCol;
 import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.table;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.atLeastOnceCommaSeparated;
-import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.word;
 

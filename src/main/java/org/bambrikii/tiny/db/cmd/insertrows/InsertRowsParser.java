@@ -10,12 +10,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static org.bambrikii.tiny.db.cmd.none.NoMessage.NO_MESSAGE;
+import static org.bambrikii.tiny.db.parser.functions.BracketsFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.chars;
 import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.from;
 import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.where;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.TRUE_PREDICATE;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.atLeastOnceCommaSeparated;
-import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.ordered;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.word;

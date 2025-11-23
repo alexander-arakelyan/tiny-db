@@ -21,10 +21,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+import static org.bambrikii.tiny.db.parser.functions.BracketsFunctions.optionalBrackets;
 import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.colRef;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.TRUE_PREDICATE;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.oneOfStrings;
-import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.optionalBrackets;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.ordered;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.times;

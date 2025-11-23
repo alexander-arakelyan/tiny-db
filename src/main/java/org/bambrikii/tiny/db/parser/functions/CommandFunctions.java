@@ -17,13 +17,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+import static org.bambrikii.tiny.db.parser.functions.BracketsFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.chars;
 import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.comma;
 import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.spaces;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.DEFAULT_STRING_TO_BOOLEAN_CONSUMER;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.TRUE_PREDICATE;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.atLeastOnceCommaSeparated;
-import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.oneOfStrings;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.optional;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
