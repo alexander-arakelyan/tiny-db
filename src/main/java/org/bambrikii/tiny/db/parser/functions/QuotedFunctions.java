@@ -5,11 +5,11 @@ import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
 
 import java.util.function.Consumer;
 
+import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.chars;
+import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.spaces;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.DEFAULT_STRING_CONSUMER;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.TRUE_PREDICATE;
-import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.chars;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
-import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.spaces;
 import static org.bambrikii.tiny.db.parser.functions.WordFunctions.word;
 import static org.bambrikii.tiny.db.parser.functions.WordFunctions.wordWithAnyCharacters;
 import static org.bambrikii.tiny.db.parser.functions.WordFunctions.wordWithDashes;

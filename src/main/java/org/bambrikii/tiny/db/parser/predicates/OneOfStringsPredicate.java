@@ -5,7 +5,7 @@ import org.bambrikii.tiny.db.cmd.ParserInputStream;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.chars;
+import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.chars;
 
 public class OneOfStringsPredicate extends ParserPredicate {
     private final ParserPredicate next;

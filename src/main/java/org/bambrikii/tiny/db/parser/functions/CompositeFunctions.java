@@ -4,17 +4,18 @@ import org.bambrikii.tiny.db.cmd.ParserInputStream;
 import org.bambrikii.tiny.db.parser.predicates.AllPredicate;
 import org.bambrikii.tiny.db.parser.predicates.AnyOrderPredicate;
 import org.bambrikii.tiny.db.parser.predicates.ChainPredicate;
-import org.bambrikii.tiny.db.parser.predicates.CharsPredicate;
 import org.bambrikii.tiny.db.parser.predicates.ConstantResultPredicate;
 import org.bambrikii.tiny.db.parser.predicates.OneOfStringsPredicate;
 import org.bambrikii.tiny.db.parser.predicates.OptionalPredicate;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
-import org.bambrikii.tiny.db.parser.predicates.SpacesPredicate;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.chars;
+import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.comma;
+import static org.bambrikii.tiny.db.parser.functions.CharsFunctions.spaces;
 import static org.bambrikii.tiny.db.parser.functions.NumberFunctions.number;
 import static org.bambrikii.tiny.db.parser.functions.QuotedFunctions.quotedString;
 
@@ -110,21 +111,6 @@ public class CompositeFunctions {
         return spaces(new OneOfStringsPredicate(strings, next, consumer));
     }
 
-    public static ParserPredicate chars(String str, ParserPredicate next) {
-        return chars(str, next, DEFAULT_STRING_CONSUMER);
-    }
-
-    public static ParserPredicate chars(String str, Consumer<String> consumer) {
-        return chars(str, TRUE_PREDICATE, consumer);
-    }
-
-    public static ParserPredicate chars(String str, ParserPredicate next, Consumer<String> consumer) {
-        return spaces(new CharsPredicate(str, next, consumer));
-    }
-
-    public static SpacesPredicate spaces(ParserPredicate next) {
-        return new SpacesPredicate(next);
-    }
 
     public static ParserPredicate brackets(ParserPredicate next) {
         return ordered(
@@ -141,10 +127,6 @@ public class CompositeFunctions {
                 ))),
                 ConstantResultPredicate.of(next, bracketsConsumer, false)
         );
-    }
-
-    public static ParserPredicate comma(ParserPredicate next) {
-        return spaces(chars(",", next));
     }
 
     public static ParserPredicate value(ParserPredicate next, Consumer<Integer> integerConsumer, Consumer<String> stringConsumer) {
