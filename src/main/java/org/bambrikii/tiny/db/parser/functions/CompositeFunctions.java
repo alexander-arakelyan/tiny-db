@@ -6,7 +6,6 @@ import org.bambrikii.tiny.db.parser.predicates.AnyOrderPredicate;
 import org.bambrikii.tiny.db.parser.predicates.ChainPredicate;
 import org.bambrikii.tiny.db.parser.predicates.CharsPredicate;
 import org.bambrikii.tiny.db.parser.predicates.ConstantResultPredicate;
-import org.bambrikii.tiny.db.parser.predicates.NumberPredicate;
 import org.bambrikii.tiny.db.parser.predicates.OneOfStringsPredicate;
 import org.bambrikii.tiny.db.parser.predicates.OptionalPredicate;
 import org.bambrikii.tiny.db.parser.predicates.ParserPredicate;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static org.bambrikii.tiny.db.parser.functions.NumberFunctions.number;
 import static org.bambrikii.tiny.db.parser.functions.QuotedFunctions.quotedString;
 
 public class CompositeFunctions {
@@ -75,14 +75,6 @@ public class CompositeFunctions {
                 return n >= min && n <= max;
             }
         });
-    }
-
-    public static ParserPredicate number(Consumer<Integer> onSuccess) {
-        return spaces(new NumberPredicate(TRUE_PREDICATE, onSuccess));
-    }
-
-    public static ParserPredicate number(ParserPredicate next, Consumer<Integer> onSuccess) {
-        return spaces(new NumberPredicate(next, onSuccess));
     }
 
     public static ParserPredicate unordered(ParserPredicate... next) {

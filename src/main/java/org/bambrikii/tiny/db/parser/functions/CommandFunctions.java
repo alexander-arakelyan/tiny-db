@@ -23,7 +23,6 @@ import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.atLeastO
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.chars;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.comma;
-import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.number;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.oneOfStrings;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.optional;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
@@ -32,6 +31,7 @@ import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.spaces;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.times;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.unordered;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.word;
+import static org.bambrikii.tiny.db.parser.functions.NumberFunctions.number;
 import static org.bambrikii.tiny.db.parser.functions.QuotedFunctions.optionalDoubleQuotedString;
 
 public class CommandFunctions {

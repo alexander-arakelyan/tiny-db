@@ -23,12 +23,12 @@ import java.util.function.Consumer;
 
 import static org.bambrikii.tiny.db.parser.functions.CommandFunctions.colRef;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.TRUE_PREDICATE;
-import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.number;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.oneOfStrings;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.optionalBrackets;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.ordered;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.times;
+import static org.bambrikii.tiny.db.parser.functions.NumberFunctions.number;
 import static org.bambrikii.tiny.db.parser.functions.QuotedFunctions.quotedString;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -120,15 +120,15 @@ public class WhereFunctions {
 
     private static ParserPredicate predicateValue(Consumer<FilterByValueNode> where) {
         var op = new AtomicReference<ComparisonOpEnum>();
-        var val = new AtomicReference<>();
+        var v = new AtomicReference<>();
         return colRef(
                 oneOfStrings(
                         List.of("=", ">", ">=", "<", "<=", "<>"),
                         or(
-                                quotedString(val::set),
-                                number(val::set)
+                                quotedString(v::set),
+                                number(v::set)
                         ), s -> op.set(ComparisonOpEnum.parse(s))),
-                clause -> where.accept(FilterByValueNode.of(clause, op.get(), val.get()))
+                clause -> where.accept(FilterByValueNode.of(clause, op.get(), v.get()))
         );
     }
 }

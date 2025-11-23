@@ -16,10 +16,10 @@ import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.TRUE_PRE
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.atLeastOnceCommaSeparated;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.brackets;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.chars;
-import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.number;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.or;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.ordered;
 import static org.bambrikii.tiny.db.parser.functions.CompositeFunctions.word;
+import static org.bambrikii.tiny.db.parser.functions.NumberFunctions.number;
 import static org.bambrikii.tiny.db.parser.functions.QuotedFunctions.singleQuoted;
 
 public class InsertRowsParser extends AbstractCommandParser<InsertRowsMessage> {
