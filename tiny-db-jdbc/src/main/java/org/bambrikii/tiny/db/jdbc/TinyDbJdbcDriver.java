@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class TinyDbJdbcDriver implements Driver {
-    private static final Pattern URL_PATTERN = Pattern.compile("tiny-db://([0-9a-z.-]+):[0-9]+.*");
+    private static final Pattern URL_PATTERN = Pattern.compile("jdbc:tiny-db://([0-9a-z.-]+):[0-9]+.*");
 
     @Override
     public Connection connect(String url, Properties info) {
