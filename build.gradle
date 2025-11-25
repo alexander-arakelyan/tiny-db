@@ -3,31 +3,3 @@ allprojects {
         mavenCentral()
     }
 }
-
-apply from: "${rootDir}/gradle/java.gradle"
-apply from: "${rootDir}/gradle/libs.gradle"
-
-description("Tiny DB")
-apply from: "${rootDir}/gradle/publish.gradle"
-
-def mockitoVersion = "5.18.0"
-
-dependencies {
-    compileOnly("org.projectlombok:lombok:${lombokVersion}")
-    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-
-    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
-    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-
-    testImplementation(libs.jupiter.api)
-    testImplementation(libs.jupiter.params)
-    testRuntimeOnly(libs.jupiter.engine)
-
-    testImplementation(libs.assertj.core)
-    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
-    testImplementation("org.mockito:mockito-junit-jupiter:${mockitoVersion}")
-}
-
-test {
-    useJUnitPlatform()
-}

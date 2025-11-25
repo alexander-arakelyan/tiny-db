@@ -1,1 +1,5 @@
 rootProject.name = 'tiny-db'
+
+include("tiny-db")
+include("tiny-db-jdbc")
+include("tiny-db-cli")
