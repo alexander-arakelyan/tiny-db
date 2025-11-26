@@ -127,7 +127,7 @@ public class CommandFunctions {
     }
 
     public static <C> ParserPredicate select(SelectRowsMessage cmd) {
-        return chars("clauses", atLeastOnceCommaSeparated(or(colRef(TRUE_PREDICATE, cmd::select))));
+        return chars("select", atLeastOnceCommaSeparated(or(colRef(TRUE_PREDICATE, cmd::select))));
     }
 
     public static <C> ParserPredicate from(AbstractQueryMessage cmd) {
