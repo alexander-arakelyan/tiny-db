@@ -43,7 +43,7 @@ class PlannerTest {
         var ctx = new StorageContext(disk, mem);
         var builder = new Planner(ctx);
         try (
-                var bis = new ByteArrayInputStream("clauses t1.col1 from t1 t1 nodes t1.col1 = 1".getBytes(StandardCharsets.UTF_8));
+                var bis = new ByteArrayInputStream("select t1.col1 from t1 t1 where t1.col1 = 1".getBytes(StandardCharsets.UTF_8));
                 var nis = new NavigableStreamReader(bis);
         ) {
             var parser = new SelectRowsParser();
