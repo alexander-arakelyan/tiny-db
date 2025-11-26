@@ -50,7 +50,7 @@ class SelectRowsTest {
         parserFacade.init(parser);
         var execFacade = new CommandExecutorFacade(ctx);
         execFacade.init(new CommandStack(parser, new SelectRows()));
-        var query = "clauses t1.col1, t1.col2, t1.col3 from \"" + tableName + "\" t1 nodes t1.col1 = 'val1'";
+        var query = "select t1.col1, t1.col2, t1.col3 from \"" + tableName + "\" t1 where t1.col1 = 'val1'";
         try (
                 var bis = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
                 var nis = new NavigableStreamReader(bis);
