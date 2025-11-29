@@ -1,6 +1,8 @@
 package org.bambrikii.tiny.db.jdbc;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Array;
 import java.sql.Blob;
@@ -11,7 +13,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLClientInfoException;
-import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Savepoint;
@@ -21,213 +22,176 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+@Getter
+@Setter
 @RequiredArgsConstructor
 public class TinyDbConnection implements Connection {
     private final String host;
     private final int port;
+    private boolean autoCommit;
+    private boolean readOnly;
+    private String catalog;
+    private int transactionIsolation;
+    private int holdability;
 
     @Override
-    public Statement createStatement() throws SQLException {
-        return null;
+    public Statement createStatement() {
+        return new TinyDbPreparedStatement();
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return null;
+    public PreparedStatement prepareStatement(String sql) {
+        return new TinyDbPreparedStatement();
     }
 
     @Override
-    public CallableStatement prepareCall(String sql) throws SQLException {
-        return null;
+    public CallableStatement prepareCall(String sql) {
+        return new TinyDbCallableStatement();
     }
 
     @Override
-    public String nativeSQL(String sql) throws SQLException {
-        return "";
+    public String nativeSQL(String sql) {
+        return sql;
     }
 
     @Override
-    public void setAutoCommit(boolean autoCommit) throws SQLException {
+    public boolean getAutoCommit() {
+        return autoCommit;
+    }
+
+    @Override
+    public void commit() {
 
     }
 
     @Override
-    public boolean getAutoCommit() throws SQLException {
+    public void rollback() {
+
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public boolean isClosed() {
         return false;
     }
 
     @Override
-    public void commit() throws SQLException {
-
+    public DatabaseMetaData getMetaData() {
+        return null;
     }
 
-    @Override
-    public void rollback() throws SQLException {
-
-    }
 
     @Override
-    public void close() throws SQLException {
-
-    }
-
-    @Override
-    public boolean isClosed() throws SQLException {
-        return false;
-    }
-
-    @Override
-    public DatabaseMetaData getMetaData() throws SQLException {
+    public SQLWarning getWarnings() {
         return null;
     }
 
     @Override
-    public void setReadOnly(boolean readOnly) throws SQLException {
+    public void clearWarnings() {
 
     }
 
     @Override
-    public boolean isReadOnly() throws SQLException {
-        return false;
+    public Statement createStatement(int resultSetType, int resultSetConcurrency) {
+        return new TinyDbPreparedStatement();
     }
 
     @Override
-    public void setCatalog(String catalog) throws SQLException {
-
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) {
+        return new TinyDbPreparedStatement();
     }
 
     @Override
-    public String getCatalog() throws SQLException {
-        return "";
-    }
-
-    @Override
-    public void setTransactionIsolation(int level) throws SQLException {
-
-    }
-
-    @Override
-    public int getTransactionIsolation() throws SQLException {
-        return 0;
-    }
-
-    @Override
-    public SQLWarning getWarnings() throws SQLException {
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) {
         return null;
     }
 
     @Override
-    public void clearWarnings() throws SQLException {
-
-    }
-
-    @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public Map<String, Class<?>> getTypeMap() throws SQLException {
+    public Map<String, Class<?>> getTypeMap() {
         return Map.of();
     }
 
     @Override
-    public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
+    public void setTypeMap(Map<String, Class<?>> map) {
 
     }
 
     @Override
-    public void setHoldability(int holdability) throws SQLException {
-
-    }
-
-    @Override
-    public int getHoldability() throws SQLException {
-        return 0;
-    }
-
-    @Override
-    public Savepoint setSavepoint() throws SQLException {
+    public Savepoint setSavepoint() {
         return null;
     }
 
     @Override
-    public Savepoint setSavepoint(String name) throws SQLException {
+    public Savepoint setSavepoint(String name) {
         return null;
     }
 
     @Override
-    public void rollback(Savepoint savepoint) throws SQLException {
+    public void rollback(Savepoint savepoint) {
 
     }
 
     @Override
-    public void releaseSavepoint(Savepoint savepoint) throws SQLException {
+    public void releaseSavepoint(Savepoint savepoint) {
 
     }
 
     @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) {
+        return new TinyDbPreparedStatement();
+    }
+
+    @Override
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) {
+        return new TinyDbPreparedStatement();
+    }
+
+    @Override
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) {
+        return new TinyDbCallableStatement();
+    }
+
+    @Override
+    public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) {
+        return prepareStatement(sql, 0, 0, 0);
+    }
+
+    @Override
+    public PreparedStatement prepareStatement(String sql, int[] columnIndexes) {
+        return prepareStatement(sql, 0, 0, 0);
+    }
+
+    @Override
+    public PreparedStatement prepareStatement(String sql, String[] columnNames) {
+        return prepareStatement(sql, 0, 0, 0);
+    }
+
+    @Override
+    public Clob createClob() {
         return null;
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public Blob createBlob() {
         return null;
     }
 
     @Override
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public NClob createNClob() {
         return null;
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
+    public SQLXML createSQLXML() {
         return null;
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public Clob createClob() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public Blob createBlob() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public NClob createNClob() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public SQLXML createSQLXML() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public boolean isValid(int timeout) throws SQLException {
+    public boolean isValid(int timeout) {
         return false;
     }
 
@@ -242,57 +206,57 @@ public class TinyDbConnection implements Connection {
     }
 
     @Override
-    public String getClientInfo(String name) throws SQLException {
+    public String getClientInfo(String name) {
         return "";
     }
 
     @Override
-    public Properties getClientInfo() throws SQLException {
+    public Properties getClientInfo() {
         return null;
     }
 
     @Override
-    public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+    public Array createArrayOf(String typeName, Object[] elements) {
         return null;
     }
 
     @Override
-    public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+    public Struct createStruct(String typeName, Object[] attributes) {
         return null;
     }
 
     @Override
-    public void setSchema(String schema) throws SQLException {
+    public void setSchema(String schema) {
 
     }
 
     @Override
-    public String getSchema() throws SQLException {
+    public String getSchema() {
         return "";
     }
 
     @Override
-    public void abort(Executor executor) throws SQLException {
+    public void abort(Executor executor) {
 
     }
 
     @Override
-    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+    public void setNetworkTimeout(Executor executor, int milliseconds) {
 
     }
 
     @Override
-    public int getNetworkTimeout() throws SQLException {
+    public int getNetworkTimeout() {
         return 0;
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
+    public <T> T unwrap(Class<T> iface) {
         return null;
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    public boolean isWrapperFor(Class<?> iface) {
         return false;
     }
 }
