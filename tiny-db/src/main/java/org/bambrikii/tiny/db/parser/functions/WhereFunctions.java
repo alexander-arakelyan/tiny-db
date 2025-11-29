@@ -41,30 +41,30 @@ public class WhereFunctions {
         var debugCounter = new AtomicInteger();
         return optionalBrackets(ordered(
                 basicPredicate(whereRef),
-                times(
-                        oneOfStrings(
-                                List.of("and", "or"),
-                                or(
-                                        basicPredicate(nextWhereRef),
-                                        new ParserPredicate() {
-                                            @Override
-                                            protected boolean doTest(ParserInputStream is) {
-                                                return wherePredicate(nextWhereRef::set).test(is);
-                                            }
-                                        }), s -> {
-                                    var n = debugCounter.incrementAndGet();
-                                    switch (Objects.requireNonNull(LogicalOpEnum.parse(s))) {
-                                        case AND:
-                                            DbLogger.log(whereRef.get(), "Predicate: %s AND %s %s %d", whereRef.get(), nextWhereRef.get(), ands, n);
-                                            appendPredicate(whereRef, ands, nextWhereRef.get());
-                                            break;
-                                        case OR:
-                                            DbLogger.log(whereRef.get(), "Predicate: %s OR %s %s %d", whereRef.get(), nextWhereRef.get(), ors, n);
-                                            appendPredicate(whereRef, ors, nextWhereRef.get());
-                                            break;
+                times(oneOfStrings(
+                        List.of("and", "or"),
+                        or(
+                                basicPredicate(nextWhereRef),
+                                new ParserPredicate() {
+                                    @Override
+                                    protected boolean doTest(ParserInputStream is) {
+                                        return wherePredicate(nextWhereRef::set).test(is);
                                     }
-                                })
-                )
+                                }
+                        ), s -> {
+                            var n = debugCounter.incrementAndGet();
+                            switch (Objects.requireNonNull(LogicalOpEnum.parse(s))) {
+                                case AND:
+                                    DbLogger.log(whereRef.get(), "Predicate: %s AND %s %s %d", whereRef.get(), nextWhereRef.get(), ands, n);
+                                    mergeWhereRefsTo(ands, whereRef, nextWhereRef.get());
+                                    break;
+                                case OR:
+                                    DbLogger.log(whereRef.get(), "Predicate: %s OR %s %s %d", whereRef.get(), nextWhereRef.get(), ors, n);
+                                    mergeWhereRefsTo(ors, whereRef, nextWhereRef.get());
+                                    break;
+                            }
+                        }
+                ))
         ), withBrackets -> {
             var n = debugCounter.get();
             if (ands.isEmpty() && ors.isEmpty()) {
@@ -90,9 +90,9 @@ public class WhereFunctions {
         );
     }
 
-    private static void appendPredicate(
-            AtomicReference<WhereNode> whereRef,
+    private static void mergeWhereRefsTo(
             List<WhereNode> coll,
+            AtomicReference<WhereNode> whereRef,
             WhereNode whereNode
     ) {
         var first = whereRef.get();
