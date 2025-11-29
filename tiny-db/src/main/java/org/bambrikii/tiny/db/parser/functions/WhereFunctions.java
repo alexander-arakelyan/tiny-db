@@ -56,11 +56,11 @@ public class WhereFunctions {
                             switch (Objects.requireNonNull(LogicalOpEnum.parse(s))) {
                                 case AND:
                                     DbLogger.log(whereRef.get(), "Predicate: %s AND %s %s %d", whereRef.get(), nextWhereRef.get(), ands, n);
-                                    mergeWhereRefsTo(ands, whereRef, nextWhereRef.get());
+                                    mergeWhereRefsTo(ands, whereRef, nextWhereRef);
                                     break;
                                 case OR:
                                     DbLogger.log(whereRef.get(), "Predicate: %s OR %s %s %d", whereRef.get(), nextWhereRef.get(), ors, n);
-                                    mergeWhereRefsTo(ors, whereRef, nextWhereRef.get());
+                                    mergeWhereRefsTo(ors, whereRef, nextWhereRef);
                                     break;
                             }
                         }
@@ -93,14 +93,14 @@ public class WhereFunctions {
     private static void mergeWhereRefsTo(
             List<WhereNode> coll,
             AtomicReference<WhereNode> whereRef,
-            WhereNode whereNode
+            AtomicReference<WhereNode> whereNode
     ) {
         var first = whereRef.get();
         if (first != null) {
             coll.add(first);
             whereRef.set(null);
         }
-        coll.add(whereNode);
+        coll.add(whereNode.get());
     }
 
     private static ParserPredicate predicateRelation(Consumer<JoinNode> where) {
