@@ -28,6 +28,6 @@ public class IntIOUtils {
         channel.read(buff);
         var available = buff.remaining();
         buff.flip();
-        return buff.capacity() - available - 1;
+        return (long) buff.capacity() - available - 1;
     }
 }
