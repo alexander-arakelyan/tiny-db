@@ -26,6 +26,7 @@ public class FileRelTablePageWriter extends FileRelTablePageReader {
     }
 
     @SneakyThrows
+    @Override
     public void open() {
         var exists = Files.exists(path);
         this.page = io.openReadWrite(this.path.toString());
