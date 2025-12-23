@@ -88,7 +88,7 @@ public class FileRelTablePageReader implements AutoCloseable {
         return row;
     }
 
-    private String getTable() {
+    protected String getTable() {
         return structDecorator.getStruct().getTable();
     }
 

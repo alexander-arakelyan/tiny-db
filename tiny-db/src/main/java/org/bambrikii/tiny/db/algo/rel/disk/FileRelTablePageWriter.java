@@ -88,10 +88,6 @@ public class FileRelTablePageWriter extends FileRelTablePageReader {
         return rowid;
     }
 
-    private String getTable() {
-        return structDecorator.getStruct().getTable();
-    }
-
     public boolean updateRow(String rowId, Map<String, Object> vals) {
         for (var row : rows) {
             if (Objects.equals(row.getRowId(), rowId)) {
